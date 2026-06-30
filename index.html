@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tzu-Chi Body Composition Health Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1B3A6B;
+    --navy-light: #2A4F8F;
+    --navy-dark: #112448;
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --hur-orange: #E8734A;
+    --hur-orange-light: #F0956E;
+    --white: #FFFFFF;
+    --grey-50: #F5F7FA;
+    --grey-100: #EEF1F6;
+    --grey-200: #D8DDE8;
+    --grey-500: #8892A4;
+    --grey-700: #4A5568;
+    --grey-900: #1A202C;
+    --green: #2D8653;
+    --green-light: #E6F4ED;
+    --yellow: #C9900A;
+    --yellow-light: #FEF3CC;
+    --red: #C0392B;
+    --red-light: #FDECEA;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 24px rgba(27,58,107,0.10);
+    --shadow-md: 0 8px 40px rgba(27,58,107,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--grey-50);
+    color: var(--grey-900);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-light) 100%);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .logo-wrap {
+    background: white;
+    border-radius: 12px;
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+  .header-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  .header-text p {
+    font-size: 0.75rem;
+    color: var(--gold-light);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .hur-badge {
+    margin-left: auto;
+    background: var(--hur-orange);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 16px 60px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .section-label .dot {
+    width: 6px;
+    height: 28px;
+    background: linear-gradient(180deg, var(--gold), var(--hur-orange));
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .section-label h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  /* ── FORM GRID ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .form-group.full { grid-column: 1 / -1; }
+  label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--grey-700);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  label span.unit {
+    font-weight: 400;
+    color: var(--grey-500);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  input[type="number"], select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--grey-200);
+    border-radius: var(--radius-sm);
+    font-size: 1.1rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: var(--grey-900);
+    background: var(--grey-50);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(27,58,107,0.12);
+    background: white;
+  }
+  .gender-row {
+    display: flex;
+    gap: 12px;
+  }
+  .gender-btn {
+    flex: 1;
+    padding: 13px;
+    border: 2px solid var(--grey-200);
+    border-radius: var(--radius-sm);
+    background: var(--grey-50);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--grey-700);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .gender-btn.active {
+    border-color: var(--navy);
+    background: var(--navy);
+    color: white;
+  }
+  .gender-btn:hover:not(.active) {
+    border-color: var(--navy-light);
+    color: var(--navy);
+  }
+
+  /* ── CALCULATE BUTTON ── */
+  .calc-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.25s;
+    box-shadow: 0 4px 16px rgba(27,58,107,0.3);
+  }
+  .calc-btn:hover {
+    background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(27,58,107,0.38);
+  }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* ── RESULTS SECTION ── */
+  #results { display: none; }
+  #results.visible { display: block; animation: fadeUp 0.5s ease; }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── BIO AGE GAUGE ── */
+  .bio-age-card {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bio-age-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: rgba(201,168,76,0.08);
+    border-radius: 50%;
+  }
+  .bio-age-card::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -30px;
+    width: 220px; height: 220px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .bio-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .gauge-wrap {
+    position: relative;
+    width: 200px;
+    margin: 0 auto 16px;
+  }
+  .gauge-wrap canvas { display: block; }
+  .gauge-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -56%);
+    text-align: center;
+  }
+  .gauge-age {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+  }
+  .gauge-unit {
+    font-size: 0.75rem;
+    color: var(--grey-200);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .bio-compare {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 4px;
+  }
+  .bio-compare-item {
+    text-align: center;
+  }
+  .bio-compare-item .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: white;
+    font-weight: 600;
+  }
+  .bio-compare-item .lbl {
+    font-size: 0.68rem;
+    color: var(--grey-200);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+  .bio-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.2);
+    align-self: stretch;
+  }
+  .bio-status-badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── METRICS GRID ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .metric-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    padding: 18px 16px;
+    text-align: center;
+    border-top: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .metric-card .m-icon {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .metric-card .m-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .metric-card .m-unit {
+    font-size: 0.7rem;
+    color: var(--grey-500);
+    font-weight: 500;
+  }
+  .metric-card .m-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--grey-700);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+    display: block;
+  }
+  .metric-card .m-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin-top: 6px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  .status-normal { background: var(--green-light); color: var(--green); }
+  .status-warning { background: var(--yellow-light); color: var(--yellow); }
+  .status-high { background: var(--red-light); color: var(--red); }
+  .border-normal { border-top-color: var(--green); }
+  .border-warning { border-top-color: var(--yellow); }
+  .border-high { border-top-color: var(--red); }
+
+  /* ── CHART CARDS ── */
+  .chart-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .chart-subtitle {
+    font-size: 0.75rem;
+    color: var(--grey-500);
+    margin-bottom: 18px;
+  }
+  .chart-wrap { position: relative; height: 220px; }
+  .chart-wrap-tall { position: relative; height: 260px; }
+
+  /* ── RANGE BARS ── */
+  .range-section { margin-bottom: 20px; }
+  .range-item {
+    background: white;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .range-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .range-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--grey-700);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .range-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .range-bar-bg {
+    height: 10px;
+    background: var(--grey-100);
+    border-radius: 6px;
+    position: relative;
+    overflow: visible;
+    margin-bottom: 6px;
+  }
+  .range-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+  }
+  .range-marker {
+    position: absolute;
+    top: -4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transform: translateX(-50%);
+    transition: left 1s cubic-bezier(.4,0,.2,1);
+  }
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    color: var(--grey-500);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── HEALTH REPORT ── */
+  .health-report {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .report-overall {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 24px;
+  }
+  .report-score-ring {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: white;
+  }
+  .report-overall-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .report-overall-text p {
+    font-size: 0.82rem;
+    color: var(--grey-700);
+    line-height: 1.5;
+  }
+
+  .report-findings { margin-bottom: 20px; }
+  .finding-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--grey-100);
+  }
+  .finding-item:last-child { border-bottom: none; }
+  .finding-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .finding-text h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--grey-900);
+    margin-bottom: 3px;
+  }
+  .finding-text p {
+    font-size: 0.78rem;
+    color: var(--grey-700);
+    line-height: 1.55;
+  }
+
+  .recommendations {
+    background: linear-gradient(135deg, var(--grey-50), var(--grey-100));
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    border-left: 4px solid var(--gold);
+  }
+  .recommendations h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--navy);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rec-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .rec-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    color: var(--grey-700);
+    line-height: 1.5;
+  }
+  .rec-list li::before {
+    content: '✦';
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 0.7rem;
+  }
+
+  /* ── TANITA INFO FOOTER ── */
+  .info-strip {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+  }
+  .info-strip h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .info-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .info-pill {
+    background: var(--grey-50);
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.73rem;
+    color: var(--grey-700);
+    font-weight: 500;
+  }
+  .info-pill strong { color: var(--navy); display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy-dark);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 20px;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+  }
+  footer span { color: var(--gold); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .header-text h1 { font-size: 1rem; }
+    .gauge-age { font-size: 2.5rem; }
+  }
+  @media (max-width: 380px) {
+    .metrics-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <img src="data:image/png;base64,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" alt="Tzu-Chi Foundation" style="height:52px;width:auto;display:block;">
+    </div>
+    <div class="header-text">
+      <h1>Body Composition Health Report</h1>
+      <p>Powered by Tanita Assessment · Tzu-Chi Longevity Programme</p>
+    </div>
+    <div class="hur-badge">HUR · TANITA</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── INPUT SECTION ── -->
+  <div class="section-label">
+    <div class="dot"></div>
+    <h2>Enter Your Measurements</h2>
+  </div>
+
+  <div class="card">
+    <div class="form-grid">
+
+      <div class="form-group full">
+        <label>Gender</label>
+        <div class="gender-row">
+          <button class="gender-btn active" id="btn-male" onclick="setGender('male')">♂ Male</button>
+          <button class="gender-btn" id="btn-female" onclick="setGender('female')">♀ Female</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Age <span class="unit">(years)</span></label>
+        <input type="number" id="age" min="40" max="100" placeholder="e.g. 68">
+      </div>
+
+      <div class="form-group">
+        <label>Height <span class="unit">(cm)</span></label>
+        <input type="number" id="height" min="100" max="220" step="0.1" placeholder="e.g. 162">
+      </div>
+
+      <div class="form-group">
+        <label>Weight <span class="unit">(kg)</span></label>
+        <input type="number" id="weight" min="30" max="200" step="0.1" placeholder="e.g. 65.2">
+      </div>
+
+      <div class="form-group">
+        <label>Body Fat <span class="unit">(%)</span></label>
+        <input type="number" id="fatPct" min="5" max="60" step="0.1" placeholder="e.g. 28.5">
+      </div>
+
+      <div class="form-group">
+        <label>Body Fat <span class="unit">(kg)</span></label>
+        <input type="number" id="fatKg" min="2" max="80" step="0.1" placeholder="e.g. 18.6">
+      </div>
+
+      <div class="form-group">
+        <label>Muscle Weight <span class="unit">(kg)</span></label>
+        <input type="number" id="muscleKg" min="10" max="80" step="0.1" placeholder="e.g. 43.0">
+      </div>
+
+      <div class="form-group">
+        <label>Visceral Fat Level <span class="unit">(1–59)</span></label>
+        <input type="number" id="visceralFat" min="1" max="59" step="1" placeholder="e.g. 9">
+      </div>
+
+      <div class="form-group">
+        <label>BMR <span class="unit">(kcal) — optional</span></label>
+        <input type="number" id="bmr" min="800" max="3000" step="1" placeholder="e.g. 1320">
+      </div>
+
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">🔍 &nbsp;Generate Health Report</button>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div id="results">
+
+    <!-- Bio Age -->
+    <div class="bio-age-card">
+      <div class="bio-label">📊 Tanita Biological Age</div>
+      <div class="gauge-wrap">
+        <canvas id="gaugeChart" width="200" height="120"></canvas>
+        <div class="gauge-center">
+          <div class="gauge-age" id="bioAgeDisplay">--</div>
+          <div class="gauge-unit">Years Old</div>
+        </div>
+      </div>
+      <div class="bio-compare">
+        <div class="bio-compare-item">
+          <div class="val" id="chronoDisplay">--</div>
+          <div class="lbl">Actual Age</div>
+        </div>
+        <div class="bio-divider"></div>
+        <div class="bio-compare-item">
+          <div class="val" id="diffDisplay">--</div>
+          <div class="lbl">Difference</div>
+        </div>
+      </div>
+      <div id="bioStatusBadge" class="bio-status-badge"></div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="section-label">
+      <div class="dot"></div>
+      <h2>Composition Overview</h2>
+    </div>
+    <div class="metrics-grid" id="metricsGrid"></div>
+
+    <!-- Range Bars -->
+    <div class="section-label">
+      <div class="dot"></div>
+      <h2>Healthy Range Indicators</h2>
+    </div>
+    <div class="range-section" id="rangeBars"></div>
+
+    <!-- Charts Row -->
+    <div class="section-label">
+      <div class="dot"></div>
+      <h2>Visual Analysis</h2>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Body Composition Breakdown</div>
+      <div class="chart-subtitle">Distribution of your body mass components</div>
+      <div class="chart-wrap">
+        <canvas id="compositionChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Health Score by Parameter</div>
+      <div class="chart-subtitle">How each metric compares to the healthy senior range</div>
+      <div class="chart-wrap-tall">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Health Report -->
+    <div class="section-label">
+      <div class="dot"></div>
+      <h2>Personalised Health Report</h2>
+    </div>
+    <div class="health-report" id="healthReport"></div>
+
+    <!-- Tanita Reference -->
+    <div class="section-label">
+      <div class="dot"></div>
+      <h2>Understanding Your Measurements</h2>
+    </div>
+    <div class="info-strip">
+      <h3>📖 Tanita Reference Guide</h3>
+      <div class="info-pills">
+        <div class="info-pill"><strong>Body Fat %</strong>Male 60-69: 13–24% Healthy<br>Female 60-69: 24–35% Healthy</div>
+        <div class="info-pill"><strong>Visceral Fat</strong>Level 1–9: Healthy<br>Level 10–14: High<br>Level 15+: Very High</div>
+        <div class="info-pill"><strong>BMI</strong>18.5–22.9: Normal<br>23–27.4: Overweight (Asian)<br>≥27.5: Obese</div>
+        <div class="info-pill"><strong>Muscle Mass</strong>Declines ~1% per year<br>after 30. Sarcopenia<br>risk &gt;65 years.</div>
+        <div class="info-pill"><strong>Biological Age</strong>Below chronological age = good metabolic health.<br>Every 5% fat reduction can reduce by 2–5 yrs.</div>
+        <div class="info-pill"><strong>BMR</strong>Calories needed at rest.<br>Higher muscle = higher BMR = better metabolism.</div>
+      </div>
+    </div>
+
+  </div><!-- end #results -->
+
+</main>
+
+<footer>
+  <p>© 2025 <span>Tzu-Chi Foundation Singapore</span> · Anytime Anywhere Anyone Fitness · Longevity Courtyard Programme</p>
+  <p style="margin-top:4px;">Body composition assessment based on Tanita BIA methodology. For educational use. Consult your physician for medical advice.</p>
+</footer>
+
+<script>
+// ── STATE ──
+let gender = 'male';
+let gaugeInstance = null, compositionInstance = null, radarInstance = null;
+
+function setGender(g) {
+  gender = g;
+  document.getElementById('btn-male').classList.toggle('active', g === 'male');
+  document.getElementById('btn-female').classList.toggle('active', g === 'female');
+}
+
+// ── TANITA BIOLOGICAL AGE ALGORITHM ──
+// Based on Tanita's methodology: considers fat%, visceral fat, muscle mass relative to body weight
+function calcBioAge(age, gender, fatPct, fatKg, muscleKg, weight, visceralFat, bmi) {
+  // Reference ranges by gender
+  const isMale = gender === 'male';
+
+  // Fat% score (penalty/bonus vs ideal)
+  const idealFat = isMale ? 17 : 27;
+  const fatDiff = fatPct - idealFat;
+  const fatScore = fatDiff * 0.45; // each % above ideal = +0.45 bio years
+
+  // Visceral fat score
+  let viscScore = 0;
+  if (visceralFat <= 9) viscScore = -1;
+  else if (visceralFat <= 12) viscScore = (visceralFat - 9) * 1.5;
+  else if (visceralFat <= 14) viscScore = 4.5 + (visceralFat - 12) * 3;
+  else viscScore = 10.5 + (visceralFat - 14) * 4;
+
+  // Muscle ratio score (muscle/weight %)
+  const muscleRatio = (muscleKg / weight) * 100;
+  const idealMuscleRatio = isMale ? 55 : 48;
+  const muscleScore = (idealMuscleRatio - muscleRatio) * 0.3;
+
+  // BMI score
+  const bmiIdeal = 22;
+  const bmiScore = Math.abs(bmi - bmiIdeal) * 0.3;
+
+  const bioAge = Math.round(age + fatScore + viscScore + muscleScore + bmiScore);
+  return Math.max(30, Math.min(110, bioAge));
+}
+
+// ── FAT % CLASSIFICATION ──
+function fatStatus(gender, age, pct) {
+  const isMale = gender === 'male';
+  // Senior ranges (60+) based on Tanita
+  if (isMale) {
+    if (pct < 11) return { label: 'Under Fat', cls: 'warning' };
+    if (pct <= 22) return { label: 'Healthy', cls: 'normal' };
+    if (pct <= 27) return { label: 'Slightly High', cls: 'warning' };
+    return { label: 'High', cls: 'high' };
+  } else {
+    if (pct < 22) return { label: 'Under Fat', cls: 'warning' };
+    if (pct <= 35) return { label: 'Healthy', cls: 'normal' };
+    if (pct <= 40) return { label: 'Slightly High', cls: 'warning' };
+    return { label: 'High', cls: 'high' };
+  }
+}
+
+function visceralStatus(level) {
+  if (level <= 9)  return { label: 'Healthy', cls: 'normal' };
+  if (level <= 14) return { label: 'High', cls: 'warning' };
+  return { label: 'Very High', cls: 'high' };
+}
+
+function bmiStatus(bmi) {
+  if (bmi < 18.5) return { label: 'Underweight', cls: 'warning' };
+  if (bmi < 23)   return { label: 'Normal', cls: 'normal' };
+  if (bmi < 27.5) return { label: 'Overweight', cls: 'warning' };
+  return { label: 'Obese', cls: 'high' };
+}
+
+function muscleStatus(gender, muscleKg, weight) {
+  const ratio = (muscleKg / weight) * 100;
+  const isMale = gender === 'male';
+  const low = isMale ? 50 : 43;
+  const high = isMale ? 60 : 52;
+  if (ratio < low)  return { label: 'Low', cls: 'warning' };
+  if (ratio <= high) return { label: 'Good', cls: 'normal' };
+  return { label: 'Excellent', cls: 'normal' };
+}
+
+// ── GAUGE CHART ──
+function drawGauge(bioAge, chronoAge) {
+  if (gaugeInstance) { gaugeInstance.destroy(); gaugeInstance = null; }
+  const ctx = document.getElementById('gaugeChart').getContext('2d');
+  const diff = bioAge - chronoAge;
+  // Color: green if younger, orange if same, red if older
+  const color = diff < -3 ? '#2D8653' : diff <= 3 ? '#C9A84C' : '#C0392B';
+  const pct = Math.min(1, Math.max(0.04, (bioAge - 30) / 80));
+
+  gaugeInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [pct, 1 - pct],
+        backgroundColor: [color, 'rgba(255,255,255,0.12)'],
+        borderWidth: 0,
+        circumference: 180,
+        rotation: 270,
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: '72%',
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { duration: 1000, easing: 'easeInOutQuart' }
+    }
+  });
+}
+
+// ── COMPOSITION DOUGHNUT ──
+function drawComposition(fatKg, muscleKg, weight) {
+  if (compositionInstance) { compositionInstance.destroy(); compositionInstance = null; }
+  const boneEst = weight * 0.04;
+  const waterEst = weight * 0.55;
+  const otherKg = Math.max(0, weight - fatKg - muscleKg - boneEst);
+  const ctx = document.getElementById('compositionChart').getContext('2d');
+  compositionInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Body Fat', 'Muscle', 'Bone (est.)', 'Other'],
+      datasets: [{
+        data: [fatKg, muscleKg, boneEst, otherKg],
+        backgroundColor: ['#E8734A', '#1B3A6B', '#C9A84C', '#8892A4'],
+        borderColor: '#fff',
+        borderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '55%',
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: { font: { size: 11, family: 'Inter' }, padding: 14, usePointStyle: true }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.label}: ${ctx.parsed.toFixed(1)} kg (${((ctx.parsed / weight)*100).toFixed(1)}%)`
+          }
+        }
+      },
+      animation: { duration: 900 }
+    }
+  });
+}
+
+// ── RADAR CHART ──
+function drawRadar(fatPct, muscleRatio, visceralFat, bmi, gender) {
+  if (radarInstance) { radarInstance.destroy(); radarInstance = null; }
+  const isMale = gender === 'male';
+
+  // Score each param 0–100 (100 = perfect)
+  const fatIdeal = isMale ? 17 : 27;
+  const fatMax = isMale ? 30 : 42;
+  const fatScore = Math.max(0, Math.min(100, 100 - Math.max(0, (fatPct - fatIdeal) / (fatMax - fatIdeal)) * 80));
+
+  const muscleIdeal = isMale ? 57 : 50;
+  const muscleLow = isMale ? 48 : 40;
+  const muscleScore = Math.max(0, Math.min(100, ((muscleRatio - muscleLow) / (muscleIdeal - muscleLow)) * 100));
+
+  const viscScore = Math.max(0, Math.min(100, 100 - ((visceralFat - 1) / 20) * 100));
+  const bmiScore = Math.max(0, Math.min(100, 100 - Math.abs(bmi - 21.5) * 8));
+
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  radarInstance = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Body Fat %', 'Muscle Mass', 'Visceral Fat', 'BMI', 'Composition\nBalance'],
+      datasets: [
+        {
+          label: 'Your Score',
+          data: [fatScore, muscleScore, viscScore, bmiScore, (fatScore + muscleScore + viscScore + bmiScore) / 4],
+          backgroundColor: 'rgba(27,58,107,0.15)',
+          borderColor: '#1B3A6B',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#1B3A6B',
+          pointRadius: 5,
+        },
+        {
+          label: 'Healthy Target',
+          data: [85, 85, 85, 85, 85],
+          backgroundColor: 'rgba(201,168,76,0.08)',
+          borderColor: '#C9A84C',
+          borderWidth: 1.5,
+          borderDash: [5, 4],
+          pointRadius: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { stepSize: 25, font: { size: 9 }, color: '#8892A4', backdropColor: 'transparent' },
+          grid: { color: '#EEF1F6' },
+          pointLabels: { font: { size: 11, family: 'Inter', weight: '500' }, color: '#4A5568' }
+        }
+      },
+      plugins: {
+        legend: { labels: { font: { size: 11, family: 'Inter' }, padding: 16, usePointStyle: true } }
+      },
+      animation: { duration: 900 }
+    }
+  });
+}
+
+// ── RANGE BAR HELPER ──
+function renderRangeBar(label, value, min, max, goodMin, goodMax, unit) {
+  const pct = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+  const inRange = value >= goodMin && value <= goodMax;
+  const tooLow = value < goodMin;
+  const barColor = inRange ? '#2D8653' : (tooLow ? '#C9900A' : '#C0392B');
+  return `
+    <div class="range-item">
+      <div class="range-header">
+        <span class="range-name">${label}</span>
+        <span class="range-val">${value} <span style="font-size:0.75rem;color:var(--grey-500);font-family:'Inter'">${unit}</span></span>
+      </div>
+      <div class="range-bar-bg">
+        <div class="range-bar-fill" style="width:${pct}%;background:${barColor}"></div>
+        <div class="range-marker" style="left:${pct}%;background:${barColor}"></div>
+      </div>
+      <div class="range-labels">
+        <span>${min}</span>
+        <span style="color:${barColor};font-weight:600">${inRange ? '✓ In Range' : (tooLow ? '↑ Below Range' : '↓ Above Range')}</span>
+        <span>${max}</span>
+      </div>
+    </div>`;
+}
+
+// ── HEALTH REPORT GENERATION ──
+function generateReport(inputs, bmi, bioAge, fatSt, viscSt, muscleSt, bmiSt) {
+  const { age, gender, fatPct, muscleKg, weight, visceralFat, bmr } = inputs;
+  const isMale = gender === 'male';
+  const diff = bioAge - age;
+
+  // Overall score
+  const scores = {
+    fat: fatSt.cls === 'normal' ? 25 : fatSt.cls === 'warning' ? 12 : 0,
+    visc: viscSt.cls === 'normal' ? 25 : viscSt.cls === 'warning' ? 12 : 0,
+    muscle: muscleSt.cls === 'normal' ? 25 : 12,
+    bmi: bmiSt.cls === 'normal' ? 25 : bmiSt.cls === 'warning' ? 12 : 0,
+  };
+  const totalScore = scores.fat + scores.visc + scores.muscle + scores.bmi;
+  const grade = totalScore >= 85 ? 'A' : totalScore >= 70 ? 'B' : totalScore >= 50 ? 'C' : 'D';
+  const gradeColor = totalScore >= 85 ? '#2D8653' : totalScore >= 70 ? '#1B3A6B' : totalScore >= 50 ? '#C9900A' : '#C0392B';
+  const overallText = totalScore >= 85 ? 'Excellent Health Profile' : totalScore >= 70 ? 'Good Health Profile' : totalScore >= 50 ? 'Moderate — Attention Needed' : 'Action Required';
+
+  // Findings
+  const findings = [];
+
+  // Fat
+  findings.push({
+    icon: '🔥',
+    iconBg: fatSt.cls === 'normal' ? 'var(--green-light)' : 'var(--red-light)',
+    title: `Body Fat: ${fatPct}% — ${fatSt.label}`,
+    text: fatSt.cls === 'normal'
+      ? `Your body fat percentage is within the healthy range for a senior ${isMale ? 'male' : 'female'}. This supports good hormone balance, joint protection, and energy reserves.`
+      : fatSt.cls === 'warning' && fatPct < (isMale ? 11 : 22)
+        ? `Your body fat is below the recommended minimum. Low fat can affect hormone health and vitamin absorption. Consider increasing healthy fat intake.`
+        : `Elevated body fat, particularly in the abdominal area, increases risk of cardiovascular disease and type 2 diabetes. Prioritise resistance training and reduce refined carbohydrates.`
+  });
+
+  // Visceral fat
+  findings.push({
+    icon: '🫀',
+    iconBg: viscSt.cls === 'normal' ? 'var(--green-light)' : viscSt.cls === 'warning' ? 'var(--yellow-light)' : 'var(--red-light)',
+    title: `Visceral Fat: Level ${visceralFat} — ${viscSt.label}`,
+    text: viscSt.cls === 'normal'
+      ? `Your visceral fat (fat surrounding internal organs) is in the healthy range (Level 1–9). This is one of the most important indicators of metabolic health and longevity.`
+      : viscSt.cls === 'warning'
+        ? `Visceral fat at Level ${visceralFat} is moderately elevated. Aerobic exercise (brisk walking, swimming) 150 min/week is the most effective way to reduce visceral fat.`
+        : `High visceral fat (Level ${visceralFat}) significantly raises risk of metabolic syndrome, type 2 diabetes, and cardiovascular disease. Medical consultation is strongly advised.`
+  });
+
+  // Muscle
+  const muscleRatio = ((muscleKg / weight) * 100).toFixed(1);
+  findings.push({
+    icon: '💪',
+    iconBg: muscleSt.cls === 'normal' ? 'var(--green-light)' : 'var(--yellow-light)',
+    title: `Muscle Mass: ${muscleKg} kg (${muscleRatio}% of body weight) — ${muscleSt.label}`,
+    text: muscleSt.cls === 'normal'
+      ? `Your muscle mass is well maintained. Good muscle mass supports mobility, balance, bone density, and a higher basal metabolic rate — key for healthy ageing.`
+      : `Muscle mass is below the ideal range, which may indicate early sarcopenia — age-related muscle loss. Progressive resistance training (e.g. HUR equipment) 2–3x per week is highly beneficial.`
+  });
+
+  // BMI
+  findings.push({
+    icon: '⚖️',
+    iconBg: bmiSt.cls === 'normal' ? 'var(--green-light)' : bmiSt.cls === 'warning' ? 'var(--yellow-light)' : 'var(--red-light)',
+    title: `BMI: ${bmi.toFixed(1)} — ${bmiSt.label}`,
+    text: bmiSt.cls === 'normal'
+      ? `Your BMI is within the healthy Asian range (18.5–22.9). However, BMI alone does not capture body composition — your fat% and muscle data provide a more complete picture.`
+      : bmi < 18.5
+        ? `Your BMI is below the healthy range. Underweight status in seniors increases fracture risk and immune vulnerability. A dietitian review is recommended.`
+        : `Your BMI is above the healthy Asian range (≥23). Combined with other metrics, this increases risk of metabolic conditions. A structured fitness and nutrition programme is advised.`
+  });
+
+  if (bmr) {
+    findings.push({
+      icon: '⚡',
+      iconBg: 'rgba(201,168,76,0.15)',
+      title: `Basal Metabolic Rate: ${bmr} kcal/day`,
+      text: `Your BMR represents calories your body burns at rest. ${bmr < 1100 ? 'A lower BMR is common with reduced muscle mass — building muscle through resistance training can increase your metabolism.' : bmr < 1400 ? 'Your BMR is within a typical range for your body size.' : 'A higher BMR reflects good muscle-to-fat ratio, supporting healthy weight maintenance.'}`
+    });
+  }
+
+  // Recommendations
+  const recs = [];
+  if (fatSt.cls !== 'normal' && fatPct > (isMale ? 17 : 27)) recs.push('Reduce refined carbohydrates and sugar. Choose whole grains, vegetables, and lean proteins.');
+  if (viscSt.cls !== 'normal') recs.push('Aim for 150–180 minutes of aerobic exercise weekly (brisk walking, aqua exercise, cycling).');
+  if (muscleSt.cls !== 'normal') recs.push('Incorporate progressive resistance training 2–3x/week using HUR equipment at Longevity Courtyard.');
+  recs.push('Ensure adequate protein intake: 1.2–1.6g per kg body weight daily to preserve muscle mass.');
+  recs.push('Stay hydrated — dehydration can affect body composition readings. Aim for 6–8 glasses of water daily.');
+  recs.push('Schedule a follow-up Tanita assessment in 8–12 weeks to track progress.');
+  if (visceralFat >= 10) recs.push('Monitor waist circumference monthly. Target <90cm (men) / <80cm (women) for Asian adults.');
+
+  return `
+    <div class="report-overall" style="background:${totalScore >= 70 ? 'var(--green-light)' : 'var(--yellow-light)'}">
+      <div class="report-score-ring" style="background:${gradeColor}">${grade}</div>
+      <div class="report-overall-text">
+        <h3 style="color:${gradeColor}">${overallText}</h3>
+        <p>Health Score: ${totalScore}/100 · Biological Age ${diff < 0 ? Math.abs(diff) + ' years younger' : diff === 0 ? 'matches actual age' : diff + ' years older'} than chronological age</p>
+      </div>
+    </div>
+
+    <div class="report-findings">
+      ${findings.map(f => `
+        <div class="finding-item">
+          <div class="finding-icon" style="background:${f.iconBg}">${f.icon}</div>
+          <div class="finding-text">
+            <h4>${f.title}</h4>
+            <p>${f.text}</p>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="recommendations">
+      <h3>✦ &nbsp;Coach's Recommendations</h3>
+      <ul class="rec-list">
+        ${recs.map(r => `<li>${r}</li>`).join('')}
+      </ul>
+    </div>
+  `;
+}
+
+// ── MAIN CALCULATE ──
+function calculate() {
+  const age = parseFloat(document.getElementById('age').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const weight = parseFloat(document.getElementById('weight').value);
+  const fatPct = parseFloat(document.getElementById('fatPct').value);
+  const fatKg = parseFloat(document.getElementById('fatKg').value);
+  const muscleKg = parseFloat(document.getElementById('muscleKg').value);
+  const visceralFat = parseInt(document.getElementById('visceralFat').value);
+  const bmr = parseFloat(document.getElementById('bmr').value) || null;
+
+  if ([age, height, weight, fatPct, fatKg, muscleKg, visceralFat].some(v => isNaN(v))) {
+    alert('Please fill in all required fields before generating the report.');
+    return;
+  }
+
+  const bmi = weight / ((height / 100) ** 2);
+  const muscleRatio = (muscleKg / weight) * 100;
+  const bioAge = calcBioAge(age, gender, fatPct, fatKg, muscleKg, weight, visceralFat, bmi);
+  const diff = bioAge - age;
+
+  const fatSt = fatStatus(gender, age, fatPct);
+  const viscSt = visceralStatus(visceralFat);
+  const muscleSt = muscleStatus(gender, muscleKg, weight);
+  const bmiSt = bmiStatus(bmi);
+
+  // ── Bio Age display
+  document.getElementById('bioAgeDisplay').textContent = bioAge;
+  document.getElementById('chronoDisplay').textContent = age;
+  document.getElementById('diffDisplay').textContent = (diff > 0 ? '+' : '') + diff + ' yrs';
+
+  const badge = document.getElementById('bioStatusBadge');
+  if (diff < -3) {
+    badge.style.background = 'rgba(45,134,83,0.25)';
+    badge.style.color = '#7effc4';
+    badge.textContent = '🌟 Biologically Younger — Excellent!';
+  } else if (diff <= 3) {
+    badge.style.background = 'rgba(201,168,76,0.25)';
+    badge.style.color = '#E8C96A';
+    badge.textContent = '✅ On Track — Keep It Up!';
+  } else {
+    badge.style.background = 'rgba(192,57,43,0.25)';
+    badge.style.color = '#ffaa99';
+    badge.textContent = '⚠️ Biologically Older — Let\'s Work on It!';
+  }
+
+  drawGauge(bioAge, age);
+
+  // ── Metrics Grid
+  const statusClass = (cls) => `status-${cls}`;
+  const borderClass = (cls) => `border-${cls}`;
+  document.getElementById('metricsGrid').innerHTML = `
+    <div class="metric-card ${borderClass(bmiSt.cls)}">
+      <span class="m-icon">⚖️</span>
+      <div class="m-value">${bmi.toFixed(1)}</div>
+      <span class="m-unit">kg/m²</span>
+      <span class="m-label">BMI</span>
+      <span class="m-status ${statusClass(bmiSt.cls)}">${bmiSt.label}</span>
+    </div>
+    <div class="metric-card ${borderClass(fatSt.cls)}">
+      <span class="m-icon">🔥</span>
+      <div class="m-value">${fatPct}<span style="font-size:1rem">%</span></div>
+      <span class="m-unit">${fatKg} kg</span>
+      <span class="m-label">Body Fat</span>
+      <span class="m-status ${statusClass(fatSt.cls)}">${fatSt.label}</span>
+    </div>
+    <div class="metric-card ${borderClass(muscleSt.cls)}">
+      <span class="m-icon">💪</span>
+      <div class="m-value">${muscleKg}</div>
+      <span class="m-unit">kg · ${muscleRatio.toFixed(0)}%</span>
+      <span class="m-label">Muscle Mass</span>
+      <span class="m-status ${statusClass(muscleSt.cls)}">${muscleSt.label}</span>
+    </div>
+    <div class="metric-card ${borderClass(viscSt.cls)}">
+      <span class="m-icon">🫀</span>
+      <div class="m-value">${visceralFat}</div>
+      <span class="m-unit">Level</span>
+      <span class="m-label">Visceral Fat</span>
+      <span class="m-status ${statusClass(viscSt.cls)}">${viscSt.label}</span>
+    </div>
+    <div class="metric-card border-normal">
+      <span class="m-icon">📏</span>
+      <div class="m-value">${height}</div>
+      <span class="m-unit">cm</span>
+      <span class="m-label">Height</span>
+    </div>
+    <div class="metric-card border-normal">
+      <span class="m-icon">🏋️</span>
+      <div class="m-value">${weight}</div>
+      <span class="m-unit">kg</span>
+      <span class="m-label">Weight</span>
+    </div>
+  `;
+
+  // ── Range Bars
+  const isMale = gender === 'male';
+  document.getElementById('rangeBars').innerHTML =
+    renderRangeBar('Body Fat %', fatPct, 5, 50, isMale ? 11 : 22, isMale ? 22 : 35, '%') +
+    renderRangeBar('Visceral Fat Level', visceralFat, 1, 30, 1, 9, 'Level') +
+    renderRangeBar('BMI (Asian Scale)', bmi.toFixed(1), 14, 35, 18.5, 22.9, 'kg/m²') +
+    renderRangeBar('Muscle Ratio', muscleRatio.toFixed(1), 30, 75, isMale ? 50 : 43, isMale ? 62 : 54, '%');
+
+  // ── Charts
+  drawComposition(fatKg, muscleKg, weight);
+  drawRadar(fatPct, muscleRatio, visceralFat, bmi, gender);
+
+  // ── Health Report
+  document.getElementById('healthReport').innerHTML = generateReport(
+    { age, gender, fatPct, fatKg, muscleKg, weight, visceralFat, bmr },
+    bmi, bioAge, fatSt, viscSt, muscleSt, bmiSt
+  );
+
+  // Show results
+  const resultsEl = document.getElementById('results');
+  resultsEl.classList.add('visible');
+  setTimeout(() => resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+</script>
+</body>
+</html>
