@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Tzu-Chi Fitness — Longevity Starts Here</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:  #1B3A6B;
+  --navyd: #0D1F3C;
+  --gold:  #C9A84C;
+  --goldl: #E8C96A;
+  --hur:   #E8734A;
+  --bg:    #07111F;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  width: 100%; min-height: 100vh;
+  background: var(--bg);
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ── CANVAS: fixed so it never scrolls away ── */
+#bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── ALL PAGE CONTENT sits above canvas ── */
+#page {
+  position: relative;
+  z-index: 10;
+}
+
+/* ── HEADER ── */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 36px;
+  background: rgba(7,17,31,0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(201,168,76,0.18);
+}
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+.logo span { color: var(--gold); }
+
+.hcta {
+  display: inline-block;
+  padding: 9px 22px;
+  border: 1.5px solid rgba(201,168,76,0.55);
+  border-radius: 30px;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.hcta:hover {
+  background: var(--gold);
+  color: #07111f;
+  box-shadow: 0 0 24px rgba(201,168,76,0.5);
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 6px 18px;
+  border: 1px solid rgba(201,168,76,0.35);
+  border-radius: 20px;
+  background: rgba(201,168,76,0.1);
+  margin-bottom: 30px;
+  animation: fadeDown 0.9s ease both;
+}
+.eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: blink 2.2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.6)} }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.2rem, 9vw, 7rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+  animation: fadeUp 0.9s 0.15s ease both;
+}
+.t1 { display: block; color: #fff; }
+.t2 {
+  display: block;
+  background: linear-gradient(100deg, var(--gold) 0%, var(--hur) 45%, var(--goldl) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% auto;
+  animation: shimmer 5s linear infinite, fadeUp 0.9s 0.25s ease both;
+}
+@keyframes shimmer { to { background-position: 200% center; } }
+
+.hero-sub {
+  font-size: clamp(0.88rem, 2.2vw, 1.08rem);
+  font-weight: 300;
+  color: rgba(255,255,255,0.6);
+  max-width: 500px;
+  line-height: 1.75;
+  margin: 28px 0 48px;
+  animation: fadeUp 0.9s 0.35s ease both;
+}
+
+.cta-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeUp 0.9s 0.5s ease both;
+}
+
+.btn-gold {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 40px;
+  background: linear-gradient(135deg, var(--gold), var(--goldl));
+  color: #07111f;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 36px rgba(201,168,76,0.4);
+  overflow: hidden;
+}
+.btn-gold::after {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.22), transparent);
+  opacity:0; transition:opacity 0.3s;
+}
+.btn-gold:hover { transform:translateY(-3px); box-shadow:0 0 60px rgba(201,168,76,0.6), 0 10px 32px rgba(0,0,0,0.4); }
+.btn-gold:hover::after { opacity:1; }
+.arr { transition: transform 0.3s; display:inline-block; }
+.btn-gold:hover .arr { transform:translateX(5px); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 32px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.8);
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 60px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+.btn-ghost:hover { background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.28); transform:translateY(-3px); }
+
+.scroll-cue {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: fadeUp 0.9s 1s ease both;
+}
+.scroll-cue span {
+  font-size: 0.6rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:rgba(255,255,255,0.28);
+}
+.scroll-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, rgba(201,168,76,0.7), transparent);
+  animation: dropLine 2s ease-in-out infinite;
+}
+@keyframes dropLine {
+  0%   { transform:scaleY(0); transform-origin:top; opacity:0; }
+  40%  { transform:scaleY(1); opacity:1; }
+  100% { transform:scaleY(1); transform-origin:bottom; opacity:0; }
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── STATS ── */
+.stats {
+  display: flex;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.stat {
+  flex: 1;
+  text-align: center;
+  padding: 40px 16px;
+  background: rgba(255,255,255,0.04);
+  border-right: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(10px);
+  transition: background 0.3s;
+}
+.stat:hover { background: rgba(255,255,255,0.07); }
+.stat:first-child { border-radius:16px 0 0 16px; }
+.stat:last-child  { border-right:none; border-radius:0 16px 16px 0; }
+.stat-n {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--goldl));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-l {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+}
+
+/* ── SECTION ── */
+.section {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 90px 24px;
+}
+.section-center { text-align:center; }
+.s-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 14px;
+}
+.s-head {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.9rem, 4.5vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1.12;
+  margin-bottom: 16px;
+  color: #fff;
+}
+.s-body {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.82;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* ── CARDS ── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+  padding: 0 24px;
+  max-width: 920px;
+  margin: 0 auto 90px;
+}
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  padding: 32px 26px;
+  backdrop-filter: blur(16px);
+  transition: all 0.35s;
+  position: relative;
+  overflow: hidden;
+}
+.card::after {
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity:0;
+  transition:opacity 0.35s;
+}
+.card:hover { background:rgba(255,255,255,0.09); border-color:rgba(201,168,76,0.3); transform:translateY(-5px); box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(201,168,76,0.09); }
+.card:hover::after { opacity:1; }
+.cicon {
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:20px;
+}
+.cicon.g { background:rgba(201,168,76,0.15); }
+.cicon.o { background:rgba(232,115,74,0.15); }
+.cicon.b { background:rgba(27,58,107,0.35); border:1px solid rgba(27,100,180,0.4); }
+.ctitle {
+  font-family:'Playfair Display',serif;
+  font-size:1.12rem;font-weight:700;
+  color:#fff;margin-bottom:12px;line-height:1.25;
+}
+.cbody {
+  font-size:0.79rem;
+  color:rgba(255,255,255,0.48);
+  line-height:1.75;
+}
+
+/* ── FEATURE ROW ── */
+.frow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+.ftext ul { list-style:none; display:flex; flex-direction:column; gap:10px; margin:24px 0 36px; }
+.ftext ul li {
+  display:flex; align-items:center; gap:10px;
+  font-size:0.8rem; color:rgba(255,255,255,0.52);
+}
+.ftext ul li::before { content:'✦'; color:var(--gold); font-size:0.65rem; flex-shrink:0; }
+
+/* Metric preview box */
+.mbox {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 22px;
+  padding: 36px 28px;
+  backdrop-filter: blur(20px);
+}
+.mbox-top {
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:26px;
+}
+.bio-num {
+  font-family:'Playfair Display',serif;
+  font-size:2.8rem;font-weight:900;color:#fff;line-height:1;
+}
+.bio-lbl { font-size:0.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-top:4px; }
+.badge-good {
+  font-size:0.72rem;font-weight:700;padding:5px 12px;border-radius:12px;
+  background:rgba(45,134,83,0.22);color:#6fffa8;
+  white-space:nowrap;
+}
+.mrow { display:flex;align-items:center;gap:13px;margin-bottom:14px; }
+.mrow:last-of-type { margin-bottom:0; }
+.mico { font-size:1.3rem;width:32px;text-align:center;flex-shrink:0; }
+.mname { font-size:0.67rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.36);margin-bottom:5px; }
+.mbar-bg { height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden; }
+.mbar { height:100%;border-radius:3px; }
+.bg  { background:linear-gradient(90deg,var(--gold),var(--goldl)); }
+.bo  { background:linear-gradient(90deg,var(--hur),#f0956e); }
+.bb  { background:linear-gradient(90deg,#2A4F8F,#5588cc); }
+.mval { font-family:'Playfair Display',serif;font-size:0.8rem;color:var(--gold);font-weight:700;flex-shrink:0;width:36px;text-align:right; }
+.mscore-row {
+  display:flex;align-items:center;gap:14px;
+  margin-top:20px;padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.grade {
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,#2D8653,#45a76b);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:#fff;
+  flex-shrink:0;
+}
+.mscore-txt { font-size:0.76rem;color:rgba(255,255,255,.45);line-height:1.6; }
+
+/* ── CTA BLOCK ── */
+.cta-block {
+  text-align:center;
+  padding:100px 24px 120px;
+  position:relative;
+}
+.cta-glow {
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse at center, rgba(201,168,76,0.1) 0%, transparent 70%);
+  pointer-events:none;
+}
+.cta-block .s-head em { font-style:italic;color:var(--gold); }
+.btn-launch {
+  position:relative;
+  display:inline-flex;align-items:center;gap:12px;
+  padding:20px 52px;
+  background:linear-gradient(135deg,#1B3A6B,#2A5298);
+  border:1px solid rgba(201,168,76,0.45);
+  color:#fff;
+  font-size:0.9rem;font-weight:700;
+  letter-spacing:0.07em;text-transform:uppercase;
+  text-decoration:none;
+  border-radius:60px;
+  cursor:pointer;
+  transition:all 0.35s;
+  overflow:hidden;
+}
+.btn-launch::before {
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold),var(--hur));
+  opacity:0;transition:opacity 0.35s;
+}
+.btn-launch:hover {
+  transform:translateY(-3px) scale(1.02);
+  border-color:var(--gold);
+  box-shadow:0 0 60px rgba(201,168,76,0.45),0 14px 40px rgba(0,0,0,0.5);
+}
+.btn-launch:hover::before { opacity:0.18; }
+.btn-launch > * { position:relative;z-index:1; }
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid rgba(255,255,255,.07);
+  padding:28px 36px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+footer p { font-size:0.7rem;color:rgba(255,255,255,.28); }
+footer span { color:var(--gold); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp   { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+
+.reveal {
+  opacity:0; transform:translateY(38px);
+  transition:opacity 0.85s ease, transform 0.85s ease;
+}
+.reveal.in { opacity:1; transform:translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:700px) {
+  header { padding:14px 18px; }
+  .logo { font-size:0.88rem; }
+  .cards { grid-template-columns:1fr; padding:0 16px; }
+  .frow  { grid-template-columns:1fr; gap:32px; padding:60px 16px; }
+  .stats { flex-wrap:wrap; }
+  .stat  { flex:0 0 50%; border-radius:0!important; }
+  footer { flex-direction:column;text-align:center; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation:none!important; transition:none!important; }
+}
+</style>
+</head>
+<body>
+
+<!-- THREE.JS CANVAS — fixed background, never scrolls -->
+<canvas id="bg"></canvas>
+
+<div id="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">TZU-CHI <span>FITNESS</span></div>
+    <button class="hcta" onclick="openApp()">Open App ✦</button>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> Tzu-Chi Longevity Programme &nbsp;·&nbsp; Tanita &amp; HUR</div>
+    <h1 class="hero-title">
+      <span class="t1">Welcome to</span>
+      <span class="t2">Tzu-Chi Fitness</span>
+    </h1>
+    <p class="hero-sub">Your body is your most precious gift. Understand it, strengthen it, and live longer — with science-backed body composition analysis designed for seniors.</p>
+    <div class="cta-row">
+      <button class="btn-gold" onclick="openApp()">
+        Begin My Assessment <span class="arr">→</span>
+      </button>
+      <a href="#why" class="btn-ghost">Why It Matters ↓</a>
+    </div>
+    <div class="scroll-cue">
+      <span>Scroll to explore</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats reveal">
+    <div class="stat"><span class="stat-n">1%</span><span class="stat-l">Muscle lost per year after 30</span></div>
+    <div class="stat"><span class="stat-n">8×</span><span class="stat-l">Lower fall risk with strong muscles</span></div>
+    <div class="stat"><span class="stat-n">12wk</span><span class="stat-l">To visible body composition change</span></div>
+    <div class="stat"><span class="stat-n">100%</span><span class="stat-l">Tanita BIA technology</span></div>
+  </div>
+
+  <div style="height:70px"></div>
+  <div class="divider"></div>
+
+  <!-- WHY HEALTH -->
+  <section class="section section-center" id="why">
+    <div class="reveal" style="margin-bottom:52px">
+      <span class="s-label">The Science of Longevity</span>
+      <h2 class="s-head">Health is not just about weight.<br>It's about <span style="color:var(--gold);font-style:italic">what you're made of</span>.</h2>
+      <p class="s-body">Body composition — the balance of muscle, fat, bone, and water — is one of the most powerful predictors of healthy ageing. Understanding yours is the first step to transforming it.</p>
+    </div>
+  </section>
+
+  <div class="cards">
+    <div class="card reveal">
+      <div class="cicon g">🔥</div>
+      <h3 class="ctitle">Visceral Fat Is the Silent Risk</h3>
+      <p class="cbody">Excess fat surrounding your internal organs silently raises your risk of heart disease, type 2 diabetes, and metabolic syndrome — invisible on the scale, but revealed by the Tanita BIA.</p>
+    </div>
+    <div class="card reveal" style="transition-delay:.1s">
+      <div class="cicon o">💪</div>
+      <h3 class="ctitle">Muscle Is the Organ of Longevity</h3>
+      <p class="cbody">After 60, sarcopenia — age-related muscle loss — becomes one of the greatest threats to independence. Muscle regulates blood sugar, supports bone density, and prevents falls. Resistance training is your most powerful medicine.</p>
+    </div>
+    <div class="card reveal" style="transition-delay:.2s">
+      <div class="cicon b">🦴</div>
+      <h3 class="ctitle">Bone Density Protects Your Future</h3>
+      <p class="cbody">Bone density peaks at 30 and declines silently after 40. Weight-bearing exercise, adequate calcium, and daily sunlight are the three pillars of bone health. Know your baseline — protect your mobility for life.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURE ROW -->
+  <div class="frow">
+    <div class="ftext reveal">
+      <span class="s-label">Your Personal Fitness Tool</span>
+      <h2 class="s-head" style="margin:0 0 4px">One report.<br>A complete picture.</h2>
+      <p class="s-body" style="margin:0">Enter your Tanita measurements and receive an instant biological age, full body composition report, exercise prescription, nutrition guide, posture corrective plan, and a generated workout session.</p>
+      <ul>
+        <li>Tanita Biological Age calculator</li>
+        <li>Bone mass age-adjusted reference</li>
+        <li>HUR, Dumbbell, Band &amp; Bodyweight workout generator</li>
+        <li>Physio-based posture corrective exercises</li>
+        <li>Balanced 3 lower + 2 upper + 1 core per session</li>
+        <li>EN &amp; 中文 bilingual · PDF / HTML export</li>
+      </ul>
+      <button class="btn-gold" onclick="openApp()">Open the App <span class="arr">→</span></button>
+    </div>
+
+    <div class="mbox reveal" style="transition-delay:.15s">
+      <div style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:6px">Sample Report Preview</div>
+      <div class="mbox-top">
+        <div>
+          <div class="bio-num">62</div>
+          <div class="bio-lbl">Biological Age</div>
+        </div>
+        <div class="badge-good">🌟 3 yrs younger</div>
+      </div>
+      <div class="mrow">
+        <div class="mico">🔥</div>
+        <div style="flex:1">
+          <div class="mname">Body Fat</div>
+          <div class="mbar-bg"><div class="mbar bg" style="width:52%"></div></div>
+        </div>
+        <div class="mval">24%</div>
+      </div>
+      <div class="mrow">
+        <div class="mico">💪</div>
+        <div style="flex:1">
+          <div class="mname">Muscle Mass</div>
+          <div class="mbar-bg"><div class="mbar bo" style="width:74%"></div></div>
+        </div>
+        <div class="mval">42kg</div>
+      </div>
+      <div class="mrow">
+        <div class="mico">🫀</div>
+        <div style="flex:1">
+          <div class="mname">Visceral Fat</div>
+          <div class="mbar-bg"><div class="mbar bb" style="width:30%"></div></div>
+        </div>
+        <div class="mval">Lv 7</div>
+      </div>
+      <div class="mrow" style="margin-bottom:0">
+        <div class="mico">🦴</div>
+        <div style="flex:1">
+          <div class="mname">Bone Mass</div>
+          <div class="mbar-bg"><div class="mbar bg" style="width:85%"></div></div>
+        </div>
+        <div class="mval">2.4kg</div>
+      </div>
+      <div class="mscore-row">
+        <div class="grade">A</div>
+        <div class="mscore-txt">Excellent profile — biological age younger than actual. Keep up the great work!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FINAL CTA -->
+  <div class="cta-block">
+    <div class="cta-glow"></div>
+    <div class="reveal">
+      <span class="s-label">Are You Ready?</span>
+      <h2 class="s-head" style="margin-bottom:16px">Start your fitness journey today.<br>Your body is <em>ready for change</em>.</h2>
+      <p class="s-body" style="margin:0 auto 44px">Your best years are not behind you. With the right guidance, the right exercises, and the right knowledge — seniors thrive. Let's begin.</p>
+      <button class="btn-launch" onclick="openApp()">
+        <span>✦ &nbsp;Begin My Health Assessment</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <div style="margin-top:22px;font-size:.7rem;color:rgba(255,255,255,.22);line-height:1.9">
+        ⚕️ For educational purposes only · Not a clinical report<br>Consult your GP for any medical advice
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 <span>Tzu-Chi Foundation Singapore</span> · Longevity Courtyard Programme</p>
+    <p>POWERED BY TANITA &nbsp;·&nbsp; HUR PNEUMATIC TECHNOLOGY</p>
+  </footer>
+
+</div><!-- end #page -->
+
+<script>
+// ─── Open App: works whether files are local or on GitHub Pages ───
+function openApp() {
+  // Try to open tzuchi-tanita-health-report.html in the same folder
+  var base = window.location.href.replace(/[^/]*$/, '');
+  var appUrl = base + 'tzuchi-tanita-health-report.html';
+  window.open(appUrl, '_blank');
+}
+
+// ════════════════════════════════════════
+// THREE.JS — PARTICLE UNIVERSE
+// Brighter, mobile-friendly, touch parallax
+// ════════════════════════════════════════
+(function () {
+  if (typeof THREE === 'undefined') return;
+
+  const canvas = document.getElementById('bg');
+  const W = window.innerWidth, H = window.innerHeight;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setSize(W, H);
+  renderer.setClearColor(0x07111F, 1);
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x07111F, 0.032);
+
+  const camera = new THREE.PerspectiveCamera(65, W / H, 0.1, 200);
+  camera.position.z = 6;
+
+  // ── MOUSE / TOUCH TRACKING ──
+  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+
+  function onMove(nx, ny) {
+    mouse.tx = (nx / window.innerWidth  - 0.5) * 2.5;
+    mouse.ty = (ny / window.innerHeight - 0.5) * 2.5;
+  }
+  window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY), { passive: true });
+  window.addEventListener('touchmove', e => {
+    if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  window.addEventListener('touchstart', e => {
+    if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+
+  // ── PARTICLES ──
+  const N = window.innerWidth < 500 ? 1800 : 3200;
+  const pos  = new Float32Array(N * 3);
+  const col  = new Float32Array(N * 3);
+  const sz   = new Float32Array(N);
+  const spd  = new Float32Array(N);
+
+  // Brighter palette — higher luminosity values
+  const palette = [
+    [0.45, 0.65, 1.00],   // bright blue
+    [0.85, 0.72, 0.32],   // gold
+    [0.95, 0.50, 0.30],   // hur orange
+    [1.00, 1.00, 1.00],   // white
+    [0.30, 0.80, 0.90],   // teal
+    [0.60, 0.80, 1.00],   // light navy
+  ];
+
+  for (let i = 0; i < N; i++) {
+    const r = 8 + Math.random() * 22;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    pos[i*3]   = r * Math.sin(ph) * Math.cos(th);
+    pos[i*3+1] = r * Math.sin(ph) * Math.sin(th) * 0.55;
+    pos[i*3+2] = r * Math.cos(ph) - 4;
+
+    const c = palette[Math.floor(Math.random() * palette.length)];
+    const br = 0.5 + Math.random() * 0.5;  // higher minimum brightness
+    col[i*3]   = c[0] * br;
+    col[i*3+1] = c[1] * br;
+    col[i*3+2] = c[2] * br;
+
+    sz[i]  = 0.8 + Math.random() * 3.0;
+    spd[i] = 0.0001 + Math.random() * 0.00025;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+  geo.setAttribute('size',     new THREE.BufferAttribute(sz, 1));
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {},
+    vertexShader: `
+      attribute float size;
+      varying vec3 vCol;
+      void main(){
+        vCol = color;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = size * (300.0 / -mv.z);
+        gl_Position  = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vCol;
+      void main(){
+        float d = length(gl_PointCoord - vec2(0.5));
+        if(d > 0.5) discard;
+        float a = 1.0 - smoothstep(0.0, 0.5, d);
+        gl_FragColor = vec4(vCol, a * 0.9);
+      }
+    `,
+    vertexColors: true,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+
+  const pts = new THREE.Points(geo, mat);
+  scene.add(pts);
+
+  // ── GLOWING ORBS (bright, visible) ──
+  function orb(hex, x, y, z, s) {
+    const g = new THREE.SphereGeometry(s, 10, 10);
+    const m = new THREE.MeshBasicMaterial({ color: hex, transparent: true, opacity: 0.14 });
+    const mesh = new THREE.Mesh(g, m);
+    mesh.position.set(x, y, z);
+    scene.add(mesh);
+    // bright point light
+    const light = new THREE.PointLight(hex, 2.5, 20);
+    light.position.set(x, y, z);
+    scene.add(light);
+    return { mesh, light };
+  }
+
+  const orbs = [
+    orb(0xC9A84C, -4,  1.5,  0,   2.2),
+    orb(0xE8734A,  5,  -1,  -2,   1.8),
+    orb(0x3366CC,  0,   3,  -7,   3.2),
+    orb(0x0891B2, -5.5,-2,  -4,   1.6),
+    orb(0xE8C96A,  3,   2,  -1.5, 1.4),
+  ];
+
+  // ── AMBIENT + DIRECTIONAL LIGHT ──
+  scene.add(new THREE.AmbientLight(0x223366, 1.2));
+  const dLight = new THREE.DirectionalLight(0xC9A84C, 0.8);
+  dLight.position.set(5, 5, 5);
+  scene.add(dLight);
+
+  // ── NEBULA BACKGROUND ──
+  const nebGeo = new THREE.PlaneGeometry(50, 30);
+  const nebMat = new THREE.ShaderMaterial({
+    uniforms: { t: { value: 0 } },
+    vertexShader: `varying vec2 v; void main(){ v=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+    fragmentShader: `
+      uniform float t;
+      varying vec2 v;
+      float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+      float n(vec2 p){
+        vec2 i=floor(p),f=fract(p),u=f*f*(3.0-2.0*f);
+        return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);
+      }
+      void main(){
+        vec2 uv=v*2.8+vec2(t*0.022,t*0.014);
+        float nm=n(uv)*0.5+n(uv*2.2+vec2(1.7,0.3))*0.3+n(uv*4.5)*0.2;
+        vec3 cA=vec3(0.12,0.27,0.52);
+        vec3 cB=vec3(0.80,0.65,0.28);
+        vec3 cC=vec3(0.92,0.46,0.30);
+        vec3 c=mix(cA,mix(cB,cC,smoothstep(0.4,0.7,nm)),smoothstep(0.25,0.6,nm));
+        gl_FragColor=vec4(c, nm*nm*0.18);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const neb = new THREE.Mesh(nebGeo, nebMat);
+  neb.position.z = -12;
+  scene.add(neb);
+
+  // ── FLOWING RIBBONS ──
+  function ribbon(color, yOff) {
+    const pts2 = [];
+    for (let i = 0; i < 80; i++)
+      pts2.push(new THREE.Vector3((i/79)*24-12, Math.sin(i*0.2)*1.5, Math.cos(i*0.15)*2.5-3));
+    const curve = new THREE.CatmullRomCurve3(pts2);
+    const rg = new THREE.TubeGeometry(curve, 80, 0.009, 4, false);
+    const rm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.35 });
+    const m  = new THREE.Mesh(rg, rm);
+    m.position.y = yOff;
+    scene.add(m);
+    return m;
+  }
+  const ribs = [
+    ribbon(0xC9A84C,  2.8),
+    ribbon(0xE8734A, -1.8),
+    ribbon(0x4477CC,  0.6),
+  ];
+
+  // ── ANIMATE ──
+  let t2 = 0;
+  function tick() {
+    requestAnimationFrame(tick);
+    t2 += 0.007;
+
+    // Smooth camera pan
+    mouse.x += (mouse.tx - mouse.x) * 0.05;
+    mouse.y += (mouse.ty - mouse.y) * 0.05;
+    camera.position.x += (mouse.x * 1.6 - camera.position.x) * 0.035;
+    camera.position.y += (-mouse.y * 0.9 - camera.position.y) * 0.035;
+    camera.lookAt(scene.position);
+
+    // Drift particles
+    const p = geo.attributes.position.array;
+    for (let i = 0; i < N; i++) {
+      p[i*3+1] += Math.sin(t2 + i * 0.28) * spd[i];
+      p[i*3]   += Math.cos(t2 * 0.65 + i * 0.19) * spd[i] * 0.4;
+      if (p[i*3+1] > 18)  p[i*3+1] = -18;
+      if (p[i*3]   > 22)  p[i*3]   = -22;
+    }
+    geo.attributes.position.needsUpdate = true;
+
+    // Float orbs
+    orbs.forEach((o, i) => {
+      o.mesh.position.y += Math.sin(t2 * 0.55 + i * 1.4) * 0.005;
+      o.light.position.copy(o.mesh.position);
+    });
+
+    // Wave ribbons
+    ribs.forEach((r, i) => {
+      r.rotation.z = Math.sin(t2 * 0.38 + i * 1.1) * 0.09;
+      r.position.x = Math.sin(t2 * 0.28 + i * 0.8) * 0.6;
+    });
+
+    // Nebula
+    nebMat.uniforms.t.value = t2;
+
+    // Slow rotate particles
+    pts.rotation.y  = t2 * 0.012;
+    pts.rotation.x  = Math.sin(t2 * 0.09) * 0.06;
+
+    renderer.render(scene, camera);
+  }
+  tick();
+
+  // Resize
+  window.addEventListener('resize', () => {
+    const W2 = window.innerWidth, H2 = window.innerHeight;
+    camera.aspect = W2 / H2;
+    camera.updateProjectionMatrix();
+    renderer.setSize(W2, H2);
+  }, { passive: true });
+})();
+
+// ── SCROLL REVEAL ──
+const revEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+revEls.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
