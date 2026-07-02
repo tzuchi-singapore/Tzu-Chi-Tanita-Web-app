@@ -1099,113 +1099,206 @@ const COOLDOWN = [
   { name: 'Seated Neck Diagonal Stretch', zh: '坐姿颈部斜向拉伸', desc: 'Tilt head diagonally. Hold 15 sec each side.' },
   { name: 'Seated Head Tilt Up Stretch', zh: '坐姿仰头拉伸', desc: 'Gently tilt chin up. Hold 15 sec. Stretches anterior neck.' }
 ];
+// region: 'upper' | 'lower' | 'core' | 'cardio'
+// postureTags: which posture issues this exercise helps correct
 const EXERCISES = {
   hur: [
-    { name: 'HUR Leg Extension', zh: 'HUR 腿部伸展', desc: 'Sit upright, pad resting on shins just above ankles. Extend legs to full lock-out, squeeze quads at top 1 sec, lower slowly. Targets quadriceps — essential for knee stability and rising from chair.', sets: '3 sets × 15 reps', postureTags: ['knock','bow','apt'] },
-    { name: 'HUR Leg Curl', zh: 'HUR 腿部弯举', desc: 'Lie face down (or seated version), pad behind ankles. Curl heels toward glutes, squeeze hamstrings at top, lower with control. Targets hamstrings — balances quad dominance and stabilises knee joint.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
-    { name: 'HUR Shoulder Press', zh: 'HUR 肩推', desc: 'Sit tall with back supported. Grip handles at shoulder height, elbows at 90°. Press straight up to near full extension — do not lock elbows. Lower slowly 3 sec. Targets deltoids, triceps, upper trapezius.', sets: '3 sets × 15 reps', postureTags: [] },
-    { name: 'HUR Lats Pull Down', zh: 'HUR 背阔下拉', desc: 'Grip bar wide (wider than shoulder width), lean back slightly 10–15°. Pull bar down to upper chest, driving elbows toward hips. Squeeze lats at bottom, return slowly. Targets latissimus dorsi, biceps, rhomboids — improves upright posture.', sets: '3 sets × 15 reps', postureTags: ['hunch'] },
-    { name: 'HUR Adduction', zh: 'HUR 内收肌训练', desc: 'Sit upright, thigh pads on outer knees. Press knees inward together against resistance, hold 1 sec at midpoint, release slowly. Targets hip adductors (inner thigh, gracilis, adductor magnus) — corrects bow legs (O-shaped legs).', sets: '3 sets × 15 reps', postureTags: ['bow'] },
-    { name: 'HUR Abduction', zh: 'HUR 外展肌训练', desc: 'Sit upright, thigh pads on inner knees. Push knees outward against resistance, hold 1 sec at full range, return slowly. Targets gluteus medius, gluteus minimus, TFL — corrects knock knees (X-shaped legs) and hip drop.', sets: '3 sets × 15 reps', postureTags: ['knock'] },
-    { name: 'HUR Abdominal', zh: 'HUR 腹肌训练', desc: 'Sit in machine, arms crossed or holding handles at chest. Flex forward from the thoracic spine (not the hips), pulling sternum toward pelvis. Hold 1 sec at peak contraction, return to upright slowly — do not hyperextend back. Targets rectus abdominis and obliques.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
-    { name: 'HUR Back Extension', zh: 'HUR 背部伸展', desc: 'Sit in machine with pad at upper back. Begin in slight forward flexion. Extend spine backward to upright position, squeezing erector spinae at end. Do not hyperextend. Targets erector spinae, multifidus, gluteus maximus — essential for kyphosis correction and spinal stability.', sets: '3 sets × 15 reps', postureTags: ['hunch','apt'] },
-    { name: 'HUR Pulley Face Pull', zh: 'HUR 滑轮机面拉', desc: 'Set pulley at face/nose height. Grip rope with both hands, step back until arms extended. Pull rope toward your face with elbows flaring HIGH and wide (elbows above wrists at all times). Squeeze rear deltoids and externally rotate — thumbs should point behind you at end. Hold 1 sec. Targets posterior deltoids, external rotators (infraspinatus, teres minor), rhomboids. KEY exercise for rounded shoulders.', sets: '3 sets × 15 reps', postureTags: ['rounded'] },
-    { name: 'HUR Pulley Wide Grip Row', zh: 'HUR 滑轮机宽握划船', desc: 'Set pulley at chest height. Grip bar with wide overhand grip (wider than shoulder width). Sit or stand, pull bar to chest with elbows flaring out wide. Squeeze mid-back (rhomboids, mid trapezius) at peak, return with control. Wide grip preferentially activates middle and lower trapezius over lats — essential for kyphosis and hunched back correction.', sets: '3 sets × 15 reps', postureTags: ['hunch','rounded'] },
-    { name: 'HUR Pulley Bicep Curl', zh: 'HUR 滑轮机弯举', desc: 'Set pulley at low position (floor level). Grip bar or handles with underhand grip, elbows pinned to sides. Curl hands toward shoulders, hold 1 sec at top, lower slowly 3 sec. Keep elbows stationary throughout. Targets biceps brachii and brachialis.', sets: '3 sets × 15 reps', postureTags: [] },
-    { name: 'HUR Pulley Triceps Extension', zh: 'HUR 滑轮机三头肌下压', desc: 'Set pulley at high position (above head). Grip rope or bar with overhand grip. Elbows tucked at sides, start with forearms parallel to floor. Push hands straight down until elbows fully extended, squeeze triceps, return slowly. Keep upper arms completely still. Targets triceps brachii.', sets: '3 sets × 15 reps', postureTags: [] },
-    { name: 'HUR Pulley Chest Press', zh: 'HUR 滑轮机胸推', desc: 'Set both pulleys at chest height (use dual cable setup or re-anchor). Stand in split stance facing away, grip handles at chest level. Press both arms forward until elbows nearly extended, hands meeting in front of chest. Return slowly, feeling stretch across chest. Targets pectoralis major, anterior deltoid, triceps.', sets: '3 sets × 15 reps', postureTags: [] },
-    { name: 'HUR Rehab Recumbent Bike', zh: 'HUR 康复卧式自行车', desc: 'Seated recumbent cycling position — back fully supported, feet on pedals. Start at low resistance, cadence 60–80 RPM. Interval format: 30 sec moderate effort, 1 min easy/rest. Zero joint impact — ideal for seniors with knee or hip sensitivity. Improves cardiovascular fitness and leg circulation.', sets: '3 × 30 sec effort / 1 min easy', cardio: true, postureTags: [] }
+    // ── LOWER BODY ──
+    { name: 'HUR Leg Extension', zh: 'HUR 腿部伸展', region: 'lower', desc: 'Sit upright, pad resting on shins just above ankles. Extend legs to full lock-out, squeeze quads at top 1 sec, lower slowly 3 sec. Targets quadriceps — essential for knee stability and rising from chair.', sets: '3 sets × 15 reps', postureTags: ['knock','bow','apt'] },
+    { name: 'HUR Leg Curl', zh: 'HUR 腿部弯举', region: 'lower', desc: 'Lie face down or use seated version. Pad rests behind ankles. Curl heels toward glutes, squeeze hamstrings at peak, lower with control. Targets hamstrings — balances quad dominance and supports pelvic stability.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'HUR Adduction', zh: 'HUR 内收肌训练', region: 'lower', desc: 'Sit upright, outer thigh pads just above knees. Press knees INWARD together against resistance, hold 1 sec at midpoint, release slowly. Targets hip adductors (adductor magnus, gracilis) — corrects bow legs.', sets: '3 sets × 15 reps', postureTags: ['bow'] },
+    { name: 'HUR Abduction', zh: 'HUR 外展肌训练', region: 'lower', desc: 'Sit upright, inner thigh pads just above knees. Push knees OUTWARD against resistance, hold 1 sec at full range, return slowly. Targets gluteus medius and minimus — corrects knock knees and hip drop.', sets: '3 sets × 15 reps', postureTags: ['knock'] },
+    // ── UPPER BODY ──
+    { name: 'HUR Shoulder Press', zh: 'HUR 肩推', region: 'upper', desc: 'Sit tall with back supported. Grip handles at shoulder height, elbows at 90°. Press straight up to near full extension — do not lock elbows. Lower slowly 3 sec. Targets deltoids, triceps, upper trapezius.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Lats Pull Down', zh: 'HUR 背阔下拉', region: 'upper', desc: 'Grip bar wide (beyond shoulder width), lean back 10–15°. Pull bar to upper chest driving elbows toward hips. Squeeze lats at bottom, return slowly. Targets latissimus dorsi, biceps, rhomboids — builds upright posture.', sets: '3 sets × 15 reps', postureTags: ['hunch'] },
+    { name: 'HUR Pulley Face Pull', zh: 'HUR 滑轮机面拉', region: 'upper', desc: 'Set pulley at nose height. Grip rope, step back until arms extended. Pull toward face — elbows HIGH and WIDE above wrists at all times. Externally rotate so thumbs point behind you at end. Hold 1 sec. Targets posterior deltoid, infraspinatus, teres minor, rhomboids. Key exercise for rounded shoulders.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'HUR Pulley Wide Grip Row', zh: 'HUR 滑轮机宽握划船', region: 'upper', desc: 'Set pulley at chest height. Wide overhand grip. Pull bar to chest with elbows flaring WIDE. Squeeze rhomboids and mid-trapezius at peak. Return controlled. Wide grip targets middle/lower trapezius — essential for kyphosis correction.', sets: '3 sets × 15 reps', postureTags: ['hunch','rounded'] },
+    { name: 'HUR Pulley Bicep Curl', zh: 'HUR 滑轮机弯举', region: 'upper', desc: 'Set pulley at floor level. Underhand grip, elbows pinned to sides. Curl hands to shoulders, hold 1 sec, lower slowly 3 sec. Targets biceps brachii and brachialis.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Pulley Triceps Extension', zh: 'HUR 滑轮机三头肌下压', region: 'upper', desc: 'Set pulley above head. Overhand grip on rope or bar. Elbows tucked at sides, forearms parallel to floor. Push hands straight down to full extension, squeeze triceps, return slowly. Upper arms stay completely still.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Pulley Chest Press', zh: 'HUR 滑轮机胸推', region: 'upper', desc: 'Set pulleys at chest height. Face away, split stance, handles at chest. Press arms forward until near full extension, hands converge in front. Return slowly feeling chest stretch. Targets pectoralis major, anterior deltoid, triceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'HUR Abdominal', zh: 'HUR 腹肌训练', region: 'core', desc: 'Sit in machine, arms at chest. Flex trunk FORWARD from thoracic spine — pull sternum toward pelvis. Hold 1 sec at peak. Return to neutral slowly. Do NOT hyperextend back. Targets rectus abdominis and obliques.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'HUR Back Extension', zh: 'HUR 背部伸展', region: 'core', desc: 'Pad at upper back. Begin in slight forward flexion. Extend spine to fully upright — "grow tall." Squeeze erector spinae at top. Do NOT hyperextend. Targets erector spinae, multifidus, gluteus maximus. Key for kyphosis and spinal stability.', sets: '3 sets × 15 reps', postureTags: ['hunch','apt'] },
+    // ── CARDIO ──
+    { name: 'HUR Rehab Recumbent Bike', zh: 'HUR 康复卧式自行车', region: 'cardio', desc: 'Back fully supported, feet on pedals. Low resistance, cadence 60–80 RPM. Interval: 30 sec moderate effort, 1 min easy. Zero joint impact — ideal for seniors with knee or hip sensitivity. Improves cardiovascular fitness and leg circulation.', sets: '3 × 30 sec on / 1 min rest', cardio: true, postureTags: [] }
   ],
   dumbbell: [
-    { name: 'Dumbbell Bicep Curl', zh: '哑铃弯举', desc: 'Standing/seated, curl from hip to shoulder. Keep elbows at sides.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Triceps Kickback', zh: '哑铃臂屈伸后展', desc: 'Hinge forward, upper arm parallel to floor, extend forearm back.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Shoulder Press', zh: '哑铃肩推', desc: 'Press from shoulder to overhead. Core braced throughout.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Bent-Over Reverse Fly', zh: '哑铃俯身反向飞鸟', desc: 'Hinge at hips 45°, raise arms laterally. Targets rear deltoids.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Bent-Over Face Pull', zh: '哑铃俯身面拉', desc: 'Same hinge, pull toward face elbows high. External rotator activation.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Lean-Over Row', zh: '哑铃支撑划船', desc: 'Support with hand on chair, row to ribs. Targets lats and mid-back.', sets: '3 sets × 15 reps each side' },
-    { name: 'Dumbbell Deadlift', zh: '哑铃硬拉', desc: 'Hip-width stance, hinge at hips with flat back, drive hips forward to stand.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Sumo Squat', zh: '哑铃相扑深蹲', desc: 'Wide stance, toes 45° out. Targets glutes and inner thighs.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Lateral Raise', zh: '哑铃侧平举', desc: 'Arms at sides, raise to shoulder height. Slow and controlled.', sets: '3 sets × 15 reps' },
-    { name: 'Dumbbell Squat', zh: '哑铃深蹲', desc: 'Shoulder-width, squat to 90°. Dumbbells at sides or shoulders.', sets: '3 sets × 15 reps' },
-    { name: 'Single-Leg Abduction Kick', zh: '单腿外展踢腿', desc: 'Dumbbell at side of kicking leg, kick outward. Targets gluteus medius.', sets: '3 × 15 reps each leg' }
+    // ── LOWER BODY ──
+    { name: 'Dumbbell Squat', zh: '哑铃深蹲', region: 'lower', desc: 'Feet shoulder-width, dumbbells at sides or shoulders. Sit hips back and down until thighs near parallel. Drive through heels to stand, squeeze glutes at top. Keep chest tall throughout. Targets quads, glutes, hamstrings.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Sumo Squat', zh: '哑铃相扑深蹲', region: 'lower', desc: 'Wide stance, toes pointing 45° out. Hold dumbbell centrally. Squat until thighs near parallel — actively push knees out in line with toes. Drive through heels to stand. Targets glutes, inner thighs (adductors), quads.', sets: '3 sets × 15 reps', postureTags: ['bow','knock'] },
+    { name: 'Dumbbell Deadlift', zh: '哑铃硬拉', region: 'lower', desc: 'Feet hip-width. Hinge at hips — push hips BACK (not down), flat back, chest tall. Lower dumbbells along shins until feel hamstring stretch. Drive hips FORWARD to stand, squeeze glutes at top. Targets hamstrings, glutes, erector spinae.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Dumbbell Single-Leg Abduction Kick', zh: '哑铃单腿外展踢腿', region: 'lower', desc: 'Place dumbbell at outer ankle of kicking leg. Stand holding chair. Kick leg directly out to the side (abduction). Hold 1 sec, lower slowly. Isolates gluteus medius. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['knock'] },
+    { name: 'Dumbbell Single-Leg Adduction Kick', zh: '哑铃单腿内收踢腿', region: 'lower', desc: 'Hold dumbbell at inner ankle. Stand holding chair. Kick leg across body (adduction). Hold 1 sec at end range, lower slowly. Targets hip adductors. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['bow'] },
+    { name: 'Dumbbell Calf Raise', zh: '哑铃提踵', region: 'lower', desc: 'Hold dumbbells at sides. Stand with feet hip-width. Rise on toes as high as possible, hold 1 sec, lower slowly. Hold chair for balance if needed. Targets gastrocnemius and soleus — improves ankle stability and balance.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── UPPER BODY ──
+    { name: 'Dumbbell Shoulder Press', zh: '哑铃肩推', region: 'upper', desc: 'Sit tall or stand. Dumbbells at shoulder height, elbows at 90°. Press up to near full extension — do not lock. Lower slowly. Targets deltoids, triceps, upper trapezius.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Lateral Raise', zh: '哑铃侧平举', region: 'upper', desc: 'Arms at sides. Raise dumbbells out to shoulder height — lead with elbows not hands. Lower slowly 3 sec. Targets medial deltoid. No swinging.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Lean-Over Row', zh: '哑铃支撑划船', region: 'upper', desc: 'Support one hand on chair. Row dumbbell from hang to hip (not waist — hip engages lower trapezius). Squeeze mid-back at top. Lower slowly. Targets lats, rhomboids, mid-trapezius. Both sides.', sets: '3 × 15 reps each side', postureTags: ['hunch','rounded'] },
+    { name: 'Dumbbell Bent-Over Reverse Fly', zh: '哑铃俯身反向飞鸟', region: 'upper', desc: 'Hinge at hips 45°, spine neutral, arms hanging. Raise arms OUT to sides — lead with elbows. Squeeze rear deltoids and rhomboids at top. Lower slowly. Corrects rounded shoulders and mid-back weakness.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'Dumbbell Bent-Over Face Pull', zh: '哑铃俯身面拉', region: 'upper', desc: 'Hinge 45°. Pull dumbbells toward face — elbows HIGH and wide, externally rotating at end (thumbs pointing back). Targets external rotators and rhomboids. Key for rounded shoulder correction.', sets: '3 sets × 15 reps', postureTags: ['rounded'] },
+    { name: 'Dumbbell Bicep Curl', zh: '哑铃弯举', region: 'upper', desc: 'Seated or standing. Elbows pinned at sides. Curl from hip to shoulder, hold 1 sec, lower slowly. Targets biceps brachii.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Triceps Kickback', zh: '哑铃臂屈伸后展', region: 'upper', desc: 'Hinge forward, upper arm parallel to floor. Extend forearm back until arm fully straight, squeeze triceps. Return slowly. Targets triceps brachii.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'Dumbbell Seated Knee Tuck', zh: '哑铃坐姿收腿', region: 'core', desc: 'Sit at chair edge, hold dumbbell between knees. Draw both knees toward chest — curl lower abdominals. Hold 1 sec, lower slowly. Targets lower rectus abdominis. Key for anterior pelvic tilt correction.', sets: '3 sets × 15 reps', postureTags: ['apt'] }
   ],
   band: [
-    { name: 'Band Face Pull', zh: '弹力带面拉', desc: 'Anchor at face height, pull toward face elbows high. Rear deltoids.', sets: '3 sets × 15 reps' },
-    { name: 'Band Bicep Curl', zh: '弹力带弯举', desc: 'Stand on band, curl toward shoulders. Keep elbows stationary.', sets: '3 sets × 15 reps' },
-    { name: 'Band Triceps Extension', zh: '弹力带肱三头肌伸展', desc: 'Anchor above head, extend forearms down.', sets: '3 sets × 15 reps' },
-    { name: 'Band Shoulder Press', zh: '弹力带肩推', desc: 'Stand on band, press from shoulders to overhead.', sets: '3 sets × 15 reps' },
-    { name: 'Band Lateral Raise', zh: '弹力带侧平举', desc: 'Stand on band, raise arms to shoulder height. Slow eccentric.', sets: '3 sets × 15 reps' },
-    { name: 'Band Chest Press', zh: '弹力带胸推', desc: 'Anchor behind, press forward from chest. Seated or standing.', sets: '3 sets × 15 reps' },
-    { name: 'Band Abduction Kicks', zh: '弹力带外展踢腿', desc: 'Band around ankles, kick leg outward. Gluteus medius.', sets: '3 × 15 reps each leg' },
-    { name: 'Band Wide-Grip Row', zh: '弹力带宽握划船', desc: 'Anchor at chest height, pull with wide elbows. Mid-back.', sets: '3 sets × 15 reps' },
-    { name: 'Band Single-Leg Adduction Kick', zh: '弹力带单腿内收踢腿', desc: 'Anchor at ankle height, kick leg inward. Hip adductors.', sets: '3 × 15 reps each leg' }
+    // ── LOWER BODY ──
+    { name: 'Band Squat', zh: '弹力带深蹲', region: 'lower', desc: 'Stand on band, grip ends at shoulders. Feet shoulder-width. Squat to parallel, pushing knees outward in line with toes. Drive through heels to stand. Targets quads, glutes, hamstrings.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Abduction Kicks', zh: '弹力带外展踢腿', region: 'lower', desc: 'Band around both ankles. Stand with slight knee bend. Kick one leg directly to the side against resistance — keep pelvis level. Hold 1 sec at peak. Lower slowly. Targets gluteus medius. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['knock'] },
+    { name: 'Band Single-Leg Adduction Kick', zh: '弹力带单腿内收踢腿', region: 'lower', desc: 'Anchor band at ankle height. Loop around working ankle. Stand sideways to anchor. Kick leg across body (adduction). Squeeze inner thigh at end. Return slowly. Targets adductors. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['bow'] },
+    { name: 'Band Glute Kickback', zh: '弹力带臀部后踢腿', region: 'lower', desc: 'Band around ankles. Holding chair, kick one leg straight back — squeeze glute at top, do NOT arch lower back. Lower slowly. Targets gluteus maximus. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['apt'] },
+    { name: 'Band Hip Thrust', zh: '弹力带臀桥', region: 'lower', desc: 'Sit on floor, upper back against chair seat. Band across hips anchored under feet. Drive hips up by squeezing glutes — hold 2 sec at top. Lower slowly. Most effective glute exercise for APT correction.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Band Calf Raise', zh: '弹力带提踵', region: 'lower', desc: 'Stand on band, grip ends at hips. Rise on toes as high as possible, hold 1 sec at top, lower slowly. Targets gastrocnemius and soleus.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── UPPER BODY ──
+    { name: 'Band Face Pull', zh: '弹力带面拉', region: 'upper', desc: 'Anchor band at face/nose height. Step back until tension. Pull toward face — elbows HIGH and wide. Externally rotate at end (thumbs back). Targets rear deltoids, rhomboids, external rotators.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'Band Wide-Grip Row', zh: '弹力带宽握划船', region: 'upper', desc: 'Anchor band at chest height. Sit or stand. Wide overhand grip. Pull to chest with elbows flaring wide. Squeeze mid-back at peak. Targets rhomboids and middle trapezius — corrects hunched back.', sets: '3 sets × 15 reps', postureTags: ['hunch','rounded'] },
+    { name: 'Band Shoulder Press', zh: '弹力带肩推', region: 'upper', desc: 'Stand on band, grip ends at shoulders. Press from shoulder to overhead. Core braced. Lower slowly. Targets deltoids and triceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Lateral Raise', zh: '弹力带侧平举', region: 'upper', desc: 'Stand on band. Raise arms to shoulder height — slow and controlled. Lower 3 sec. Targets medial deltoid.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Chest Press', zh: '弹力带胸推', region: 'upper', desc: 'Anchor band behind at chest height. Face away, split stance. Press arms forward to near full extension. Return slowly with stretch across chest. Targets pectoralis major, anterior deltoid.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Bicep Curl', zh: '弹力带弯举', region: 'upper', desc: 'Stand on band. Elbows at sides. Curl to shoulders, hold 1 sec, lower slowly. Targets biceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Triceps Extension', zh: '弹力带肱三头肌伸展', region: 'upper', desc: 'Anchor band above head. Face anchor, grip band. Elbows at sides, forearms up. Push hands down to full extension, return slowly. Targets triceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'Band Knee Tuck', zh: '弹力带收腿', region: 'core', desc: 'Anchor band behind at ankle height. Loop around ankles. Sit at chair edge. Draw knees toward chest against resistance. Lower slowly. Targets lower abdominals and hip flexors.', sets: '3 sets × 15 reps', postureTags: ['apt'] }
   ],
   bodyweight: [
-    { name: 'Chair Stand (Sit-to-Stand)', zh: '坐起（椅子站立）', desc: 'Stand from chair without hands. Powerful quad and glute builder.', sets: '3 sets × 15 reps' },
-    { name: 'Bent-Over Reverse Fly', zh: '俯身反向飞鸟', desc: 'Hinge forward, raise arms laterally. Use water bottles for light resistance.', sets: '3 sets × 15 reps' },
-    { name: 'Seated Knee Tuck', zh: '坐姿收腿', desc: 'Sit on chair edge, draw knees toward chest. Lower abdominals.', sets: '3 sets × 15 reps' },
-    { name: 'Palm Chest Press (Isometric)', zh: '掌心对压（等长收缩）', desc: 'Clasp palms at chest, press isometrically. Hold 2 sec each rep.', sets: '3 sets × 15 reps' },
-    { name: 'Sumo Squat', zh: '相扑深蹲', desc: 'Wide stance, toes 45° out. Targets glutes and inner thighs.', sets: '3 sets × 15 reps' },
-    { name: 'Single-Leg Hamstring Curl', zh: '单腿腘绳肌弯举', desc: 'Stand on one leg, curl heel toward glutes. Use chair for balance. Both legs.', sets: '3 × 15 reps each leg' },
-    { name: 'Single-Leg Sideways Kick', zh: '单腿侧踢腿', desc: 'Kick leg directly out to the side. Hold 1 sec at top. Both legs.', sets: '3 × 15 reps each leg' }
+    // ── LOWER BODY ──
+    { name: 'Chair Stand (Sit-to-Stand)', zh: '坐起（椅子站立）', region: 'lower', desc: 'Sit tall, feet flat on floor hip-width. Stand WITHOUT using hands — drive through heels, squeeze glutes at top. Lower slowly back to seated. Most functional lower body exercise for seniors. Targets quads, glutes, hamstrings.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Sumo Squat', zh: '相扑深蹲', region: 'lower', desc: 'Wide stance, toes 45° out, hands on chest or forward. Squat until thighs near parallel — push knees outward in line with toes. Drive through heels to stand. Targets glutes, inner thighs, quads.', sets: '3 sets × 15 reps', postureTags: ['bow','knock'] },
+    { name: 'Single-Leg Hamstring Curl', zh: '单腿腘绳肌弯举', region: 'lower', desc: 'Stand holding chair. Shift weight to one leg. Curl opposite heel toward glutes, hold 1 sec at top, lower slowly. Targets hamstrings. Improves single-leg balance. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['apt'] },
+    { name: 'Single-Leg Sideways Kick', zh: '单腿侧踢腿', region: 'lower', desc: 'Hold chair for support. Kick one leg directly out to the side. Hold 1 sec at top, lower slowly with control. Activates gluteus medius — key for knock knee and hip stability. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['knock'] },
+    { name: 'Standing Adduction Kick', zh: '站姿内收踢腿', region: 'lower', desc: 'Hold chair for balance. Kick one leg inward across the body (adduction). Squeeze inner thigh at end range, hold 1 sec, lower slowly. Targets hip adductors. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['bow'] },
+    { name: 'Glute Bridge', zh: '臀桥', region: 'lower', desc: 'Lie on back, knees bent, feet flat. Drive hips up by squeezing glutes — hold 2 sec at top. Do NOT hyperextend lower back. Lower slowly. Most effective bodyweight glute exercise. Targets gluteus maximus and hamstrings.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Calf Raise (Chair-Assisted)', zh: '扶椅提踵', region: 'lower', desc: 'Hold chair lightly for balance. Rise on both toes as high as possible, hold 1 sec, lower slowly. Targets gastrocnemius and soleus. Improves ankle stability and balance.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── UPPER BODY ──
+    { name: 'Bent-Over Reverse Fly', zh: '俯身反向飞鸟', region: 'upper', desc: 'Hinge forward at hips 45°, spine neutral. Arms hanging, palms facing. Raise arms laterally — lead with elbows. Squeeze shoulder blades at top. Use 500ml water bottles for light resistance. Targets rear deltoids and rhomboids.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'Palm Chest Press (Isometric)', zh: '掌心对压（等长收缩）', region: 'upper', desc: 'Clasp palms at chest height. Press hands together as hard as possible — isometric contraction. Hold 3 sec each rep. Targets pectoralis major and anterior deltoid without weights.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Wall Push-Up', zh: '墙壁俯卧撑', region: 'upper', desc: 'Stand arm-length from wall. Hands at shoulder width on wall. Bend elbows to bring chest toward wall, push back. Keep body straight as a plank. Low-impact chest and shoulder exercise safe for all seniors.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'Seated Knee Tuck', zh: '坐姿收腿', region: 'core', desc: 'Sit at chair edge, hands gripping sides. Draw both knees up toward chest — curl lower abdominals. Lower slowly with control. Targets lower rectus abdominis and hip flexors. Key for anterior pelvic tilt correction.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Pelvic Tilt (Seated)', zh: '坐姿骨盆倾斜', region: 'core', desc: 'Sit tall on chair, hands on thighs. Tilt pelvis POSTERIORLY — flatten lower back by drawing navel in and tucking tailbone under. Hold 5 sec. Release to neutral. Retrains core stabilisers against anterior pelvic tilt.', sets: '3 sets × 15 reps', postureTags: ['apt'] }
   ]
 };
 
+// ─────────────────────────────────────────────
+// BALANCED WORKOUT BUILDER
+// Guarantees: 3 lower body + 2 upper body + 1 core
+// When posture issues selected: posture-relevant exercises are prioritised WITHIN each region
+// ─────────────────────────────────────────────
 function buildWorkoutCard(equipList, postureList) {
   postureList = postureList || [];
   const en = currentLang === 'en';
   if (equipList.length === 0) return `<div class="no-eq">⚠️ ${en ? 'No equipment selected. Go back to Step 2 and select your equipment, then click Generate again.' : '未选择器材。请返回第二步选择器材后重新点击生成。'}</div>`;
 
-  // Build pools — prioritise posture-matched exercises first
-  const pools = {};
-  equipList.forEach(eq => {
-    if (!EXERCISES[eq]) return;
-    if (postureList.length > 0) {
-      // Sort: posture-matched exercises come first
-      const matched = EXERCISES[eq].filter(e => e.postureTags && e.postureTags.some(t => postureList.includes(t)));
-      const unmatched = EXERCISES[eq].filter(e => !e.postureTags || !e.postureTags.some(t => postureList.includes(t)));
-      pools[eq] = [...matched, ...unmatched];
-    } else {
-      pools[eq] = [...EXERCISES[eq]];
-    }
-  });
+  // ── Collect ALL exercises from selected equipment
+  let allEx = [];
+  equipList.forEach(eq => { if (EXERCISES[eq]) EXERCISES[eq].forEach(e => allEx.push({ ...e, eq })); });
 
-  // Pick 6 exercises rotating across equipment
-  const picked = [];
-  let idx = 0, safety = 0;
-  while (picked.length < 6 && safety++ < 200) {
-    const eq = equipList[idx % equipList.length]; idx++;
-    const pool = pools[eq];
-    if (pool && pool.length > 0) picked.push({ ...pool.shift(), eq });
+  // ── Sort within each region: posture-matched first, then others
+  function sortByPosture(list) {
+    if (postureList.length === 0) return list;
+    return [
+      ...list.filter(e => e.postureTags && e.postureTags.some(t => postureList.includes(t))),
+      ...list.filter(e => !e.postureTags || !e.postureTags.some(t => postureList.includes(t)))
+    ];
   }
+
+  const lowerPool = sortByPosture(allEx.filter(e => e.region === 'lower'));
+  const upperPool = sortByPosture(allEx.filter(e => e.region === 'upper'));
+  const corePool  = sortByPosture(allEx.filter(e => e.region === 'core'));
+  const cardioPool = allEx.filter(e => e.region === 'cardio');
+
+  // De-duplicate by name (in case multiple equipment selected have similar exercises)
+  function dedup(pool) {
+    const seen = new Set();
+    return pool.filter(e => { if (seen.has(e.name)) return false; seen.add(e.name); return true; });
+  }
+
+  const lower = dedup(lowerPool);
+  const upper = dedup(upperPool);
+  const core  = dedup(corePool);
+
+  // ── Pick balanced 6: 3 lower + 2 upper + 1 core
+  // If HUR recumbent bike is selected (cardio), replace 1 lower with it for variety
+  const hasCardio = cardioPool.length > 0;
+  const picked = [];
+
+  // 3 lower body
+  for (let i = 0; i < 3 && lower.length > 0; i++) picked.push(lower.shift());
+  // 2 upper body
+  for (let i = 0; i < 2 && upper.length > 0; i++) picked.push(upper.shift());
+  // 1 core
+  if (core.length > 0) picked.push(core.shift());
+  // If fewer than 6, fill with any remaining
+  const remaining = dedup([...lower, ...upper, ...core, ...cardioPool].filter(e => !picked.find(p => p.name === e.name)));
+  while (picked.length < 6 && remaining.length > 0) picked.push(remaining.shift());
+
+  // Sort for display: lower → upper → core (logical workout flow)
+  const regionOrder = { lower: 0, upper: 1, core: 2, cardio: 3 };
+  picked.sort((a, b) => (regionOrder[a.region] || 0) - (regionOrder[b.region] || 0));
 
   const eqLabel = equipList.map(e => ({ hur: 'HUR', dumbbell: en ? 'Dumbbells' : '哑铃', band: en ? 'Resistance Bands' : '弹力带', bodyweight: en ? 'Bodyweight' : '自重' }[e] || e)).join(' + ');
   const eqColour = { hur: 'var(--hur)', dumbbell: 'var(--navy)', band: 'var(--green)', bodyweight: 'var(--gold)' };
 
+  const regionMeta = {
+    lower:  { label: en ? '🦵 Lower Body' : '🦵 下肢', bg: '#e8f4ff', col: '#1B3A6B' },
+    upper:  { label: en ? '💪 Upper Body' : '💪 上肢', bg: '#fff3ee', col: '#b85c35' },
+    core:   { label: en ? '🔥 Core' : '🔥 核心', bg: '#e6f4ed', col: '#2D8653' },
+    cardio: { label: en ? '🚴 Cardio' : '🚴 有氧', bg: '#fef3cc', col: '#C9900A' }
+  };
+  const lowerCount = picked.filter(e => e.region === 'lower').length;
+  const upperCount = picked.filter(e => e.region === 'upper').length;
+  const coreCount  = picked.filter(e => e.region === 'core' || e.region === 'cardio').length;
+  const postureMatchCount = postureList.length > 0 ? picked.filter(e => e.postureTags && e.postureTags.some(t => postureList.includes(t))).length : 0;
+
   const mainHTML = picked.map((ex, i) => {
     const col = eqColour[ex.eq] || 'var(--navy)';
     const isCardio = ex.cardio;
+    const rm = regionMeta[ex.region] || regionMeta.upper;
+    const isPostureMatch = postureList.length > 0 && ex.postureTags && ex.postureTags.some(t => postureList.includes(t));
     return `<div class="exi" style="border-left-color:${col}">
       <div class="exn" style="background:${col}">${i + 1}</div>
-      <div class="exb"><h4>${en ? ex.name : ex.zh}</h4><p>${ex.desc}</p>
-      ${isCardio ? `<span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-t">30s on</span><span class="tag tag-t">1min rest</span>` : `<span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>`}
-      <span class="tag" style="background:#f0f4ff;color:var(--navy)">${{ hur: 'HUR', dumbbell: en ? 'Dumbbell' : '哑铃', band: en ? 'Band' : '弹力带', bodyweight: en ? 'Bodyweight' : '自重' }[ex.eq]}</span></div></div>`;
+      <div class="exb">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px">
+          <h4 style="margin:0">${en ? ex.name : ex.zh}</h4>
+          ${isPostureMatch ? `<span style="font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--purple-l);color:var(--purple)">✦ ${en ? 'Posture Fix' : '姿势修正'}</span>` : ''}
+        </div>
+        <p>${ex.desc}</p>
+        <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px">
+          ${isCardio ? `<span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-t">30s on</span><span class="tag tag-t">1min rest</span>` : `<span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>`}
+          <span class="tag" style="background:#f0f4ff;color:var(--navy)">${{ hur: 'HUR', dumbbell: en ? 'Dumbbell' : '哑铃', band: en ? 'Band' : '弹力带', bodyweight: en ? 'Bodyweight' : '自重' }[ex.eq]}</span>
+          <span class="tag" style="background:${rm.bg};color:${rm.col}">${rm.label}</span>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 
   const wuHTML = WARMUP.map((w, i) => `<div class="exi wu-i"><div class="exn gd">${i + 1}</div><div class="exb"><h4>${en ? w.name : w.zh}</h4><p>${w.desc}</p><span class="tag tag-t">${w.time}</span></div></div>`).join('');
   const cdHTML = COOLDOWN.map((c, i) => `<div class="exi cd-i"><div class="exn bl">${i + 1}</div><div class="exb"><h4>${en ? c.name : c.zh}</h4><p>${c.desc}</p><span class="tag tag-t">15 sec</span></div></div>`).join('');
 
+  const balanceBadge = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:11px 14px;background:var(--g50);border-radius:var(--rsm);border:1px solid var(--g200)">
+      <span style="font-size:.72rem;font-weight:700;color:var(--g700);align-self:center">${en ? 'Session Balance:' : '训练平衡：'}</span>
+      <span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:#e8f4ff;color:#1B3A6B">🦵 ${en ? 'Lower' : '下肢'} ×${lowerCount}</span>
+      <span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:#fff3ee;color:#b85c35">💪 ${en ? 'Upper' : '上肢'} ×${upperCount}</span>
+      <span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:#e6f4ed;color:#2D8653">🔥 ${en ? 'Core' : '核心'} ×${coreCount}</span>
+      ${postureMatchCount > 0 ? `<span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:var(--purple-l);color:var(--purple)">✦ ${en ? 'Posture Fix' : '姿势修正'} ×${postureMatchCount}</span>` : ''}
+    </div>`;
+
   return `<div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--g100)">
     <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--green),#45a76b);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">🗒️</div>
-    <div><h2 style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--navy)">${en ? 'Your Workout Session' : '您的训练课程'}</h2>
+    <div><h2 style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--navy)">${en ? 'Your Balanced Workout Session' : '您的均衡训练课程'}</h2>
     <p style="font-size:.7rem;color:var(--g500);margin-top:2px">${en ? 'Equipment' : '器材'}: ${eqLabel} · ${en ? 'Total: ~35–45 min' : '总时长：约35–45分钟'}</p></div>
   </div>
   <div class="wk-section"><div class="wk-stitle wu">☀️ ${en ? 'Warm-Up — 5 Minutes (30 sec each)' : '热身 — 5分钟（每个动作30秒）'}</div><div class="exg">${wuHTML}</div></div>
-  <div class="wk-section"><div class="wk-stitle">💪 ${en ? 'Main Workout — 6 Exercises (3 sets × 15 reps)' : '主训练 — 6个动作（3组 × 15次）'}</div><div class="exg">${mainHTML}</div></div>
+  <div class="wk-section">
+    <div class="wk-stitle">💪 ${en ? 'Main Workout — 6 Exercises (3 sets × 15 reps)' : '主训练 — 6个动作（3组 × 15次）'}</div>
+    ${balanceBadge}
+    <div class="exg">${mainHTML}</div>
+  </div>
   <div class="wk-section"><div class="wk-stitle cd">🌙 ${en ? 'Cool-Down — 5 Minutes (15 sec each)' : '放松 — 5分钟（每个动作15秒）'}</div><div class="exg">${cdHTML}</div></div>
   <div class="rxi gd" style="margin-top:5px;border-left:4px solid var(--gold)">
     <h4>📋 ${en ? 'Session Notes' : '训练备注'}</h4>
-    <p>${en ? 'Rest 60–90 sec between sets. Exhale on effort, inhale on release. Stop if you feel pain (not muscle fatigue) and consult your coach or GP. Drink water between sets.' : '组间休息60–90秒。用力时呼气，放松时吸气。如感到疼痛（非肌肉疲劳）请停止并咨询教练或医生。组间补充水分。'}</p>
+    <p>${en ? 'Rest 60–90 sec between sets. Exhale on effort, inhale on return. Stop if you feel pain (not muscle fatigue) and consult your coach or GP. Drink water between sets. Exercises marked ✦ Posture Fix are prioritised to address your specific posture issues.' : '组间休息60–90秒。用力时呼气，放松时吸气。如感到疼痛（非肌肉疲劳）请停止并咨询教练或医生。组间补充水分。标有✦姿势修正的动作是针对您的姿势问题优先选择的。'}</p>
   </div>`;
 }
 
