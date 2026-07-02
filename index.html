@@ -1,1057 +1,1418 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tzu-Chi Fitness — Longevity Starts Here</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<title>Tzu-Chi Body Composition & Fitness Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --navy:#1B3A6B;--navy-light:#2A4F8F;--navy-dark:#112448;
+  --gold:#C9A84C;--gold-light:#E8C96A;
+  --hur:#E8734A;--hur-light:#F0956E;
+  --g50:#F5F7FA;--g100:#EEF1F6;--g200:#D8DDE8;--g500:#8892A4;--g700:#4A5568;--g900:#1A202C;
+  --green:#2D8653;--green-l:#E6F4ED;
+  --yellow:#C9900A;--yellow-l:#FEF3CC;
+  --red:#C0392B;--red-l:#FDECEA;
+  --purple:#6B46C1;--purple-l:#F0EEFF;
+  --teal:#0891B2;--teal-l:#E0F7FA;
+  --r:16px;--rsm:10px;
+  --sh:0 4px 24px rgba(27,58,107,.10);
+  --shmd:0 8px 40px rgba(27,58,107,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Noto Sans SC',sans-serif;background:var(--g50);color:var(--g900);min-height:100vh}
+[data-lang="zh"] .en{display:none!important}
+[data-lang="zh"] .zh{display:inline!important}
+[data-lang="en"] .zh{display:none!important}
+[data-lang="en"] .en{display:inline!important}
+.zh{display:none}
 
-:root {
-  --navy:   #1B3A6B;
-  --navy-d: #0D1F3C;
-  --gold:   #C9A84C;
-  --gold-l: #E8C96A;
-  --hur:    #E8734A;
-  --white:  #FFFFFF;
-  --glass:  rgba(255,255,255,0.06);
-  --glass-b: rgba(255,255,255,0.12);
-}
+/* DISCLAIMER */
+.disc{background:linear-gradient(135deg,#fff8e1,#fff3cd);border-bottom:3px solid var(--gold);padding:11px 20px;text-align:center}
+.disc p{font-size:.77rem;color:#7B5E00;line-height:1.5;max-width:820px;margin:0 auto}
+.disc strong{color:#5C4300;display:block;font-size:.79rem;margin-bottom:2px}
 
-html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
-  background: #050d1a;
-  font-family: 'Inter', sans-serif;
-  color: var(--white);
-}
+/* HEADER */
+header{background:linear-gradient(135deg,var(--navy-dark),var(--navy) 60%,var(--navy-light));position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.25)}
+.hi{max-width:960px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+.logo-wrap{background:white;border-radius:11px;padding:5px 8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2);flex-shrink:0}
+.ht{flex:1}
+.ht h1{font-family:'Playfair Display',serif;font-size:1.08rem;font-weight:700;color:white;line-height:1.2}
+.ht p{font-size:.65rem;color:var(--gold-light);font-weight:400;letter-spacing:.04em;text-transform:uppercase;margin-top:2px}
+.hright{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.hbadge{background:var(--hur);color:white;font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:4px 9px;border-radius:20px;white-space:nowrap}
 
-/* ── CANVAS ── */
-#bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
+/* LANGUAGE TOGGLE */
+.lang-toggle{display:flex;background:rgba(255,255,255,.15);border-radius:20px;padding:3px;gap:2px}
+.lang-btn{padding:5px 10px;border:none;border-radius:16px;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,.7);letter-spacing:.03em}
+.lang-btn.active{background:white;color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.15)}
 
-/* ── NOISE GRAIN ── */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: 0.35;
-}
+/* EXPORT BTN */
+.export-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy-dark);border:none;border-radius:20px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:all .2s}
+.export-btn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(201,168,76,.4)}
 
-/* ── FULL SCROLL WRAPPER ── */
-#app {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-}
+/* MAIN */
+main{max-width:960px;margin:0 auto;padding:20px 14px 60px}
+.sl{display:flex;align-items:center;gap:10px;margin-bottom:12px;margin-top:24px}
+.sl .dot{width:5px;height:24px;background:linear-gradient(180deg,var(--gold),var(--hur));border-radius:3px;flex-shrink:0}
+.sl h2{font-family:'Playfair Display',serif;font-size:1.02rem;font-weight:600;color:var(--navy)}
+.card{background:white;border-radius:var(--r);box-shadow:var(--sh);padding:22px;margin-bottom:15px}
 
-/* ── HEADER ── */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 40px;
-  background: rgba(5,13,26,0.5);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(201,168,76,0.15);
-}
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.fgi{display:flex;flex-direction:column;gap:5px}
+.fgi.full{grid-column:1/-1}
+label.form-lbl{font-size:.73rem;font-weight:600;color:var(--g700);text-transform:uppercase;letter-spacing:.06em}
+label.form-lbl span.u{font-weight:400;color:var(--g500);text-transform:none;letter-spacing:0}
+input[type="number"]{width:100%;padding:12px 13px;border:2px solid var(--g200);border-radius:var(--rsm);
+  font-size:1rem;font-family:'Inter',sans-serif;font-weight:500;color:var(--g900);background:var(--g50);
+  transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+input[type="number"]:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(27,58,107,.12);background:white}
+.gbrow{display:flex;gap:10px}
+.gbbtn{flex:1;padding:11px;border:2px solid var(--g200);border-radius:var(--rsm);background:var(--g50);
+  font-family:'Inter',sans-serif;font-size:.86rem;font-weight:600;color:var(--g700);cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.gbbtn.active{border-color:var(--navy);background:var(--navy);color:white}
+.gbbtn:hover:not(.active){border-color:var(--navy-light);color:var(--navy)}
 
-.logo-lockup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.logo-mark {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--navy), var(--navy-d));
-  border: 1px solid rgba(201,168,76,0.4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-}
-.logo-text {
-  font-family: 'Playfair Display', serif;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: white;
-}
-.logo-text span { color: var(--gold); }
+/* ─── FIXED CHECKBOXES ─── */
+.cb-group{display:flex;flex-wrap:wrap;gap:9px}
+.cbx{position:relative;display:inline-flex;align-items:center;gap:8px;
+  padding:10px 15px;border:2px solid var(--g200);border-radius:var(--rsm);
+  cursor:pointer;transition:all .2s;background:var(--g50);user-select:none;
+  -webkit-user-select:none}
+.cbx:hover{border-color:var(--navy-light);background:#f0f4ff}
+.cbx input[type="checkbox"]{
+  position:relative;width:18px;height:18px;min-width:18px;
+  border:2px solid var(--g200);border-radius:4px;
+  background:white;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  transition:all .15s;flex-shrink:0;margin:0}
+.cbx input[type="checkbox"]:checked{
+  background:var(--navy);border-color:var(--navy)}
+.cbx input[type="checkbox"]:checked::after{
+  content:"";position:absolute;
+  left:4px;top:1px;width:6px;height:10px;
+  border:2px solid white;border-top:none;border-left:none;
+  transform:rotate(45deg)}
+.cbx .cblabel{font-size:.82rem;font-weight:600;color:var(--g700);line-height:1.2}
+/* Active states */
+.cbx.active-eq{border-color:var(--navy);background:linear-gradient(135deg,#f0f4ff,#e8eeff)}
+.cbx.active-eq .cblabel{color:var(--navy)}
+.cbx.active-eq input:checked{background:var(--navy);border-color:var(--navy)}
+.cbx.hur-item.active-eq{border-color:var(--hur);background:linear-gradient(135deg,#fff3ee,#ffe8df)}
+.cbx.hur-item.active-eq .cblabel{color:#b85c35}
+.cbx.hur-item.active-eq input:checked{background:var(--hur);border-color:var(--hur)}
+.cbx.pos-item.active-pos{border-color:var(--purple);background:var(--purple-l)}
+.cbx.pos-item.active-pos .cblabel{color:var(--purple)}
+.cbx.pos-item.active-pos input:checked{background:var(--purple);border-color:var(--purple)}
+.cbx.diet-item.active-diet{border-color:var(--green);background:var(--green-l)}
+.cbx.diet-item.active-diet .cblabel{color:var(--green)}
+.cbx.diet-item.active-diet input:checked{background:var(--green);border-color:var(--green)}
 
-nav a {
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.6);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-nav a:hover { color: var(--gold); }
+.bone-hint{background:linear-gradient(135deg,var(--green-l),#f0fff8);border:1px solid #b8e2cc;
+  border-radius:var(--rsm);padding:10px 13px;margin-top:6px;font-size:.7rem;color:#1a5c36;line-height:1.6}
+.bone-hint strong{display:block;margin-bottom:2px;font-size:.72rem;color:var(--green)}
 
-.header-cta {
-  padding: 9px 20px;
-  background: transparent;
-  border: 1px solid rgba(201,168,76,0.5);
-  border-radius: 30px;
-  color: var(--gold);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.25s;
-}
-.header-cta:hover {
-  background: var(--gold);
-  color: var(--navy-d);
-  box-shadow: 0 0 20px rgba(201,168,76,0.4);
-}
+.calc-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--navy-light));
+  color:white;border:none;border-radius:var(--rsm);font-family:'Inter',sans-serif;
+  font-size:1rem;font-weight:700;letter-spacing:.04em;cursor:pointer;margin-top:8px;
+  transition:all .25s;box-shadow:0 4px 16px rgba(27,58,107,.3)}
+.calc-btn:hover{background:linear-gradient(135deg,var(--navy-dark),var(--navy));transform:translateY(-1px)}
 
-/* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 80px 24px 60px;
-  position: relative;
-}
+/* RESULTS */
+#results{display:none}
+#results.visible{display:block;animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 28px;
-  padding: 6px 18px;
-  border: 1px solid rgba(201,168,76,0.3);
-  border-radius: 20px;
-  background: rgba(201,168,76,0.08);
-  animation: fadeDown 1s ease both;
-}
-.hero-eyebrow::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  animation: pulse 2s infinite;
-}
+/* BIO AGE */
+.bac{background:linear-gradient(135deg,var(--navy-dark),var(--navy));border-radius:var(--r);
+  padding:26px 22px;text-align:center;box-shadow:var(--shmd);margin-bottom:15px;position:relative;overflow:hidden}
+.bac::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:rgba(201,168,76,.08);border-radius:50%}
+.bio-lbl{font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-light);margin-bottom:6px}
+.gw{position:relative;width:190px;margin:0 auto 12px}
+.gw canvas{display:block}
+.gc{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);text-align:center}
+.ga{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:white;line-height:1}
+.gu{font-size:.66rem;color:rgba(255,255,255,.7);font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.bcomp{display:flex;justify-content:center;gap:22px;margin-top:4px}
+.bci .val{font-family:'Playfair Display',serif;font-size:1.3rem;color:white;font-weight:600}
+.bci .lbl{font-size:.62rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+.bdiv{width:1px;background:rgba(255,255,255,.2);align-self:stretch}
+.bbadge{display:inline-block;margin-top:12px;padding:7px 20px;border-radius:20px;font-size:.79rem;font-weight:700;letter-spacing:.04em}
 
-@keyframes pulse {
-  0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:0.4; transform:scale(0.7); }
-}
+/* METRICS */
+.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
+.mc{background:white;border-radius:var(--rsm);box-shadow:var(--sh);padding:13px 11px;text-align:center;border-top:3px solid transparent}
+.mc .mi{font-size:1.35rem;margin-bottom:2px;display:block}
+.mc .mv{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--navy);line-height:1}
+.mc .mu{font-size:.63rem;color:var(--g500);font-weight:500}
+.mc .ml{font-size:.63rem;font-weight:600;color:var(--g700);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;display:block}
+.mc .ms{font-size:.6rem;font-weight:700;margin-top:4px;padding:2px 8px;border-radius:9px;display:inline-block}
+.sn{background:var(--green-l);color:var(--green)}.sw{background:var(--yellow-l);color:var(--yellow)}.sh{background:var(--red-l);color:var(--red)}
+.bn{border-top-color:var(--green)}.bw{border-top-color:var(--yellow)}.bh{border-top-color:var(--red)}
 
-.hero-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(3rem, 8vw, 6.5rem);
-  font-weight: 900;
-  line-height: 1.0;
-  letter-spacing: -0.02em;
-  margin-bottom: 14px;
-  animation: fadeUp 1s 0.2s ease both;
-}
-.hero-title .line1 { display: block; color: white; }
-.hero-title .line2 {
-  display: block;
-  background: linear-gradient(90deg, var(--gold), var(--hur), var(--gold-l));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200%;
-  animation: shimmer 4s linear infinite, fadeUp 1s 0.3s ease both;
-}
-@keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+/* RANGE BARS */
+.ri{background:white;border-radius:var(--rsm);box-shadow:var(--sh);padding:13px 15px;margin-bottom:9px}
+.rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.rn{font-size:.73rem;font-weight:600;color:var(--g700);text-transform:uppercase;letter-spacing:.04em}
+.rv{font-family:'Playfair Display',serif;font-size:.98rem;font-weight:600;color:var(--navy)}
+.rbb{height:9px;background:var(--g100);border-radius:6px;position:relative;overflow:visible;margin-bottom:4px}
+.rbf{height:100%;border-radius:6px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.rm{position:absolute;top:-4px;width:17px;height:17px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,.2);transform:translateX(-50%);transition:left 1s cubic-bezier(.4,0,.2,1)}
+.rl{display:flex;justify-content:space-between;font-size:.58rem;color:var(--g500);font-weight:500;text-transform:uppercase;letter-spacing:.03em}
 
-.hero-sub {
-  font-size: clamp(0.9rem, 2vw, 1.1rem);
-  font-weight: 300;
-  color: rgba(255,255,255,0.55);
-  max-width: 480px;
-  line-height: 1.7;
-  margin-bottom: 50px;
-  animation: fadeUp 1s 0.4s ease both;
-}
+/* CHARTS */
+.cc{background:white;border-radius:var(--r);box-shadow:var(--sh);padding:20px;margin-bottom:15px}
+.ct{font-family:'Playfair Display',serif;font-size:.93rem;font-weight:600;color:var(--navy);margin-bottom:2px}
+.cs{font-size:.69rem;color:var(--g500);margin-bottom:13px}
+.cw{position:relative;height:200px}
+.cwt{position:relative;height:240px}
+.cr{display:grid;grid-template-columns:1fr 1fr;gap:15px}
 
-.hero-cta-group {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
-  animation: fadeUp 1s 0.6s ease both;
-}
-.btn-primary {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 17px 36px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  color: #0D1F3C;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 0 30px rgba(201,168,76,0.35);
-  overflow: hidden;
-}
-.btn-primary::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 50px rgba(201,168,76,0.55), 0 8px 30px rgba(0,0,0,0.3);
-}
-.btn-primary:hover::after { opacity: 1; }
-.btn-arrow { font-size: 1.1rem; transition: transform 0.3s; }
-.btn-primary:hover .btn-arrow { transform: translateX(4px); }
+/* HEALTH REPORT */
+.hr{background:white;border-radius:var(--r);box-shadow:var(--sh);padding:22px;margin-bottom:15px}
+.ro{display:flex;align-items:center;gap:13px;padding:13px;border-radius:var(--rsm);margin-bottom:18px}
+.rsr{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:white}
+.rot h3{font-family:'Playfair Display',serif;font-size:.98rem;font-weight:600;margin-bottom:2px}
+.rot p{font-size:.73rem;color:var(--g700);line-height:1.5}
+.fi{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--g100)}
+.fi:last-child{border-bottom:none}
+.fic{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0;margin-top:1px}
+.ft h4{font-size:.8rem;font-weight:600;color:var(--g900);margin-bottom:2px}
+.ft p{font-size:.72rem;color:var(--g700);line-height:1.55}
+.rec{background:linear-gradient(135deg,var(--g50),var(--g100));border-radius:var(--rsm);padding:15px;border-left:4px solid var(--gold);margin-top:14px}
+.rec h3{font-family:'Playfair Display',serif;font-size:.88rem;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.recl{list-style:none;display:flex;flex-direction:column;gap:7px}
+.recl li{display:flex;gap:8px;align-items:flex-start;font-size:.73rem;color:var(--g700);line-height:1.5}
+.recl li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:1px;font-size:.63rem}
 
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 17px 32px;
-  background: var(--glass);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.8);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  border-radius: 50px;
-  backdrop-filter: blur(12px);
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.25);
-  transform: translateY(-2px);
-}
+/* RX TABS */
+.rxcard{background:white;border-radius:var(--r);box-shadow:var(--shmd);padding:24px;margin-bottom:15px;border-top:4px solid var(--hur)}
+.rxhdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--g100)}
+.rxibig{width:48px;height:48px;background:linear-gradient(135deg,var(--hur),var(--hur-light));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.rxht h2{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--navy)}
+.rxht p{font-size:.7rem;color:var(--g500);margin-top:2px}
+.rxpbadge{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:white;padding:7px 15px;border-radius:20px;font-size:.76rem;font-weight:700;margin-bottom:16px}
+.rxtabs{display:flex;gap:2px;background:var(--g100);border-radius:9px;padding:3px;margin-bottom:18px;flex-wrap:wrap}
+.rxtab{flex:1;padding:8px 8px;background:transparent;border:none;border-radius:7px;font-family:'Inter',sans-serif;font-size:.7rem;font-weight:600;color:var(--g700);cursor:pointer;transition:all .2s;min-width:60px;text-align:center}
+.rxtab.active{background:white;color:var(--navy);box-shadow:0 2px 6px rgba(27,58,107,.12)}
+.rxpanel{display:none}.rxpanel.active{display:block;animation:fadeUp .3s ease}
+.rxig{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.rxi{background:var(--g50);border-radius:var(--rsm);padding:12px;border-left:3px solid var(--hur)}
+.rxi h4{font-size:.76rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+.rxi p{font-size:.71rem;color:var(--g700);line-height:1.55}
+.rxi.gr{background:var(--green-l);border-left-color:var(--green)}
+.rxi.nv{background:linear-gradient(135deg,#f0f4ff,#e8eeff);border-left-color:var(--navy)}
+.rxi.gd{background:linear-gradient(135deg,#fffbf0,#fff8e1);border-left-color:var(--gold)}
+.rxi.pu{background:var(--purple-l);border-left-color:var(--purple)}
+.rxi.tl{background:var(--teal-l);border-left-color:var(--teal)}
+.rxwp{background:linear-gradient(135deg,var(--navy-dark),var(--navy));border-radius:var(--rsm);padding:15px;margin-top:5px}
+.rxwp h3{font-family:'Playfair Display',serif;font-size:.86rem;color:white;margin-bottom:11px}
+.rxdays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.rxday{background:rgba(255,255,255,.1);border-radius:7px;padding:7px 4px;text-align:center}
+.rxday .dn{font-size:.56rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}
+.rxday .da{font-size:.63rem;color:white;font-weight:600;line-height:1.3}
+.rxday.ad{background:rgba(232,115,74,.35);border:1px solid var(--hur)}
+.rxday.rd{background:rgba(255,255,255,.05)}
+.cautbox{background:var(--red-l);border-radius:var(--rsm);padding:11px 14px;border-left:4px solid var(--red);margin-top:13px;font-size:.71rem;color:var(--red);line-height:1.6}
+.cautbox strong{display:block;margin-bottom:2px}
+.okbox{background:var(--green-l);border-radius:var(--rsm);padding:11px 14px;border-left:4px solid var(--green);margin-top:13px;font-size:.71rem;color:var(--green);line-height:1.6}
+.okbox strong{display:block;margin-bottom:2px}
 
-/* ── SCROLL INDICATOR ── */
-.scroll-hint {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  animation: fadeUp 1s 1.2s ease both;
-}
-.scroll-hint span {
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
-}
-.scroll-line {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent);
-  animation: scrollDrop 1.8s ease-in-out infinite;
-}
-@keyframes scrollDrop {
-  0% { opacity:0; transform:scaleY(0); transform-origin:top; }
-  50% { opacity:1; transform:scaleY(1); }
-  100% { opacity:0; transform:scaleY(1); transform-origin:bottom; }
-}
+/* WORKOUT */
+.wkcard{background:white;border-radius:var(--r);box-shadow:var(--shmd);padding:24px;margin-bottom:15px;border-top:4px solid var(--green)}
+.wk-section{margin-bottom:18px}
+.wk-stitle{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:600;color:var(--navy);margin-bottom:9px;padding:9px 13px;background:linear-gradient(135deg,var(--g50),var(--g100));border-radius:var(--rsm);border-left:4px solid var(--green)}
+.wk-stitle.wu{border-left-color:var(--gold)}.wk-stitle.cd{border-left-color:var(--navy-light)}.wk-stitle.ps{border-left-color:var(--purple)}
+.exg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.exi{background:var(--g50);border-radius:var(--rsm);padding:11px 13px;border-left:3px solid var(--hur);display:flex;align-items:flex-start;gap:9px}
+.exi.wu-i{border-left-color:var(--gold)}.exi.cd-i{border-left-color:var(--navy-light)}.exi.ps-i{border-left-color:var(--purple)}
+.exn{width:24px;height:24px;border-radius:50%;background:var(--navy);color:white;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.exn.gn{background:var(--green)}.exn.gd{background:var(--gold)}.exn.pu{background:var(--purple)}.exn.bl{background:var(--navy-light)}
+.exb h4{font-size:.77rem;font-weight:700;color:var(--navy);margin-bottom:2px}
+.exb p{font-size:.69rem;color:var(--g700);line-height:1.5}
+.tag{display:inline-block;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:7px;margin-right:3px;margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+.tag-s{background:#e8eeff;color:var(--navy)}.tag-r{background:var(--green-l);color:var(--green)}.tag-t{background:var(--yellow-l);color:var(--yellow)}
+.no-eq{background:var(--yellow-l);border-radius:var(--rsm);padding:15px;text-align:center;color:var(--yellow);font-size:.8rem;font-weight:600}
 
-/* ── CONTENT SECTIONS ── */
-.section {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 80px 24px;
-}
+/* INFO */
+.infostrip{background:white;border-radius:var(--r);box-shadow:var(--sh);padding:17px 19px;margin-bottom:15px}
+.infostrip h3{font-family:'Playfair Display',serif;font-size:.88rem;color:var(--navy);margin-bottom:11px}
+.infopills{display:flex;flex-wrap:wrap;gap:7px}
+.ip{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:7px 11px;font-size:.67rem;color:var(--g700);font-weight:500}
+.ip strong{color:var(--navy);display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px}
 
-/* ── STATS STRIP ── */
-.stats-strip {
-  display: flex;
-  justify-content: center;
-  gap: 0;
-  padding: 0 24px;
-  margin: 0 auto;
-  max-width: 820px;
-}
-.stat-item {
-  flex: 1;
-  text-align: center;
-  padding: 36px 20px;
-  border-right: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.03);
-  backdrop-filter: blur(12px);
-  transition: background 0.3s;
-}
-.stat-item:last-child { border-right: none; }
-.stat-item:hover { background: rgba(255,255,255,0.06); }
-.stat-item:first-child { border-radius: 16px 0 0 16px; }
-.stat-item:last-child { border-radius: 0 16px 16px 0; }
-.stat-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.2rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--gold), var(--gold-l));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: block;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-.stat-label {
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
-}
+/* EXPORT OVERLAY */
+#exportOverlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,36,72,.85);z-index:999;align-items:center;justify-content:center}
+#exportOverlay.show{display:flex}
+.export-modal{background:white;border-radius:var(--r);padding:28px;max-width:380px;width:90%;text-align:center;box-shadow:var(--shmd)}
+.export-modal h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:8px}
+.export-modal p{font-size:.78rem;color:var(--g700);margin-bottom:20px;line-height:1.6}
+.export-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.export-opt{padding:13px 18px;border-radius:var(--rsm);border:2px solid var(--g200);background:var(--g50);font-family:'Inter',sans-serif;font-size:.84rem;font-weight:600;color:var(--navy);cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;gap:10px}
+.export-opt:hover{border-color:var(--navy);background:#f0f4ff}
+.export-opt-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.modal-close{background:none;border:1px solid var(--g200);border-radius:var(--rsm);padding:9px 20px;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;color:var(--g700);cursor:pointer}
+.modal-close:hover{background:var(--g100)}
 
-/* ── CARDS GRID ── */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 0 24px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-.card-glass {
-  background: var(--glass);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 20px;
-  padding: 32px 28px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: all 0.35s;
-  position: relative;
-  overflow: hidden;
-}
-.card-glass::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0;
-  transition: opacity 0.35s;
-}
-.card-glass:hover {
-  background: rgba(255,255,255,0.09);
-  border-color: rgba(201,168,76,0.3);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(201,168,76,0.08);
-}
-.card-glass:hover::before { opacity: 1; }
-.card-icon {
-  width: 50px; height: 50px;
-  border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-}
-.card-icon.gold { background: rgba(201,168,76,0.15); }
-.card-icon.hur  { background: rgba(232,115,74,0.15); }
-.card-icon.blue { background: rgba(27,58,107,0.4); border: 1px solid rgba(27,58,107,0.8); }
-.card-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 12px;
-  line-height: 1.25;
-}
-.card-body {
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.7;
-}
+footer{background:var(--navy-dark);color:rgba(255,255,255,.5);text-align:center;padding:16px;font-size:.67rem;letter-spacing:.03em}
+footer span{color:var(--gold)}
+.fdis{background:rgba(0,0,0,.2);border-radius:7px;padding:8px 13px;margin:7px auto 0;max-width:700px;font-size:.64rem;color:rgba(255,255,255,.4);line-height:1.6}
 
-/* ── CTA SECTION ── */
-.cta-section {
-  text-align: center;
-  padding: 100px 24px 120px;
-  position: relative;
+@media(max-width:640px){
+  .fg{grid-template-columns:1fr}.fgi.full{grid-column:1}
+  .mg{grid-template-columns:1fr 1fr}.cr{grid-template-columns:1fr}
+  .rxig{grid-template-columns:1fr}.exg{grid-template-columns:1fr}
+  .rxdays{grid-template-columns:repeat(4,1fr)}
+  .ht h1{font-size:.9rem}.hbadge{display:none}
+  .export-btn span.en:last-child,.export-btn span.zh:last-child{display:none}
 }
-.cta-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  width: 600px;
-  height: 400px;
-  background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-.cta-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--hur);
-  margin-bottom: 20px;
-}
-.cta-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 20px;
-  color: white;
-}
-.cta-heading em {
-  font-style: italic;
-  color: var(--gold);
-}
-.cta-body {
-  font-size: 0.92rem;
-  color: rgba(255,255,255,0.5);
-  max-width: 440px;
-  margin: 0 auto 48px;
-  line-height: 1.75;
-}
-
-.btn-launch {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 50px;
-  background: linear-gradient(135deg, #1B3A6B, #2A4F8F);
-  border: 1px solid rgba(201,168,76,0.4);
-  color: white;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  border-radius: 60px;
-  cursor: pointer;
-  transition: all 0.35s;
-  box-shadow: 0 0 0 0 rgba(201,168,76,0);
-  overflow: hidden;
-}
-.btn-launch::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--gold), var(--hur));
-  opacity: 0;
-  transition: opacity 0.35s;
-}
-.btn-launch:hover {
-  transform: translateY(-3px) scale(1.02);
-  border-color: var(--gold);
-  box-shadow: 0 0 50px rgba(201,168,76,0.4), 0 12px 40px rgba(0,0,0,0.5);
-}
-.btn-launch:hover::before { opacity: 0.15; }
-.btn-launch span, .btn-launch svg { position: relative; z-index: 1; }
-
-/* ── SECTION DIVIDER ── */
-.divider {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 24px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-}
-
-.section-eyebrow {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 12px;
-  display: block;
-}
-.section-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 700;
-  line-height: 1.15;
-  margin-bottom: 16px;
-  color: white;
-}
-.section-body {
-  font-size: 0.88rem;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.8;
-  max-width: 580px;
-}
-
-/* ── FEATURE ROW ── */
-.feature-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  align-items: center;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 80px 24px;
-}
-.feature-visual {
-  background: var(--glass);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 24px;
-  padding: 40px 32px;
-  backdrop-filter: blur(20px);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.metric-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.metric-icon { font-size: 1.4rem; flex-shrink: 0; width: 36px; text-align: center; }
-.metric-content { flex: 1; }
-.metric-name {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
-  margin-bottom: 6px;
-}
-.metric-bar-bg {
-  height: 5px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.metric-bar {
-  height: 100%;
-  border-radius: 3px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-l));
-}
-.metric-bar.hur { background: linear-gradient(90deg, var(--hur), #f0956e); }
-.metric-bar.blue { background: linear-gradient(90deg, #2A4F8F, #4A7FBF); }
-.metric-val {
-  font-family: 'Playfair Display', serif;
-  font-size: 0.82rem;
-  color: var(--gold);
-  font-weight: 700;
-  flex-shrink: 0;
-  width: 34px;
-  text-align: right;
-}
-
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 32px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.footer-left { font-size: 0.72rem; color: rgba(255,255,255,0.3); }
-.footer-left span { color: var(--gold); }
-.footer-right { font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 0.06em; }
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(30px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-@keyframes fadeDown {
-  from { opacity:0; transform:translateY(-20px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-.reveal.in-view {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 720px) {
-  header { padding: 16px 20px; }
-  nav { display: none; }
-  .cards-grid { grid-template-columns: 1fr; padding: 0 16px; }
-  .feature-row { grid-template-columns: 1fr; gap: 32px; padding: 60px 16px; }
-  .stats-strip { flex-wrap: wrap; }
-  .stat-item { flex: 0 0 50%; border-radius: 0 !important; }
-  footer { padding: 24px 20px; flex-direction: column; text-align: center; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+@media print{
+  header,footer,.disc,.calc-btn,.export-btn,#exportOverlay{display:none!important}
+  body{background:white}
+  .card,.bac,.hr,.rxcard,.wkcard,.cc,.infostrip{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+  #results{display:block!important}
 }
 </style>
 </head>
 <body>
 
-<canvas id="bg"></canvas>
+<!-- EXPORT OVERLAY -->
+<div id="exportOverlay">
+  <div class="export-modal">
+    <h3><span class="en">📥 Export Report</span><span class="zh">📥 导出报告</span></h3>
+    <p><span class="en">Choose your preferred export format:</span><span class="zh">请选择导出格式：</span></p>
+    <div class="export-opts">
+      <button class="export-opt" onclick="doExport('print')">
+        <div class="export-opt-icon" style="background:#e8eeff">🖨️</div>
+        <div><strong><span class="en">Print / Save as PDF</span><span class="zh">打印 / 保存为PDF</span></strong><br>
+        <span style="font-size:.72rem;color:var(--g500)"><span class="en">Best for all devices — use browser Print then "Save as PDF"</span><span class="zh">适用所有设备 — 使用浏览器打印并选择"保存为PDF"</span></span></div>
+      </button>
+      <button class="export-opt" onclick="doExport('html')">
+        <div class="export-opt-icon" style="background:var(--green-l)">💾</div>
+        <div><strong><span class="en">Download HTML File</span><span class="zh">下载HTML文件</span></strong><br>
+        <span style="font-size:.72rem;color:var(--g500)"><span class="en">Complete interactive report — open in any browser</span><span class="zh">完整互动报告 — 可在任何浏览器中打开</span></span></div>
+      </button>
+      <button class="export-opt" onclick="doExport('text')">
+        <div class="export-opt-icon" style="background:var(--yellow-l)">📄</div>
+        <div><strong><span class="en">Download Text Summary</span><span class="zh">下载文字摘要</span></strong><br>
+        <span style="font-size:.72rem;color:var(--g500)"><span class="en">Simple .txt report — easy to share or email</span><span class="zh">简单文字报告 — 方便分享或发送邮件</span></span></div>
+      </button>
+    </div>
+    <button class="modal-close" onclick="closeExport()"><span class="en">Cancel</span><span class="zh">取消</span></button>
+  </div>
+</div>
 
-<div id="app">
+<div class="disc">
+  <p>
+    <strong><span class="en">⚕️ For Educational Purposes Only — Not a Clinical Report</span><span class="zh">⚕️ 仅供教育参考 — 非临床报告</span></strong>
+    <span class="en">This report provides general body composition awareness based on Tanita BIA methodology. It does <strong>not</strong> constitute medical diagnosis. Please consult your <strong>GP or qualified physician</strong> for any health concerns before starting a new exercise or nutrition programme.</span>
+    <span class="zh">本报告基于田宁生物电阻抗分析法提供一般性体成分参考，<strong>不构成</strong>医疗诊断。开始新的运动或营养计划前，请咨询您的<strong>家庭医生或合格医疗人员</strong>。</span>
+  </p>
+</div>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo-lockup">
-      <div class="logo-mark">✦</div>
-      <div class="logo-text">TZU-CHI <span>FITNESS</span></div>
+<header>
+  <div class="hi">
+    <div class="logo-wrap">
+      <img src="data:image/png;base64,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" alt="Tzu-Chi Foundation" style="height:46px;width:auto;display:block;">
     </div>
-    <nav>
-      <a href="#why">Why Health</a>
-    </nav>
-    <a href="tzuchi-tanita-health-report.html" class="header-cta">Open App</a>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-eyebrow">Tzu-Chi Longevity Programme &nbsp;·&nbsp; Powered by Tanita &amp; HUR</div>
-    <h1 class="hero-title">
-      <span class="line1">Longevity</span>
-      <span class="line2">Starts Here</span>
-    </h1>
-    <p class="hero-sub">Your body is your most precious gift. Understand it, strengthen it, and live longer — with science-backed body composition analysis designed for seniors.</p>
-    <div class="hero-cta-group">
-      <a href="tzuchi-tanita-health-report.html" class="btn-primary">
-        Start My Assessment <span class="btn-arrow">→</span>
-      </a>
-      <a href="#why" class="btn-secondary">
-        Why It Matters ↓
-      </a>
+    <div class="ht">
+      <h1><span class="en">Body Composition &amp; Fitness Report</span><span class="zh">体成分与健身报告</span></h1>
+      <p><span class="en">Tzu-Chi Longevity Programme · Powered by Tanita &amp; HUR</span><span class="zh">慈济长寿计划 · Tanita &amp; HUR 提供技术支持</span></p>
     </div>
-    <div class="scroll-hint">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <div class="stats-strip reveal">
-    <div class="stat-item">
-      <span class="stat-num">1%</span>
-      <span class="stat-label">Muscle lost per year after 30</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">8×</span>
-      <span class="stat-label">Lower fall risk with strong muscles</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">12wk</span>
-      <span class="stat-label">To visible body composition change</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">100%</span>
-      <span class="stat-label">Science-backed Tanita technology</span>
+    <div class="hright">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="btn-zh" onclick="setLang('zh')">中文</button>
+      </div>
+      <button class="export-btn" id="exportBtnHdr" onclick="openExport()" style="display:none">
+        <span>📥</span><span class="en">Export</span><span class="zh">导出</span>
+      </button>
+      <div class="hbadge">HUR · TANITA</div>
     </div>
   </div>
+</header>
 
-  <div style="height:80px"></div>
-  <div class="divider"></div>
+<main>
 
-  <!-- WHY HEALTH SECTION -->
-  <section class="section" id="why">
-    <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 60px">
-      <span class="section-eyebrow">The Science of Longevity</span>
-      <h2 class="section-heading">Your health is not just about weight.<br>It's about <em style="font-style:italic;color:var(--gold)">what you're made of</em>.</h2>
-      <p class="section-body">Body composition — the balance of muscle, fat, bone, and water — is one of the most powerful predictors of healthy ageing. Understanding yours is the first step to changing it.</p>
-    </div>
-
-    <div class="cards-grid">
-      <div class="card-glass reveal">
-        <div class="card-icon gold">🔥</div>
-        <h3 class="card-title">Fat Does Not Define You — But It Affects You</h3>
-        <p class="card-body">Excess visceral fat — the fat surrounding your internal organs — silently raises your risk of cardiovascular disease, type 2 diabetes, and metabolic syndrome. It is invisible on the scale, but the Tanita BIA reveals it precisely.</p>
-      </div>
-      <div class="card-glass reveal" style="transition-delay:0.1s">
-        <div class="card-icon hur">💪</div>
-        <h3 class="card-title">Muscle Is the Organ of Longevity</h3>
-        <p class="card-body">Muscle is not just for appearance. It regulates glucose, supports bone density, prevents falls, and keeps your metabolism strong. After 60, sarcopenia — muscle loss — becomes one of the greatest threats to independence. Resistance training is your most powerful antidote.</p>
-      </div>
-      <div class="card-glass reveal" style="transition-delay:0.2s">
-        <div class="card-icon blue">🦴</div>
-        <h3 class="card-title">Strong Bones Mean Years of Mobility</h3>
-        <p class="card-body">Bone density peaks in your 30s and silently declines after 40. Weight-bearing exercise, adequate calcium, and daily sunlight (Vitamin D) are the three pillars of bone health. Know your baseline — so you can protect it.</p>
+<div class="sl" style="margin-top:6px"><div class="dot"></div>
+  <h2><span class="en">Step 1 — Enter Your Measurements</span><span class="zh">第一步 — 输入您的测量数据</span></h2>
+</div>
+<div class="card">
+  <div class="fg">
+    <div class="fgi full">
+      <label class="form-lbl"><span class="en">Gender</span><span class="zh">性别</span></label>
+      <div class="gbrow">
+        <button class="gbbtn active" id="btn-male" onclick="setGender('male')">♂ <span class="en">Male</span><span class="zh">男</span></button>
+        <button class="gbbtn" id="btn-female" onclick="setGender('female')">♀ <span class="en">Female</span><span class="zh">女</span></button>
       </div>
     </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- FEATURE ROW — The App -->
-  <div class="feature-row" id="app-feature">
-    <div class="reveal">
-      <span class="section-eyebrow">Your Personal Fitness Tool</span>
-      <h2 class="section-heading">One report.<br>A complete health picture.</h2>
-      <p class="section-body" style="margin-bottom:20px">Enter your Tanita measurements and receive an instant biological age, body composition analysis, personalised exercise prescription, nutrition guide, posture corrective plan, and a generated workout — all in one place.</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px">
-        <li style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:rgba(255,255,255,.55)"><span style="color:var(--gold);font-size:.7rem">✦</span> Tanita Biological Age calculator</li>
-        <li style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:rgba(255,255,255,.55)"><span style="color:var(--gold);font-size:.7rem">✦</span> Bone mass age-adjusted reference</li>
-        <li style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:rgba(255,255,255,.55)"><span style="color:var(--gold);font-size:.7rem">✦</span> HUR, Dumbbell, Band &amp; Bodyweight workout generator</li>
-        <li style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:rgba(255,255,255,.55)"><span style="color:var(--gold);font-size:.7rem">✦</span> Posture corrective physio-based exercises</li>
-        <li style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:rgba(255,255,255,.55)"><span style="color:var(--gold);font-size:.7rem">✦</span> EN &amp; 中文 bilingual · Export report</li>
-      </ul>
-      <a href="tzuchi-tanita-health-report.html" class="btn-primary" style="display:inline-flex">
-        Open the App <span class="btn-arrow">→</span>
-      </a>
+    <div class="fgi"><label class="form-lbl"><span class="en">Age</span><span class="zh">年龄</span> <span class="u">(<span class="en">years</span><span class="zh">岁</span>)</span></label><input type="number" id="age" min="40" max="100" placeholder="e.g. 68" oninput="showBoneHint()"></div>
+    <div class="fgi"><label class="form-lbl"><span class="en">Height</span><span class="zh">身高</span> <span class="u">(cm)</span></label><input type="number" id="height" min="100" max="220" step="0.1" placeholder="e.g. 162"></div>
+    <div class="fgi"><label class="form-lbl"><span class="en">Weight</span><span class="zh">体重</span> <span class="u">(kg)</span></label><input type="number" id="weight" min="30" max="200" step="0.1" placeholder="e.g. 65.2" oninput="showBoneHint()"></div>
+    <div class="fgi"><label class="form-lbl"><span class="en">Body Fat</span><span class="zh">体脂率</span> <span class="u">(%)</span></label><input type="number" id="fatPct" min="5" max="60" step="0.1" placeholder="e.g. 28.5"></div>
+    <div class="fgi"><label class="form-lbl"><span class="en">Body Fat</span><span class="zh">体脂量</span> <span class="u">(kg)</span></label><input type="number" id="fatKg" min="2" max="80" step="0.1" placeholder="e.g. 18.6"></div>
+    <div class="fgi"><label class="form-lbl"><span class="en">Muscle Weight</span><span class="zh">肌肉重量</span> <span class="u">(kg)</span></label><input type="number" id="muscleKg" min="10" max="80" step="0.1" placeholder="e.g. 43.0"></div>
+    <div class="fgi"><label class="form-lbl"><span class="en">Visceral Fat Level</span><span class="zh">内脏脂肪等级</span> <span class="u">(1–59)</span></label><input type="number" id="visceralFat" min="1" max="59" step="1" placeholder="e.g. 9"></div>
+    <div class="fgi">
+      <label class="form-lbl"><span class="en">Bone Mass</span><span class="zh">骨量</span> <span class="u">(kg)</span></label>
+      <input type="number" id="boneKg" min="0.5" max="6" step="0.1" placeholder="e.g. 2.4" oninput="showBoneHint()">
+      <div class="bone-hint" id="boneHint" style="display:none"></div>
     </div>
+    <div class="fgi"><label class="form-lbl"><span class="en">BMR</span><span class="zh">基础代谢率</span> <span class="u">(kcal — <span class="en">optional</span><span class="zh">可选</span>)</span></label><input type="number" id="bmr" min="800" max="3000" step="1" placeholder="e.g. 1320"></div>
+  </div>
+</div>
 
-    <!-- Animated metrics visual -->
-    <div class="feature-visual reveal" style="transition-delay:0.15s">
-      <div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Sample Report Preview</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:white;line-height:1">62</div>
-          <div style="font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35)">Biological Age</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:.72rem;font-weight:600;padding:4px 12px;border-radius:12px;background:rgba(45,134,83,.2);color:#7effc4">✓ Younger than actual</div>
-          <div style="font-size:.65rem;color:rgba(255,255,255,.3);margin-top:4px">Actual age: 65</div>
-        </div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-icon">🔥</div>
-        <div class="metric-content">
-          <div class="metric-name">Body Fat</div>
-          <div class="metric-bar-bg"><div class="metric-bar" style="width:52%"></div></div>
-        </div>
-        <div class="metric-val">24%</div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-icon">💪</div>
-        <div class="metric-content">
-          <div class="metric-name">Muscle Mass</div>
-          <div class="metric-bar-bg"><div class="metric-bar hur" style="width:75%"></div></div>
-        </div>
-        <div class="metric-val">42kg</div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-icon">🫀</div>
-        <div class="metric-content">
-          <div class="metric-name">Visceral Fat</div>
-          <div class="metric-bar-bg"><div class="metric-bar blue" style="width:30%"></div></div>
-        </div>
-        <div class="metric-val">Lv 7</div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-icon">🦴</div>
-        <div class="metric-content">
-          <div class="metric-name">Bone Mass</div>
-          <div class="metric-bar-bg"><div class="metric-bar" style="width:85%"></div></div>
-        </div>
-        <div class="metric-val">2.4kg</div>
-      </div>
-      <div style="margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)">
-        <div style="font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:10px">Health Score</div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2D8653,#45a76b);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:white">A</div>
-          <div style="font-size:.78rem;color:rgba(255,255,255,.5);line-height:1.6">Excellent profile — biological age younger than actual. Keep up the good work!</div>
-        </div>
-      </div>
+<div class="sl"><div class="dot"></div>
+  <h2><span class="en">Step 2 — Select Available Equipment</span><span class="zh">第二步 — 选择可用器材</span></h2>
+</div>
+<div class="card">
+  <label class="form-lbl" style="margin-bottom:10px;display:block;text-transform:none;letter-spacing:0;font-size:.82rem"><span class="en">Tick all equipment you have access to (select multiple)</span><span class="zh">勾选您可使用的器材（可多选）</span></label>
+  <div class="cb-group">
+    <label class="cbx hur-item" id="cbx-eq-hur"><input type="checkbox" id="eq-hur" onchange="onCB(this,'eq')"><span class="cblabel">🏋️ <span class="en">HUR Machines</span><span class="zh">HUR器械</span></span></label>
+    <label class="cbx" id="cbx-eq-dumbbell"><input type="checkbox" id="eq-dumbbell" onchange="onCB(this,'eq')"><span class="cblabel">🏋️ <span class="en">Dumbbells</span><span class="zh">哑铃</span></span></label>
+    <label class="cbx" id="cbx-eq-band"><input type="checkbox" id="eq-band" onchange="onCB(this,'eq')"><span class="cblabel">🪢 <span class="en">Resistance Bands</span><span class="zh">弹力带</span></span></label>
+    <label class="cbx" id="cbx-eq-bodyweight"><input type="checkbox" id="eq-bodyweight" onchange="onCB(this,'eq')"><span class="cblabel">🙆 <span class="en">Bodyweight Only</span><span class="zh">自重训练</span></span></label>
+  </div>
+</div>
+
+<div class="sl"><div class="dot"></div>
+  <h2><span class="en">Step 3 — Diet Preference</span><span class="zh">第三步 — 饮食偏好</span></h2>
+</div>
+<div class="card">
+  <label class="form-lbl" style="margin-bottom:10px;display:block;text-transform:none;letter-spacing:0;font-size:.82rem"><span class="en">Select your diet type (select one)</span><span class="zh">选择您的饮食类型（选一项）</span></label>
+  <div class="cb-group">
+    <label class="cbx diet-item" id="cbx-diet-normal"><input type="checkbox" id="diet-normal" onchange="onCB(this,'diet')"><span class="cblabel">🍗 <span class="en">Normal Diet</span><span class="zh">普通饮食</span></span></label>
+    <label class="cbx diet-item" id="cbx-diet-vegetarian"><input type="checkbox" id="diet-vegetarian" onchange="onCB(this,'diet')"><span class="cblabel">🥦 <span class="en">Vegetarian Diet</span><span class="zh">素食饮食</span></span></label>
+  </div>
+</div>
+
+<div class="sl"><div class="dot"></div>
+  <h2><span class="en">Step 4 — Posture Assessment</span><span class="zh">第四步 — 姿势评估</span> <span style="font-size:.78rem;color:var(--g500);font-family:'Inter';font-weight:400">(<span class="en">optional</span><span class="zh">可选</span>)</span></h2>
+</div>
+<div class="card">
+  <label class="form-lbl" style="margin-bottom:10px;display:block;text-transform:none;letter-spacing:0;font-size:.82rem"><span class="en">Tick any posture issues observed (select multiple)</span><span class="zh">勾选观察到的姿势问题（可多选）</span></label>
+  <div class="cb-group">
+    <label class="cbx pos-item" id="cbx-pos-rounded"><input type="checkbox" id="pos-rounded" onchange="onCB(this,'pos')"><span class="cblabel">🔄 <span class="en">Rounded Shoulders</span><span class="zh">圆肩</span></span></label>
+    <label class="cbx pos-item" id="cbx-pos-hunch"><input type="checkbox" id="pos-hunch" onchange="onCB(this,'pos')"><span class="cblabel">🦕 <span class="en">Hunched Back</span><span class="zh">驼背</span></span></label>
+    <label class="cbx pos-item" id="cbx-pos-knock"><input type="checkbox" id="pos-knock" onchange="onCB(this,'pos')"><span class="cblabel">🦵 <span class="en">Knock Knees</span><span class="zh">X形腿</span></span></label>
+    <label class="cbx pos-item" id="cbx-pos-bow"><input type="checkbox" id="pos-bow" onchange="onCB(this,'pos')"><span class="cblabel">🦵 <span class="en">Bow Legs</span><span class="zh">O形腿</span></span></label>
+    <label class="cbx pos-item" id="cbx-pos-apt"><input type="checkbox" id="pos-apt" onchange="onCB(this,'pos')"><span class="cblabel">🍑 <span class="en">Anterior Pelvic Tilt</span><span class="zh">骨盆前倾</span></span></label>
+  </div>
+</div>
+
+<button class="calc-btn" onclick="calculate()">🔍 &nbsp;<span class="en">Generate Full Report &amp; Workout Plan</span><span class="zh">生成完整报告与训练计划</span></button>
+
+<div id="results">
+  <div class="bac">
+    <div class="bio-lbl">📊 <span class="en">Tanita Biological Age</span><span class="zh">田宁生物年龄</span></div>
+    <div class="gw"><canvas id="gaugeChart" width="190" height="115"></canvas>
+      <div class="gc"><div class="ga" id="bioAgeDisplay">--</div><div class="gu"><span class="en">Years Old</span><span class="zh">岁</span></div></div>
     </div>
+    <div class="bcomp">
+      <div class="bci"><div class="val" id="chronoDisplay">--</div><div class="lbl"><span class="en">Actual Age</span><span class="zh">实际年龄</span></div></div>
+      <div class="bdiv"></div>
+      <div class="bci"><div class="val" id="diffDisplay">--</div><div class="lbl"><span class="en">Difference</span><span class="zh">差异</span></div></div>
+    </div>
+    <div id="bioStatusBadge" class="bbadge"></div>
   </div>
 
-  <div class="divider"></div>
+  <div class="sl"><div class="dot"></div><h2><span class="en">Composition Overview</span><span class="zh">体成分概览</span></h2></div>
+  <div class="mg" id="metricsGrid"></div>
 
-  <!-- CTA -->
-  <div class="cta-section" id="cta">
-    <div class="cta-glow"></div>
-    <div class="cta-label reveal">Tzu-Chi Longevity Courtyard · Bukit Batok &amp; Singapore</div>
-    <h2 class="cta-heading reveal">Are you ready to begin<br>your <em>fitness journey?</em></h2>
-    <p class="cta-body reveal">Your body is capable of more than you know. Take the first step today — measure, understand, and transform with a programme built for you.</p>
-    <div class="reveal">
-      <a href="tzuchi-tanita-health-report.html" class="btn-launch">
-        <span>✦ &nbsp;Begin My Health Assessment</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
-    </div>
-    <div style="margin-top:24px;font-size:.72rem;color:rgba(255,255,255,.25);line-height:1.8" class="reveal">
-      ⚕️ For educational purposes only · Not a clinical report · Consult your GP for medical advice
-    </div>
+  <div class="sl"><div class="dot"></div><h2><span class="en">Healthy Range Indicators</span><span class="zh">健康范围指标</span></h2></div>
+  <div id="rangeBars"></div>
+
+  <div class="sl"><div class="dot"></div><h2><span class="en">Visual Analysis</span><span class="zh">可视化分析</span></h2></div>
+  <div class="cr">
+    <div class="cc"><div class="ct"><span class="en">Body Composition</span><span class="zh">体成分</span></div><div class="cs"><span class="en">Mass distribution breakdown</span><span class="zh">体重分布</span></div><div class="cw"><canvas id="compositionChart"></canvas></div></div>
+    <div class="cc"><div class="ct"><span class="en">Health Scores</span><span class="zh">健康评分</span></div><div class="cs"><span class="en">vs. healthy senior range</span><span class="zh">与健康老年人范围对比</span></div><div class="cwt"><canvas id="radarChart"></canvas></div></div>
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-left">© 2025 <span>Tzu-Chi Foundation Singapore</span> · Longevity Courtyard Programme</div>
-    <div class="footer-right">POWERED BY TANITA &nbsp;·&nbsp; HUR PNEUMATIC TECHNOLOGY</div>
-  </footer>
+  <div class="sl"><div class="dot"></div><h2><span class="en">Personalised Health Report</span><span class="zh">个性化健康报告</span></h2></div>
+  <div class="hr" id="healthReport"></div>
 
-</div><!-- end #app -->
+  <div class="sl"><div class="dot"></div><h2><span class="en">Exercise &amp; Lifestyle Prescription</span><span class="zh">运动与生活方式处方</span></h2></div>
+  <div class="rxcard" id="rxCard"></div>
 
+  <div class="sl"><div class="dot"></div><h2><span class="en">Your Workout Plan</span><span class="zh">您的训练计划</span></h2></div>
+  <div class="wkcard" id="wkCard"></div>
+
+  <div class="sl"><div class="dot"></div><h2><span class="en">Understanding Your Measurements</span><span class="zh">了解您的测量数据</span></h2></div>
+  <div class="infostrip">
+    <h3>📖 <span class="en">Tanita Reference Guide</span><span class="zh">田宁参考指南</span></h3>
+    <div class="infopills">
+      <div class="ip"><strong><span class="en">Body Fat % (60+)</span><span class="zh">体脂率（60岁+）</span></strong><span class="en">Male: 13–24% Healthy<br>Female: 24–35% Healthy</span><span class="zh">男性：13–24%健康<br>女性：24–35%健康</span></div>
+      <div class="ip"><strong><span class="en">Visceral Fat</span><span class="zh">内脏脂肪</span></strong><span class="en">Level 1–9: Healthy<br>Level 10–14: High<br>Level 15+: Very High</span><span class="zh">1–9级：健康<br>10–14级：偏高<br>15级以上：非常高</span></div>
+      <div class="ip"><strong><span class="en">BMI (Asian)</span><span class="zh">BMI（亚洲标准）</span></strong><span class="en">18.5–22.9: Normal<br>23–27.4: Overweight<br>≥27.5: Obese</span><span class="zh">18.5–22.9：正常<br>23–27.4：超重<br>≥27.5：肥胖</span></div>
+      <div class="ip"><strong><span class="en">Bone Mass</span><span class="zh">骨量</span></strong><span class="en">Peaks age 25–30, declines ~1%/yr after 40.</span><span class="zh">25–30岁达峰值，40岁后每年约下降1%。</span></div>
+      <div class="ip"><strong><span class="en">Tanita Assessment</span><span class="zh">田宁评估</span></strong><span class="en">Reassess monthly or at end of programme.</span><span class="zh">每月或计划结束时重新评估。</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>
+  <p>© 2025 <span>Tzu-Chi Foundation Singapore</span> · <span class="en">Longevity Courtyard Programme</span><span class="zh">长寿庭院计划</span></p>
+  <div class="fdis"><span class="en">For general health education only — not a clinical diagnosis. Consult your GP before starting any exercise or nutrition programme.</span><span class="zh">仅供一般健康教育参考，不构成临床诊断。开始任何运动或营养计划前请咨询您的家庭医生。</span></div>
+</footer>
 <script>
-// ════════════════════════════════════════════════
-// THREE.JS PARTICLE UNIVERSE
-// ════════════════════════════════════════════════
-(function() {
-  const canvas = document.getElementById('bg');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x050d1a, 1);
+// ═══════════════════════════════════════════
+// LANGUAGE
+// ═══════════════════════════════════════════
+let currentLang = 'en';
+function setLang(l) {
+  currentLang = l;
+  document.documentElement.setAttribute('data-lang', l);
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', l === 'zh');
+}
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.z = 5;
+// ═══════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════
+function openExport() { document.getElementById('exportOverlay').classList.add('show'); }
+function closeExport() { document.getElementById('exportOverlay').classList.remove('show'); }
 
-  // ── COLOUR PALETTE ──
-  const NAVY   = new THREE.Color(0x1B3A6B);
-  const GOLD   = new THREE.Color(0xC9A84C);
-  const HUR    = new THREE.Color(0xE8734A);
-  const WHITE  = new THREE.Color(0xFFFFFF);
-  const TEAL   = new THREE.Color(0x0891B2);
+let _exportData = null; // filled after calculate()
 
-  // ── MOUSE ──
-  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-  document.addEventListener('mousemove', e => {
-    mouse.tx = (e.clientX / window.innerWidth  - 0.5) * 2;
-    mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2;
+function doExport(type) {
+  closeExport();
+  if (type === 'print') { window.print(); return; }
+  if (!_exportData) { alert(currentLang==='en'?'Please generate the report first.':'请先生成报告。'); return; }
+  if (type === 'html') {
+    const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+    dlBlob(blob, 'TzuChi_BodyComposition_Report.html');
+  }
+  if (type === 'text') {
+    const d = _exportData;
+    const isEn = currentLang === 'en';
+    const txt = isEn ? `TZU-CHI BODY COMPOSITION HEALTH REPORT
+Generated: ${new Date().toLocaleDateString()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MEASUREMENTS
+Age: ${d.age} years | Gender: ${d.gender==='male'?'Male':'Female'}
+Height: ${d.height} cm | Weight: ${d.weight} kg
+Body Fat: ${d.fatPct}% (${d.fatKg} kg)
+Muscle Mass: ${d.muscleKg} kg
+Visceral Fat Level: ${d.visceralFat}
+Bone Mass: ${d.boneKg||'Not entered'} kg
+BMR: ${d.bmr||'Not entered'} kcal
+BMI: ${d.bmi} kg/m²
+
+RESULTS
+Biological Age: ${d.bioAge} years
+Chronological Age: ${d.age} years
+Difference: ${d.bioAge - d.age > 0 ? '+' : ''}${d.bioAge - d.age} years
+
+STATUS
+Body Fat: ${d.fSt}
+Muscle Mass: ${d.mSt}
+Visceral Fat: ${d.vSt}
+BMI: ${d.bSt}
+${d.boneSt ? 'Bone Mass: ' + d.boneSt : ''}
+
+PROFILE: ${d.profileLabel}
+${d.profileDesc}
+
+DIET: ${d.diet === 'vegetarian' ? 'Vegetarian' : d.diet === 'normal' ? 'Normal Diet' : 'Not specified'}
+EQUIPMENT: ${d.equip.join(', ') || 'None selected'}
+POSTURE ISSUES: ${d.posture.join(', ') || 'None'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DISCLAIMER: For educational purposes only. Not a clinical report.
+Please consult your GP for medical advice.
+© 2025 Tzu-Chi Foundation Singapore · Longevity Programme
+` : `慈济体成分健康报告
+生成日期：${new Date().toLocaleDateString()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+测量数据
+年龄：${d.age}岁 | 性别：${d.gender==='male'?'男':'女'}
+身高：${d.height}cm | 体重：${d.weight}kg
+体脂率：${d.fatPct}%（${d.fatKg}kg）
+肌肉重量：${d.muscleKg}kg
+内脏脂肪等级：${d.visceralFat}
+骨量：${d.boneKg||'未填写'}kg
+基础代谢率：${d.bmr||'未填写'}kcal
+BMI：${d.bmi} kg/m²
+
+结果
+生物年龄：${d.bioAge}岁
+实际年龄：${d.age}岁
+差异：${d.bioAge - d.age > 0 ? '+' : ''}${d.bioAge - d.age}岁
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+免责声明：仅供教育参考，非临床报告。请咨询家庭医生获取医疗建议。
+© 2025 新加坡慈济基金会 · 长寿庭院计划
+`;
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    dlBlob(blob, 'TzuChi_Report.txt');
+  }
+}
+function dlBlob(blob, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+// ═══════════════════════════════════════════
+// CHECKBOX — FIXED (no double-toggle)
+// ═══════════════════════════════════════════
+function onCB(cb, group) {
+  const id = cb.id; // e.g. "eq-hur", "diet-normal", "pos-rounded"
+  const wrapper = document.getElementById('cbx-' + id);
+  if (!wrapper) return;
+
+  // Diet is single-select — uncheck others
+  if (group === 'diet') {
+    document.querySelectorAll('input[id^="diet-"]').forEach(c => {
+      if (c !== cb) {
+        c.checked = false;
+        const w = document.getElementById('cbx-' + c.id);
+        if (w) w.classList.remove('active-diet');
+      }
+    });
+    wrapper.classList.toggle('active-diet', cb.checked);
+  } else if (group === 'eq') {
+    wrapper.classList.toggle('active-eq', cb.checked);
+  } else if (group === 'pos') {
+    wrapper.classList.toggle('active-pos', cb.checked);
+  }
+}
+
+function getChecked(prefix) {
+  return Array.from(document.querySelectorAll('input[id^="' + prefix + '"]'))
+    .filter(c => c.checked)
+    .map(c => c.id.replace(prefix + '-', ''));
+}
+function getDiet() {
+  const c = document.querySelector('input[id^="diet-"]:checked');
+  return c ? c.id.replace('diet-', '') : '';
+}
+
+// ═══════════════════════════════════════════
+// GENDER
+// ═══════════════════════════════════════════
+let gender = 'male';
+function setGender(g) {
+  gender = g;
+  document.getElementById('btn-male').classList.toggle('active', g === 'male');
+  document.getElementById('btn-female').classList.toggle('active', g === 'female');
+  showBoneHint();
+}
+
+// ═══════════════════════════════════════════
+// BONE MASS REFERENCE
+// ═══════════════════════════════════════════
+function getBoneRef(g, age, weight) {
+  const m = g === 'male';
+  let base = m ? (weight < 60 ? 2.5 : weight <= 75 ? 2.9 : 3.2) : (weight < 45 ? 1.8 : weight <= 60 ? 2.2 : 2.5);
+  let decay = 0;
+  if (age > 40) decay = m ? (age - 40) * 0.007 : (age <= 55 ? (age - 40) * 0.012 : 0.18 + (age - 55) * 0.009);
+  const exp = +(base * (1 - decay)).toFixed(2);
+  return { expected: exp, low: +(exp * 0.85).toFixed(2), veryLow: +(exp * 0.72).toFixed(2) };
+}
+function getBoneSt(v, ref) {
+  if (v >= ref.expected * 0.95) return { l: currentLang === 'en' ? 'Excellent' : '优秀', c: 'n' };
+  if (v >= ref.low) return { l: currentLang === 'en' ? 'Normal' : '正常', c: 'n' };
+  if (v >= ref.veryLow) return { l: currentLang === 'en' ? 'Low — Osteopenia Risk' : '偏低 — 骨量减少风险', c: 'w' };
+  return { l: currentLang === 'en' ? 'Very Low — Osteoporosis Risk' : '非常低 — 骨质疏松风险', c: 'h' };
+}
+function showBoneHint() {
+  const w = parseFloat(document.getElementById('weight').value);
+  const a = parseFloat(document.getElementById('age').value);
+  const el = document.getElementById('boneHint');
+  if (!w || !a) { el.style.display = 'none'; return; }
+  const ref = getBoneRef(gender, a, w);
+  const peak = getBoneRef(gender, Math.min(35, a), w);
+  const isEn = currentLang === 'en';
+  el.style.display = 'block';
+  el.innerHTML = isEn
+    ? `<strong>📋 Tanita Reference (${gender === 'male' ? 'Male' : 'Female'}, ${Math.round(a)} yrs, ${w}kg)</strong>
+      Peak bone mass (age 25–35): ~${peak.expected}kg &nbsp;|&nbsp; <b>Age-adjusted expected:</b> ~${ref.expected}kg<br>
+      Low threshold: &lt;${ref.low}kg &nbsp;|&nbsp; Very low: &lt;${ref.veryLow}kg<br>
+      <i style="font-size:.65rem">Source: Tanita Body Weight Science Institute. Clinical diagnosis requires DEXA scan (GP referral).</i>`
+    : `<strong>📋 田宁参考值（${gender === 'male' ? '男' : '女'}，${Math.round(a)}岁，${w}kg）</strong>
+      骨量峰值（25–35岁）：约${peak.expected}kg &nbsp;|&nbsp; <b>年龄调整期望值：</b>约${ref.expected}kg<br>
+      偏低阈值：&lt;${ref.low}kg &nbsp;|&nbsp; 非常低：&lt;${ref.veryLow}kg`;
+}
+
+// ═══════════════════════════════════════════
+// BIOLOGICAL AGE
+// ═══════════════════════════════════════════
+function calcBioAge(age, g, fatPct, muscleKg, weight, visceralFat, bmi, boneKg) {
+  const idealFat = g === 'male' ? 17 : 27;
+  const fatS = (fatPct - idealFat) * 0.45;
+  let vs = visceralFat <= 9 ? -1 : visceralFat <= 12 ? (visceralFat - 9) * 1.5 : visceralFat <= 14 ? 4.5 + (visceralFat - 12) * 3 : 10.5 + (visceralFat - 14) * 4;
+  const mr = (muscleKg / weight) * 100;
+  const ms = ((g === 'male' ? 55 : 48) - mr) * 0.3;
+  const bs = Math.abs(bmi - 22) * 0.3;
+  let boneS = 0;
+  if (boneKg) { const ref = getBoneRef(g, age, weight); boneS = boneKg < ref.veryLow ? 4 : boneKg < ref.low ? 2 : boneKg >= ref.expected * 0.95 ? -1 : 0; }
+  return Math.max(30, Math.min(110, Math.round(age + fatS + vs + ms + bs + boneS)));
+}
+
+// ═══════════════════════════════════════════
+// STATUS
+// ═══════════════════════════════════════════
+function fSt(g, f) {
+  const m = g === 'male', en = currentLang === 'en';
+  if (m) { if (f < 11) return { l: en ? 'Under Fat' : '脂肪不足', c: 'w' }; if (f <= 22) return { l: en ? 'Healthy' : '健康', c: 'n' }; if (f <= 27) return { l: en ? 'Slightly High' : '略高', c: 'w' }; return { l: en ? 'High' : '偏高', c: 'h' }; }
+  else { if (f < 22) return { l: en ? 'Under Fat' : '脂肪不足', c: 'w' }; if (f <= 35) return { l: en ? 'Healthy' : '健康', c: 'n' }; if (f <= 40) return { l: en ? 'Slightly High' : '略高', c: 'w' }; return { l: en ? 'High' : '偏高', c: 'h' }; }
+}
+function vSt(v) { const en = currentLang === 'en'; if (v <= 9) return { l: en ? 'Healthy' : '健康', c: 'n' }; if (v <= 14) return { l: en ? 'High' : '偏高', c: 'w' }; return { l: en ? 'Very High' : '非常高', c: 'h' }; }
+function bmiSt(b) { const en = currentLang === 'en'; if (b < 18.5) return { l: en ? 'Underweight' : '体重不足', c: 'w' }; if (b < 23) return { l: en ? 'Normal' : '正常', c: 'n' }; if (b < 27.5) return { l: en ? 'Overweight' : '超重', c: 'w' }; return { l: en ? 'Obese' : '肥胖', c: 'h' }; }
+function mSt(g, m, w) { const r = (m / w) * 100, en = currentLang === 'en'; if (r < (g === 'male' ? 50 : 43)) return { l: en ? 'Low' : '偏低', c: 'w' }; if (r <= (g === 'male' ? 62 : 54)) return { l: en ? 'Good' : '良好', c: 'n' }; return { l: en ? 'Excellent' : '优秀', c: 'n' }; }
+function sc(c) { return c === 'n' ? 'sn' : c === 'w' ? 'sw' : 'sh'; }
+function bc(c) { return c === 'n' ? 'bn' : c === 'w' ? 'bw' : 'bh'; }
+
+// ═══════════════════════════════════════════
+// PROFILE CLASSIFIER
+// ═══════════════════════════════════════════
+function classifyProfile(g, fatPct, muscleKg, weight, visc, boneKg, age, bmi) {
+  const m = g === 'male', mr = (muscleKg / weight) * 100;
+  const lowM = mr < (m ? 50 : 43), highF = m ? fatPct > 22 : fatPct > 35, obese = bmi >= 27.5;
+  const ref = boneKg ? getBoneRef(g, age, weight) : null, lowB = boneKg && ref && boneKg < ref.low;
+  const en = currentLang === 'en';
+  if (!highF && lowM && lowB) return { id: 'skinny-fragile', label: en ? 'Thin & Low Bone Density' : '消瘦与骨量不足', icon: '🦴', desc: en ? 'Low body fat but insufficient muscle and bone mass — highest sarcopenia and osteoporosis risk.' : '体脂低但肌肉和骨量不足 — 肌少症和骨质疏松风险最高。' };
+  if (!highF && lowM) return { id: 'skinny', label: en ? 'Thin / Low Muscle Mass' : '消瘦/肌肉不足', icon: '💪', desc: en ? 'Low fat but below-recommended muscle mass. Risk of sarcopenia and metabolic slowdown.' : '体脂低但肌肉量低于推荐值，存在肌少症和代谢减缓风险。' };
+  if (obese && visc >= 15) return { id: 'obese-high-risk', label: en ? 'Obese with High Visceral Fat' : '肥胖伴高内脏脂肪', icon: '🚨', desc: en ? 'Elevated body fat with very high visceral fat — significant metabolic risk.' : '体脂偏高且内脏脂肪非常高 — 代谢风险显著。' };
+  if (highF && !lowM) return { id: 'overfat', label: en ? 'Overfat / Sedentary' : '体脂偏高/久坐', icon: '⚖️', desc: en ? 'Body fat above healthy range despite adequate muscle. Typical of sedentary lifestyle.' : '体脂高于健康范围，但肌肉量尚可，典型的久坐生活方式。' };
+  if (highF && lowM) return { id: 'obese-low-muscle', label: en ? 'High Fat & Low Muscle' : '高脂低肌', icon: '🔥', desc: en ? 'Both fat excess and muscle deficit — metabolic syndrome risk.' : '体脂超标且肌肉不足 — 代谢综合征风险。' };
+  if (visc >= 10 && !highF) return { id: 'high-visc', label: en ? 'Central Obesity Risk' : '中心性肥胖风险', icon: '🫀', desc: en ? 'Normal overall fat but elevated visceral fat — cardiovascular risk.' : '整体体脂正常但内脏脂肪偏高 — 心血管风险。' };
+  return { id: 'healthy', label: en ? 'Good Overall Composition' : '体成分良好', icon: '✅', desc: en ? 'Body composition within or near healthy ranges. Focus on maintenance.' : '体成分在健康范围内或接近健康范围，以维持为重。' };
+}
+
+// ═══════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════
+let gaugeI = null, compI = null, radarI = null;
+function drawGauge(bio, chrono) {
+  if (gaugeI) { gaugeI.destroy(); gaugeI = null; }
+  const ctx = document.getElementById('gaugeChart').getContext('2d');
+  const diff = bio - chrono, col = diff < -3 ? '#2D8653' : diff <= 3 ? '#C9A84C' : '#C0392B';
+  const pct = Math.min(1, Math.max(0.04, (bio - 30) / 80));
+  gaugeI = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [pct, 1 - pct], backgroundColor: [col, 'rgba(255,255,255,.12)'], borderWidth: 0, circumference: 180, rotation: 270 }] }, options: { responsive: false, cutout: '72%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, animation: { duration: 1000 } } });
+}
+function drawComp(fatKg, muscleKg, boneKg, weight) {
+  if (compI) { compI.destroy(); compI = null; }
+  const bv = boneKg || weight * 0.04, ot = Math.max(0, weight - fatKg - muscleKg - bv);
+  const en = currentLang === 'en';
+  const ctx = document.getElementById('compositionChart').getContext('2d');
+  compI = new Chart(ctx, { type: 'doughnut', data: { labels: en ? ['Body Fat', 'Muscle', 'Bone', 'Other'] : ['体脂', '肌肉', '骨骼', '其他'], datasets: [{ data: [fatKg, muscleKg, bv, ot], backgroundColor: ['#E8734A', '#1B3A6B', '#C9A84C', '#8892A4'], borderColor: '#fff', borderWidth: 3 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '55%', plugins: { legend: { position: 'right', labels: { font: { size: 10, family: 'Inter' }, padding: 9, usePointStyle: true } }, tooltip: { callbacks: { label: c => `${c.label}: ${c.parsed.toFixed(1)}kg (${((c.parsed / weight) * 100).toFixed(1)}%)` } } }, animation: { duration: 900 } } });
+}
+function drawRadar(fatPct, mr, visc, bmi, g, boneSt) {
+  if (radarI) { radarI.destroy(); radarI = null; }
+  const m = g === 'male', en = currentLang === 'en';
+  const fS = Math.max(0, Math.min(100, 100 - Math.max(0, (fatPct - (m ? 17 : 27)) / ((m ? 30 : 42) - (m ? 17 : 27))) * 80));
+  const mS = Math.max(0, Math.min(100, ((mr - (m ? 48 : 40)) / ((m ? 57 : 50) - (m ? 48 : 40))) * 100));
+  const vS = Math.max(0, Math.min(100, 100 - ((visc - 1) / 20) * 100));
+  const bS = Math.max(0, Math.min(100, 100 - Math.abs(bmi - 21.5) * 8));
+  const boS = boneSt ? { n: 90, w: 55, h: 25 }[boneSt.c] || 70 : 70;
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  radarI = new Chart(ctx, { type: 'radar', data: { labels: en ? ['Body Fat %', 'Muscle Mass', 'Visceral Fat', 'BMI', 'Bone Mass'] : ['体脂率', '肌肉量', '内脏脂肪', 'BMI', '骨量'], datasets: [{ label: en ? 'Your Score' : '您的得分', data: [fS, mS, vS, bS, boS], backgroundColor: 'rgba(27,58,107,.15)', borderColor: '#1B3A6B', borderWidth: 2.5, pointBackgroundColor: '#1B3A6B', pointRadius: 4 }, { label: en ? 'Healthy Target' : '健康目标', data: [85, 85, 85, 85, 85], backgroundColor: 'rgba(201,168,76,.08)', borderColor: '#C9A84C', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, font: { size: 9 }, color: '#8892A4', backdropColor: 'transparent' }, grid: { color: '#EEF1F6' }, pointLabels: { font: { size: 10, family: 'Inter', weight: '500' }, color: '#4A5568' } } }, plugins: { legend: { labels: { font: { size: 10, family: 'Inter' }, padding: 11, usePointStyle: true } } }, animation: { duration: 900 } } });
+}
+
+// ═══════════════════════════════════════════
+// RANGE BAR
+// ═══════════════════════════════════════════
+function rBar(label, value, min, max, goodMin, goodMax, unit) {
+  const v = parseFloat(value), pct = Math.min(100, Math.max(0, ((v - min) / (max - min)) * 100));
+  const inR = v >= goodMin && v <= goodMax, low = v < goodMin;
+  const col = inR ? '#2D8653' : low ? '#C9900A' : '#C0392B';
+  const en = currentLang === 'en';
+  const statusTxt = inR ? (en ? '✓ In Range' : '✓ 正常范围') : low ? (en ? '↑ Below Range' : '↑ 低于范围') : (en ? '↓ Above Range' : '↓ 高于范围');
+  return `<div class="ri"><div class="rh"><span class="rn">${label}</span><span class="rv">${v.toFixed(1)} <span style="font-size:.68rem;color:var(--g500)">${unit}</span></span></div>
+    <div class="rbb"><div class="rbf" style="width:${pct}%;background:${col}"></div><div class="rm" style="left:${pct}%;background:${col}"></div></div>
+    <div class="rl"><span>${min}</span><span style="color:${col};font-weight:600">${statusTxt}</span><span>${max}</span></div></div>`;
+}
+
+// ═══════════════════════════════════════════
+// DIET-SPECIFIC NUTRITION
+// ═══════════════════════════════════════════
+function getDietNutrition(profileId, diet, weight) {
+  const en = currentLang === 'en';
+  const isVeg = diet === 'vegetarian';
+  const protMin = (weight * 1.4).toFixed(0), protMax = (weight * 1.6).toFixed(0);
+
+  const vegProteinSources = en
+    ? ['Greek yoghurt (17g protein/200g) — excellent for seniors, easy to digest', 'Eggs (6g protein/egg) — complete amino acid profile, affordable', 'Tofu & Tempeh (15–20g protein/100g) — best plant-based complete proteins', 'Paneer / Cottage cheese (11–25g protein/100g)', 'Pumpkin seeds (9g protein/28g) — also rich in zinc and magnesium', 'Chickpeas & lentils (15–18g protein/cup cooked) — high fibre too', 'Edamame (17g protein/cup) — complete protein', 'Quinoa (8g protein/cup cooked) — only grain with all essential amino acids', 'Dairy milk or fortified soy milk (7–9g protein/cup)', 'Hemp seeds & chia seeds — omega-3 and protein combined']
+    : ['希腊酸奶（每200g含17g蛋白质）— 老年人易消化', '鸡蛋（每个约6g蛋白质）— 完整氨基酸', '豆腐和天贝（每100g含15–20g蛋白质）— 最佳植物蛋白', '印度鲜奶酪/白干奶酪（每100g含11–25g蛋白质）', '南瓜子（每28g含9g蛋白质）— 富含锌和镁', '鹰嘴豆和扁豆（每杯熟食含15–18g蛋白质）', '毛豆（每杯含17g蛋白质）— 完整蛋白质', '藜麦（每杯熟食含8g蛋白质）— 唯一含全部必需氨基酸的谷物', '乳制品或强化豆奶（每杯7–9g蛋白质）', '火麻仁和奇亚籽 — 含Omega-3和蛋白质'];
+
+  const normalProteinSources = en
+    ? ['Chicken breast (31g protein/100g) — lean, versatile, easy to cook', 'Fish: salmon, tuna, tilapia (20–25g protein/100g) — omega-3 benefits too', 'Greek yoghurt (17g protein/200g) — great as snack or breakfast', 'Eggs (6g protein/egg) — complete amino acid profile', 'Lean beef or pork (26–28g protein/100g) — rich in iron and B12', 'Tofu & Tempeh (15–20g protein/100g) — excellent plant protein options', 'Legumes: chickpeas, lentils (15–18g/cup cooked)', 'Pumpkin seeds (9g/28g) — great high-protein snack', 'Low-fat cottage cheese (11g/100g) — high protein, low calorie', 'Whey protein supplement (20–25g/scoop) — convenient post-workout option']
+    : ['鸡胸肉（每100g含31g蛋白质）— 低脂多样', '鱼类：三文鱼、金枪鱼、罗非鱼（每100g含20–25g蛋白质）', '希腊酸奶（每200g含17g蛋白质）', '鸡蛋（每个约6g蛋白质）', '瘦牛肉或猪肉（每100g含26–28g蛋白质）', '豆腐和天贝（每100g含15–20g蛋白质）', '豆类（每杯熟食含15–18g蛋白质）', '南瓜子（每28g含9g蛋白质）', '低脂白干奶酪（每100g含11g蛋白质）', '乳清蛋白粉（每勺20–25g）'];
+
+  const sources = isVeg ? vegProteinSources : normalProteinSources;
+
+  const baseNotes = isVeg
+    ? (en ? ['Ensure Vitamin B12 supplementation — absent from plant foods; essential for nerve function', 'Iron from plants (non-haem) is less absorbed — pair with Vitamin C foods to increase absorption', 'Omega-3: flaxseeds, chia seeds, walnuts, or algae-based supplement (ALA/EPA/DHA)', 'Zinc: pumpkin seeds, legumes, nuts — vegetarians need ~50% more than meat eaters', 'Calcium: fortified plant milks, tofu (calcium-set), leafy greens, sesame seeds', 'Spread protein across 5–6 meals/day — plant proteins are less efficiently absorbed']
+    : ['确保补充维生素B12 — 植物食物中缺乏，对神经功能至关重要', '植物铁（非血红素铁）吸收率低 — 搭配富含维生素C的食物可提高吸收', 'Omega-3：亚麻籽、奇亚籽、核桃或藻类补充剂', '锌：南瓜子、豆类、坚果 — 素食者需要比肉食者多约50%的锌', '钙：强化植物奶、豆腐（钙凝固）、深绿叶蔬菜、芝麻', '将蛋白质分散到每天5–6餐 — 植物蛋白吸收效率较低'])
+    : (en ? ['Choose lean protein sources at each meal to hit daily protein target', 'Include fatty fish 2–3x/week for omega-3 and anti-inflammatory benefits', 'Limit processed meats (sausages, luncheon meat) — high sodium and saturated fat', 'Balance protein with complex carbs (brown rice, oats) and healthy fats', 'Post-workout: consume protein + simple carbs within 30 min for muscle recovery']
+    : ['每餐选择瘦蛋白质来达到每日蛋白质目标', '每周吃2–3次富脂鱼类以获取Omega-3和抗炎益处', '限制加工肉类（香肠、午餐肉）— 高钠和饱和脂肪', '蛋白质与复合碳水化合物（糙米、燕麦）和健康脂肪均衡搭配', '运动后30分钟内摄入蛋白质+简单碳水化合物以促进肌肉恢复']);
+
+  return { sources, baseNotes, protMin, protMax, isVeg };
+}
+
+// ═══════════════════════════════════════════
+// RX DATA
+// ═══════════════════════════════════════════
+const RX = {
+  'skinny-fragile': { res: { days: '3x/week', intensity: 'Light–Moderate (40–60% 1RM)', sets: '2–3 sets × 15 reps', notes: 'Prioritise compound movements. Use HUR pneumatic equipment. Progress gradually over 8–12 weeks. Never train to failure.' }, life: ['Daily morning sunlight 15–20 min (Vitamin D)', 'Sleep 7–9 hours nightly', 'Fall prevention: grab bars, remove trip hazards', 'Avoid smoking and excess alcohol', 'Calcium supplement if insufficient (consult GP)', 'Gentle movement every hour'], week: ['Rest', 'HUR/Resistance', 'Walk 20min', 'HUR/Resistance', 'Sunlight+Stretch', 'HUR/Resistance', 'Rest'] },
+  'skinny': { res: { days: '3x/week', intensity: 'Moderate (50–70% 1RM)', sets: '3 sets × 12 reps', notes: 'Progressive overload key. Increase resistance 5–10% every 2–3 weeks. Full-body compound exercises most efficient.' }, life: ['Morning sunlight daily', 'Sleep 7–9 hours', 'Manage stress — cortisol breaks down muscle', 'Monthly Tanita reassessment', 'Avoid skipping meals', 'Social group exercise at Longevity Courtyard'], week: ['Resistance', 'Walk 30min', 'Resistance', 'Rest', 'Resistance', 'Swim/Walk', 'Stretch'] },
+  'obese-high-risk': { res: { days: '5x/week (aerobic+light resistance)', intensity: 'Light–Moderate. Very conservative start.', sets: '2–3 sets × 15 reps', notes: 'Safety first. Begin seated/chair-based. RPE 4–6/10. GP clearance recommended.' }, life: ['GP consultation before starting', 'Monitor blood pressure regularly', 'Treat sleep apnoea if present', 'Stress management: meditation, gentle yoga', 'Hourly movement breaks', 'Dietitian referral for meal planning'], week: ['Chair Exercise', 'Walk 20min', 'Seated Resist.', 'Rest', 'Walk 20min', 'Aqua/Bike', 'Rest'] },
+  'overfat': { res: { days: '4x/week', intensity: 'Moderate (55–70% 1RM)', sets: '3 sets × 15 reps', notes: 'Combine resistance and aerobic. Circuit format burns more while preserving muscle.' }, life: ['8,000–10,000 steps daily', 'Sleep 7–8 hours', 'Mindful eating: eat slowly, no distractions', 'Food diary for 4–6 weeks', 'Regular monthly body composition review', 'Reduce screen time evenings'], week: ['Resistance', 'Cardio 30min', 'Resistance', 'Walk 45min', 'Resistance', 'Circuit', 'Rest'] },
+  'obese-low-muscle': { res: { days: '4–5x/week', intensity: 'Moderate (50–65% 1RM)', sets: '3 sets × 15 reps', notes: 'Muscle building is metabolic priority — raises BMR and improves insulin sensitivity.' }, life: ['Consistent sleep schedule', 'Reduce sedentary time', 'Group fitness at Longevity Courtyard', 'Manage stress', 'Monthly Tanita checks', 'Intermittent fasting 12:12 only if GP-approved'], week: ['Resistance', 'Bike 30min', 'Resistance', 'Walk 40min', 'Resistance', 'Circuit', 'Rest'] },
+  'high-visc': { res: { days: '5x/week', intensity: 'Moderate aerobic + Light resistance', sets: '2–3 sets × 15 reps', notes: 'Aerobic is most potent for visceral fat. Target 150–180 min/week aerobic. Resistance 2x/week.' }, life: ['Daily aerobic activity', 'Reduce/eliminate alcohol', 'Sleep 7–8 hours', 'Stress management: Tai Chi, mindfulness', 'Annual health screening', 'Quit smoking if applicable'], week: ['Walk 40min', 'Resistance', 'Walk 45min', 'Swim/Bike', 'Walk 40min', 'Resistance', 'Rest'] },
+  'healthy': { res: { days: '3–4x/week', intensity: 'Moderate–Vigorous (60–75% 1RM)', sets: '3 sets × 10–12 reps', notes: 'Maintenance focus. Progressive overload prevents age-related muscle loss. Add balance and flexibility work.' }, life: ['Maintain exercise consistency', 'Monthly Tanita at Longevity Courtyard', 'Stay socially active', 'Balance training 2–3x/week for fall prevention', 'Daily stretching 10–15 min', 'Continue calcium and Vitamin D'], week: ['Full Body Resist.', 'Walk/Swim', 'Resistance', 'Balance+Stretch', 'Cardio 30min', 'Resist+Flex', 'Rest'] }
+};
+
+// ═══════════════════════════════════════════
+// POSTURE — Full Physio-Accurate Data
+// ═══════════════════════════════════════════
+const POSTURE = {
+  rounded: {
+    name: 'Rounded Shoulders', zh: '圆肩',
+    icon: '🔄',
+    cause: 'Rounded shoulders occur when the scapulae (shoulder blades) protract and tilt forward, pulling the shoulder joint into internal rotation. This is primarily caused by an anterior-posterior muscle imbalance: the pectoralis major, pectoralis minor, anterior deltoid, and latissimus dorsi become overactive and shortened (tight), while the posterior muscles — rhomboids, middle and lower trapezius, posterior deltoid, infraspinatus, and teres minor (external rotators) — become elongated, underactivated, and weak. Prolonged sitting, smartphone use, and desk posture all reinforce this pattern. Over time it can cause neck pain, shoulder impingement, and reduced breathing capacity.',
+    tightMuscles: 'Pectoralis major & minor (chest), Anterior deltoid, Latissimus dorsi, Subscapularis (internal rotator)',
+    weakMuscles: 'Rhomboids, Middle & lower trapezius, Posterior deltoid, Infraspinatus & teres minor (external rotators), Serratus anterior',
+    hur: [
+      { ex: 'HUR Pulley Face Pull', how: 'Set pulley to nose/face height. Grip rope with both hands, step back until arms extended. Pull rope toward your face — elbows must flare HIGH and WIDE (above shoulder level). Externally rotate at end so thumbs point behind you. Hold 1 sec. Squeeze rear deltoids and rhomboids. Return slowly. THIS is the most effective machine exercise for rounded shoulders.' },
+      { ex: 'HUR Pulley Wide Grip Row', how: 'Set pulley at chest height. Wide overhand grip (beyond shoulder width). Pull to chest with elbows wide and flared out, not tucked. Squeeze between shoulder blades (rhomboids and mid-trap). Hold 1 sec. Return controlled.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Bent-Over Reverse Fly', how: 'Hinge forward at hips 45°, slight knee bend, spine neutral. Arms hanging, palms facing each other. Raise arms laterally — imagine trying to touch the ceiling with your elbows. Squeeze rhomboids and posterior deltoid at top. Lower slowly 3 sec. Do NOT swing — this is a controlled movement.' },
+      { ex: 'Dumbbell Bent-Over Face Pull', how: 'Same hinge position 45°. Grip dumbbells with thumbs up. Pull toward your face with elbows flaring high and wide, externally rotating arms at end. Activates the same external rotators as the cable face pull.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Face Pull', how: 'Anchor band at face height (door handle or pole). Grip with both hands, step back until tension. Pull toward face with elbows high and wide — mirror the HUR pulley technique. External rotation at end with thumbs pointing back.' },
+      { ex: 'Resistance Band Bent-Over Reverse Fly', how: 'Stand on band with feet hip-width. Hinge forward 45°, grip band ends. Raise arms laterally with control. Targets posterior deltoid and rhomboids.' }
+    ],
+    bw: [
+      { ex: 'Bent-Over Reverse Fly (Bodyweight / Water Bottles)', how: 'Hinge forward 45°, arms hanging. Raise arms laterally, squeezing shoulder blades together at the top. Hold 2 sec. Can use 500ml water bottles for light resistance.' },
+      { ex: 'Wall Angel', how: 'Stand with back flat against wall, feet 15cm from baseboard. Press lower back, upper back, and head to wall. Raise arms to goalpost position (elbows 90°) — both arms touching wall. Slide arms overhead without losing wall contact. Return slowly. 10 slow reps.' }
+    ],
+    stretch: [
+      { name: 'Doorway Chest Stretch', how: 'Stand in doorway. Place forearms on doorframe at 90°. Step forward gently until you feel a stretch across the chest (pec major and pec minor). Hold 20–30 sec. Repeat 3x daily. Also helps anterior deltoid.' },
+      { name: 'Chest Stretch on Chair', how: 'Sit tall. Clasp hands behind head (or behind back). Gently squeeze elbows back and lift chest forward. Hold 15–20 sec. Repeat 3x. Safe for seated seniors.' },
+      { name: 'Cross-Body Shoulder Stretch', how: 'Bring one arm across the chest, hold with opposite hand just above the elbow. Hold 20 sec. Stretches posterior deltoid and external rotators. Repeat other side.' }
+    ]
+  },
+  hunch: {
+    name: 'Hunched Back (Thoracic Kyphosis)', zh: '驼背（胸椎后凸）',
+    icon: '🦕',
+    cause: 'Thoracic kyphosis is an excessive forward curvature of the upper spine (thoracic vertebrae T1–T12). In seniors it is primarily postural — caused by weak thoracic extensor muscles (erector spinae, multifidus, rhomboids) combined with tight shortened chest muscles (pectoralis major/minor) and hip flexors. It often co-exists with rounded shoulders and forward head posture, creating what physiotherapists call "upper crossed syndrome." Age-related vertebral compression (common after 60), reduced thoracic mobility, and years of sedentary posture all contribute. Untreated, it reduces lung capacity, increases fall risk, and accelerates spinal degeneration. Research (Bodyset, Healthline 2023) confirms that exercises targeting thoracic extensors, rhomboids, and core — combined with chest/hip flexor stretching — are the most effective physiotherapy approach.',
+    tightMuscles: 'Pectoralis major & minor, Anterior deltoid, Hip flexors (iliopsoas, rectus femoris), Upper trapezius, SCM (neck)',
+    weakMuscles: 'Erector spinae (thoracic segment), Multifidus, Rhomboids, Middle & lower trapezius, Gluteus maximus, Deep core muscles (transverse abdominis)',
+    hur: [
+      { ex: 'HUR Back Extension', how: 'Sit in machine with lumbar/thoracic pad. Begin in slight forward lean. Extend spine backward to fully upright position — imagine "growing tall." Squeeze erector spinae at the top. Return forward slowly under control. Do NOT hyperextend. This directly targets the thoracic extensors most affected by kyphosis.' },
+      { ex: 'HUR Pulley Wide Grip Row', how: 'Set pulley at chest height. Wide overhand grip. Pull to chest with elbows flaring out wide. This engages the rhomboids and middle trapezius at peak contraction — the specific muscles that pull the thoracic spine into extension and correct the forward hunch.' },
+      { ex: 'HUR Lats Pull Down', how: 'Wide overhand grip. Pull bar to upper chest (not behind neck). Lean back slightly 10–15°. Squeezing lats helps depress and retract the scapulae, supporting thoracic extension.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Lean-Over Row', how: 'Hinge forward at 45°, support with one hand on chair. Row dumbbell from hanging position to hip (not waist — pulling to the hip preferentially activates lower and mid trapezius). Squeeze mid-back at top. Lower slowly. Alternate sides.' },
+      { ex: 'Dumbbell Bent-Over Reverse Fly', how: 'Hinge at hips 45°. Raise arms out to the sides, leading with elbows. Squeezes rhomboids and mid-back — directly counteracts the forward rounding of thoracic kyphosis.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Wide Grip Row', how: 'Anchor band at chest height. Sit or stand. Grip with wide overhand grip. Pull band to chest with elbows flaring wide. Squeeze rhomboids at peak. Return slowly. Targets the same mid-back extensors as HUR wide grip row.' },
+      { ex: 'Resistance Band Bent-Over Reverse Fly', how: 'Stand on band. Hinge forward. Raise arms laterally — focuses on rhomboids, mid-trapezius, and posterior deltoid, all critical for correcting forward thoracic posture.' }
+    ],
+    bw: [
+      { ex: 'Superman Hold', how: 'Lie face down (prone). Arms extended forward, legs straight. Simultaneously lift arms, chest, and legs off the floor. Keep head in neutral (looking down at floor). Hold 2–3 sec at top. Lower slowly. Targets erector spinae, multifidus, gluteus maximus.' },
+      { ex: 'Bent-Over Reverse Fly (Bodyweight)', how: 'Hinge forward 45°, arms hanging. Raise arms laterally, squeeze shoulder blades. Use water bottles for added resistance.' },
+      { ex: 'Chair-Assisted Thoracic Extension', how: 'Sit at edge of chair, clasp hands behind head, elbows wide. Gently extend the upper back backwards over the chair back. Feel the thoracic spine open and extend. Hold 5–10 sec. Return slowly. 3 sets × 10 reps.' }
+    ],
+    stretch: [
+      { name: 'Thoracic Extension over Chair', how: 'Sit with mid-back against chair top edge. Support neck with hands clasped behind head. Gently arch backward over the chair — extend the thoracic (not lumbar) spine. Hold 15–20 sec. Repeat 3x. Restores thoracic mobility.' },
+      { name: 'Chest/Pec Doorway Stretch', how: 'Forearms on doorframe at chest height, step through. Hold 20–30 sec × 3. Releases tight pectorals pulling the spine forward.' },
+      { name: 'Child Pose with Thoracic Rotation', how: 'From seated on floor or low chair, lean forward and reach one arm under the body, rotating the thoracic spine. Hold 15 sec each side. Improves thoracic rotational mobility.' }
+    ]
+  },
+  knock: {
+    name: 'Knock Knees (Genu Valgum)', zh: 'X形腿（膝外翻）',
+    icon: '🦵',
+    cause: 'Knock knees (genu valgum) involve the knees caving inward (medially) during standing and movement. The primary cause is a muscle imbalance at the hip: the hip abductors — specifically the gluteus medius and gluteus minimus — are weak and unable to prevent the femur (thigh bone) from internally rotating and adducting. When these muscles are insufficient, the stronger hip adductors (inner thigh) and the tight tensor fasciae latae (TFL/IT band) overpower them, pulling the knees together. Research published in PMC (2015, hip-focused neuromuscular exercise interventions) confirms that gluteus medius weakness is the primary correctable factor in dynamic knee valgus. A 2025 RCT found strengthening pelvic stabilisers (gluteus medius, gluteus maximus) significantly reduced knee valgus angle. Note: in seniors, anterior pelvic tilt often worsens knee valgus — addressing both is optimal.',
+    tightMuscles: 'Hip adductors (adductor magnus, adductor longus, gracilis), Tensor fasciae latae (TFL/IT band), Hip internal rotators',
+    weakMuscles: 'Gluteus medius (primary — hip abductor), Gluteus minimus, Gluteus maximus, Vastus medialis oblique (VMO — inner quad), Tibialis posterior (ankle/arch)',
+    hur: [
+      { ex: 'HUR Abduction', how: 'Sit upright, inner thigh pads placed just above inner knees. Push both legs OUTWARD against resistance. This directly targets gluteus medius and minimus — the key muscles to correct knock knees. Hold 1 sec at full outward range. Return slowly. Do not lean to either side.' },
+      { ex: 'HUR Leg Extension', how: 'Targets the vastus medialis oblique (VMO) — the inner portion of the quadriceps. Sit upright, fully extend both legs, focusing on squeezing the inner quad at full extension. VMO weakness allows the knee to cave in during loading.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Sumo Squat', how: 'Wide stance, toes pointing 45° outward. Hold dumbbell centrally. Squat until thighs near parallel. As you descend, actively push knees OUT in the direction of your toes — do NOT allow them to cave inward. This actively trains glute med under load.' },
+      { ex: 'Single-Leg Abduction Kick (Dumbbell)', how: 'Place dumbbell at the outer side of the kicking leg ankle. Standing on one leg (hold chair for balance), kick the weighted leg directly outward to the side. Squeeze glute med at top, lower slowly. 15 reps each leg.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Abduction Kicks', how: 'Place band around both ankles. Stand with feet hip-width. Kick one leg directly outward (abduction) against resistance. Keep pelvis level — do not let the hip hike. Hold 1 sec at peak. Lower slowly. Directly targets gluteus medius and minimus.' },
+      { ex: 'Resistance Band Banded Sumo Squat', how: 'Place band just above knees. Wide stance, toes 45° out. Squat while actively pushing knees outward against the band — the band provides tactile feedback when knees start caving.' }
+    ],
+    bw: [
+      { ex: 'Sumo Squat', how: 'Wide stance, toes 45° out. Squat with conscious effort to push knees out in line with toes. Use chair for balance if needed. Progress from holding chair to hands on thighs to arms forward.' },
+      { ex: 'Single-Leg Sideways Kick', how: 'Stand tall, hold chair. Kick one leg directly to the side — no forward or backward movement. Hold 1 sec at top, lower slowly. Activates gluteus medius. Do both legs.' },
+      { ex: 'Clamshell', how: 'Lie on side, hips stacked, knees bent 45°. Keeping feet together, rotate the top knee up toward the ceiling (like a clamshell opening). Hold 2 sec. Lower slowly. Isolation exercise for gluteus medius.' }
+    ],
+    stretch: [
+      { name: 'Hip Adductor Butterfly Stretch', how: 'Seated on chair or floor, bring soles of feet together. Gently press knees outward toward floor. Hold 20–30 sec. Stretches the tight hip adductors (gracilis, adductor longus) that pull knees inward.' },
+      { name: 'TFL / IT Band Stretch', how: 'Standing, cross the affected leg behind the other. Lean body weight away from the back leg. Feel stretch on outer hip. Hold 20–30 sec each side. Releases the tight TFL that contributes to internal femoral rotation.' },
+      { name: 'Pigeon Pose (Chair-Adapted)', how: 'Sit in chair. Cross ankle over opposite knee (figure-four). Lean forward gently from hips — feel deep glute stretch. Hold 20 sec each side. Releases hip internal rotators and piriformis.' }
+    ]
+  },
+  bow: {
+    name: 'Bow Legs (Genu Varum)', zh: 'O形腿（膝内翻）',
+    icon: '🦵',
+    cause: 'Bow legs (genu varum) is the opposite of knock knees — the knees curve outward while the ankles touch. The functional (correctable through exercise) form is driven by weakness of the hip adductors (inner thigh: adductor magnus, adductor longus, gracilis, pectineus) which fail to bring the knees to a neutral alignment. The outer leg muscles — including the IT band/TFL and gluteus maximus — can become relatively overactive, pulling the legs into external rotation and varus alignment. In seniors, this pattern also increases lateral knee compartment loading, accelerating cartilage wear. Note: structural bone varus (tibia bowed outward) is not correctable with exercise alone — a physiotherapist or orthopaedic doctor should assess this. The exercises below address functional/muscular varus.',
+    tightMuscles: 'Tensor fasciae latae (TFL), Iliotibial (IT) band, Biceps femoris (outer hamstring), Gluteus maximus (outer fibres), Lateral hip external rotators',
+    weakMuscles: 'Hip adductors (adductor magnus, adductor longus, gracilis, pectineus), Vastus medialis oblique (VMO — inner quad), Tibialis anterior',
+    hur: [
+      { ex: 'HUR Adduction', how: 'Sit upright in machine, outer thigh pads just above knees. Squeeze both legs INWARD against resistance. This is a direct isolation exercise for the hip adductors (inner thigh). Hold 1 sec at full inward squeeze. Return slowly. This is the most targeted machine exercise for bow leg correction.' },
+      { ex: 'HUR Leg Extension', how: 'Focus on VMO (inner quad) activation by sitting with toes slightly turned inward. Extend to full lock, squeeze at top for 2 sec. VMO is the inner portion of the quadriceps and helps bring knees inward during weight-bearing.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Sumo Squat with Knee Squeeze', how: 'Wide stance, toes 45° out. Hold dumbbell centrally. At the bottom of the squat, actively squeeze knees INWARD (as if trying to touch them together). This isometrically contracts the adductors under load — very effective for bow leg retraining.' },
+      { ex: 'Single-Leg Adduction Kick (Dumbbell)', how: 'Strap or hold dumbbell at the inner ankle of the kicking leg. Stand tall (hold chair), kick the leg across the body (adduction). Hold 1 sec at end range. Return slowly. Directly targets adductors.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Single-Leg Adduction Kick', how: 'Anchor band at ankle height to a fixed point (e.g., chair leg). Loop around the working ankle. Stand sideways to anchor, kick leg across body (adduction). Squeeze inner thigh. Return slowly. 15 reps each leg.' },
+      { ex: 'Resistance Band Standing Adduction', how: 'Anchor band at ankle height. Loop around one ankle. Stand with legs apart and bring the banded leg toward and across the other (like closing scissors). Targets adductor magnus and longus.' }
+    ],
+    bw: [
+      { ex: 'Standing Adduction Kick (Bodyweight)', how: 'Stand tall holding chair for balance. Kick one leg inward across the body (adduction). Squeeze inner thigh at peak. Hold 1 sec. Lower slowly. Both legs. Gentle but effective for seniors.' },
+      { ex: 'Sumo Squat with Inner Squeeze', how: 'Wide stance. At bottom of squat, place hands on inner knees and push knees inward (assistance-resistance). Activates adductors actively and provides proprioceptive cueing.' },
+      { ex: 'Seated Ball/Pillow Squeeze', how: 'Sit on chair. Place a small pillow or rolled towel between knees. Squeeze knees together against pillow for 10 sec, release. 15 reps. Simple and safe adductor isometric exercise.' }
+    ],
+    stretch: [
+      { name: 'IT Band / TFL Stretch (Standing)', how: 'Cross one foot behind the other. Lean body to the side (same direction as the back foot). Feel stretch on outer hip and thigh. Hold 20–30 sec each side. Releases the tight TFL and IT band pulling knees outward.' },
+      { name: 'Lateral Hip Stretch', how: 'Seated, cross one leg over the other (ankle on knee). Pull knee gently toward opposite shoulder. Feel deep outer hip stretch. Hold 20 sec each side. Releases tight external rotators.' },
+      { name: 'Quad and Hip Flexor Stretch (Seated)', how: 'Sit at edge of chair. Slide one leg backward off the chair edge until you feel a stretch at the front of the hip. Keep torso upright. Hold 20–30 sec. Stretches tight hip flexors that affect pelvic alignment.' }
+    ]
+  },
+  apt: {
+    name: 'Anterior Pelvic Tilt', zh: '骨盆前倾',
+    icon: '🍑',
+    cause: 'Anterior pelvic tilt (APT) occurs when the front of the pelvis drops and the back rises, creating an exaggerated lumbar lordosis (lower back arch). It is caused by a specific pattern: the hip flexors (iliopsoas, rectus femoris) and lower back extensors (erector spinae) are overactive and shortened, while the opposing muscles — rectus abdominis, obliques, gluteus maximus, and hamstrings — are weak and lengthened. Prolonged sitting tightens the hip flexors; a sedentary lifestyle leads to weak glutes and core. In seniors, this pattern increases compressive load on the lumbar spine (L3–L5), contributes to low back pain, and increases risk of disc pathology. Physiotherapy for APT focuses on: (1) stretching tight hip flexors and lumbar extensors, (2) strengthening weak abdominals and gluteus maximus, and (3) neuromuscular retraining of pelvic neutral position.',
+    tightMuscles: 'Iliopsoas (primary hip flexor), Rectus femoris (quad/hip flexor), Erector spinae (lumbar — lower back extensors), TFL',
+    weakMuscles: 'Rectus abdominis & obliques (anterior core), Gluteus maximus (primary hip extensor and posterior pelvic tilter), Hamstrings, Transverse abdominis (deep stabiliser)',
+    hur: [
+      { ex: 'HUR Abdominal', how: 'Sit in machine. Start with spine in neutral. Flex the trunk forward from the thoracic and lumbar spine — do NOT pull with the arms. Exhale and pull the sternum toward the pelvis, curling the spine. Hold 1 sec at peak contraction. Return to neutral slowly (do NOT hyperextend back). This directly strengthens the rectus abdominis to resist the anterior pelvic tilt.' },
+      { ex: 'HUR Back Extension (Glute Focus)', how: 'Sit in HUR Back Extension. Instead of focusing on thoracic extension, initiate the movement by squeezing the GLUTES first. Drive hips into the pad and contract the gluteus maximus at the top. This version strengthens the primary posterior pelvis tilter. Hold glute squeeze 1–2 sec at top.' },
+      { ex: 'HUR Leg Curl', how: 'Hamstrings are posterior pelvic tilters — they oppose the forward pull of the hip flexors. Lying or seated leg curl: curl heels toward glutes, hold 1 sec, lower slowly. Stronger hamstrings help counteract the anterior tilt.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Seated Knee Tuck', how: 'Sit on edge of chair. Hold dumbbell between knees or at ankles. Draw both knees toward chest simultaneously — curling the lower abdominals. Keep spine slightly rounded (posterior tilt). Hold 1 sec at top. Lower slowly. Targets lower rectus abdominis and obliques.' },
+      { ex: 'Dumbbell Deadlift (Glute Drive Focus)', how: 'Hold dumbbells. Hinge at hips (not waist), push hips backward. Lower until shins touch weight, then drive hips FORWARD to standing — squeeze glutes hard at the top of the movement. This is the key hip extension pattern to retrain glute activation.' },
+      { ex: 'Dumbbell Sumo Squat', how: 'Wide stance. At top of squat, perform a strong posterior pelvic tuck — squeeze glutes and tuck tailbone under. This retrains gluteus maximus activation and pelvic neutral position.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Knee Tuck', how: 'Anchor band behind you at ankle height. Loop around both ankles. Seated at chair edge, draw knees toward chest against band resistance. Activates lower abdominals and hip flexors in a safe range. 15 reps.' },
+      { ex: 'Resistance Band Hip Thrust', how: 'Sit on floor with upper back on chair seat. Place band across hips, anchor ends under feet. Drive hips upward by squeezing glutes — hold 2 sec at top. Lower slowly. Most effective glute max exercise for APT correction.' },
+      { ex: 'Resistance Band Pull-Through (Posterior Tilt)', how: 'Anchor band at floor level behind you. Stand facing away, reach back and grip band between legs. Drive hips forward, squeezing glutes — posterior pelvic tilt at top. Hold 1 sec. Retrains hip hinge and glute activation pattern.' }
+    ],
+    bw: [
+      { ex: 'Seated Knee Tuck', how: 'Sit at chair edge. Draw both knees toward chest with control. Lower slowly. 3 sets × 15 reps. Lower abdominal activation — key for countering the anterior pelvic tilt.' },
+      { ex: 'Pelvic Tilt (Supine)', how: 'Lie on back, knees bent, feet flat. Flatten lower back firmly to floor by contracting abdominals and tilting pelvis posteriorly. Hold 5–10 sec. Release. 15 reps. This is the foundational neuromuscular exercise for retraining pelvic neutral position.' },
+      { ex: 'Glute Bridge', how: 'Lie on back, knees bent. Drive hips upward by squeezing glutes — hold 2 sec at top. Do NOT hyperextend the lower back. Lower slowly. Builds gluteus maximus, the primary muscle opposing APT.' }
+    ],
+    stretch: [
+      { name: 'Hip Flexor Kneeling Lunge Stretch', how: 'Kneel on one knee (use mat or folded towel). Step other foot forward. Drive hips gently forward until you feel a deep stretch at the front of the kneeling hip (iliopsoas). Keep torso upright. Hold 20–30 sec. Repeat 3x each side. The most effective stretch for tight hip flexors causing APT.' },
+      { name: 'Rectus Femoris Stretch (Quad Stretch)', how: 'Stand holding chair. Bend one knee, grip ankle, pull heel toward glutes. Keep knees together and push hips slightly forward. Hold 20–30 sec each side. Stretches rectus femoris (the quad muscle that also flexes the hip).' },
+      { name: 'Knee-to-Chest Lower Back Stretch', how: 'Lie on back. Pull one knee to chest with both hands. Hold 20 sec. Then both knees together 20 sec. Releases tight lumbar extensors and provides posterior pelvic tilt feedback. Repeat 3x.' }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════
+// RX CARD BUILDER
+// ═══════════════════════════════════════════
+function buildRxCard(profile, age, equipList, postureList, diet, weight) {
+  const pid = profile.id, data = RX[pid] || RX['healthy'];
+  const en = currentLang === 'en', senior = age >= 70;
+  const dietNut = getDietNutrition(pid, diet, weight);
+  const days = en ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] : ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+  const daysHTML = data.week.map((act, i) => `<div class="rxday ${act.toLowerCase().includes('rest') ? 'rd' : 'ad'}"><div class="dn">${days[i]}</div><div class="da">${act}</div></div>`).join('');
+  const caution = (senior || pid === 'obese-high-risk')
+    ? `<div class="cautbox"><strong>⚠️ ${en ? 'Safety Note' : '安全提示'}</strong>${age >= 70 ? (en ? 'At age ' + age + ', ensure initial sessions are supervised. ' : '年龄' + age + '岁，初期锻炼请确保有人陪同指导。') : ''}${pid === 'obese-high-risk' ? (en ? 'Obtain GP medical clearance before commencing. ' : '开始前请获得家庭医生医疗许可。') : ''}${en ? 'Stop if you experience chest pain, dizziness, or sharp joint pain.' : '如出现胸痛、头晕或关节剧烈疼痛请立即停止。'}</div>`
+    : `<div class="okbox"><strong>💚 ${en ? "Coach's Note" : "教练提示"}</strong> ${en ? 'Always warm up 5–10 min before training. Increase resistance only when you can complete all sets with perfect form. 12 weeks of consistency beats intensity.' : '训练前始终热身5–10分钟。只有在能以完美姿势完成所有组数时才增加阻力。12周的坚持胜过任何单次高强度训练。'}</div>`;
+  const postureHTML = postureList.length > 0 ? buildPostureTabContent(postureList, equipList) : `<div style="text-align:center;padding:20px;color:var(--g500);font-size:.8rem">${en ? 'No posture issues selected. Return to Step 4 to add posture assessments.' : '未选择姿势问题。请返回第四步添加姿势评估。'}</div>`;
+
+  const nutHTML = `
+    <div class="rxi gd" style="margin-bottom:12px"><h4>🥗 ${dietNut.isVeg ? (en ? '🥦 Vegetarian Nutrition Strategy' : '🥦 素食营养策略') : (en ? '🍗 Normal Diet Nutrition Strategy' : '🍗 普通饮食营养策略')}</h4>
+    <p>${en ? `Daily protein target: <strong>${dietNut.protMin}–${dietNut.protMax}g</strong> (1.4–1.6g/kg)` : `每日蛋白质目标：<strong>${dietNut.protMin}–${dietNut.protMax}g</strong>（1.4–1.6g/kg）`}</p></div>
+    <div style="margin-bottom:12px"><strong style="font-size:.78rem;color:var(--navy)">${en ? '⭐ Top High-Protein Foods for You:' : '⭐ 适合您的高蛋白食物：'}</strong>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px">
+    ${dietNut.sources.map((s, i) => `<div class="rxi ${i % 2 === 0 ? 'gr' : 'gd'}"><p style="font-size:.7rem">✦ ${s}</p></div>`).join('')}
+    </div></div>
+    <div><strong style="font-size:.78rem;color:var(--navy)">${en ? '📋 Additional Nutrition Notes:' : '📋 额外营养注意事项：'}</strong>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+    ${dietNut.baseNotes.map(n => `<div class="rxi tl"><p style="font-size:.7rem">✦ ${n}</p></div>`).join('')}
+    </div></div>
+    <div class="rxi nv" style="margin-top:10px"><h4>💧 ${en ? 'Hydration' : '补水'}</h4><p>${en ? 'Drink 6–8 glasses daily (2–2.5L). Seniors often have reduced thirst sensation — drink on schedule. Take Tanita readings before your evening meal for most consistent results.' : '每天喝6–8杯水（2–2.5升）。老年人口渴感降低 — 按时补水。在晚饭前进行田宁测量以获得最准确结果。'}</p></div>`;
+
+  const lifeHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    ${data.life.map(l => `<div class="rxi"><p>✦ ${l}</p></div>`).join('')}
+    </div>
+    <div class="rxi gd" style="margin-top:10px"><h4>🧘 ${en ? 'Mind-Body Connection' : '身心连接'}</h4>
+    <p>${en ? 'Chronic stress elevates cortisol — promotes visceral fat storage and breaks down muscle. Tai Chi, meditation, social activities at Tzu-Chi Longevity Courtyard, and quality sleep are powerful non-exercise interventions.' : '长期压力会升高皮质醇 — 促进内脏脂肪积累并分解肌肉。太极拳、冥想、慈济长寿庭院的社交活动和优质睡眠是强有力的非运动干预。'}</p></div>`;
+
+  return `<div class="rxhdr"><div class="rxibig">🏋️</div><div class="rxht">
+    <h2>${en ? 'Personalised Exercise & Lifestyle Prescription' : '个性化运动与生活方式处方'}</h2>
+    <p>${en ? 'Based on your body composition profile · Tzu-Chi Longevity Programme' : '基于您的体成分档案 · 慈济长寿计划'}</p></div></div>
+    <div style="text-align:center;margin-bottom:15px">
+      <div class="rxpbadge">${profile.icon} &nbsp;${en ? 'Profile' : '体质类型'}: ${profile.label}</div>
+      <p style="font-size:.73rem;color:var(--g700);margin-top:6px;max-width:560px;margin-left:auto;margin-right:auto">${profile.desc}</p>
+    </div>
+    <div class="rxtabs">
+      <button class="rxtab active" onclick="switchRxTab('rx-resistance')">🏋️ ${en ? 'Resistance' : '力量'}</button>
+      <button class="rxtab" onclick="switchRxTab('rx-nutrition')">🥗 ${en ? 'Nutrition' : '营养'}</button>
+      <button class="rxtab" onclick="switchRxTab('rx-lifestyle')">🌿 ${en ? 'Lifestyle' : '生活'}</button>
+      <button class="rxtab" onclick="switchRxTab('rx-weekly')">📅 ${en ? 'Weekly' : '周计划'}</button>
+      <button class="rxtab" onclick="switchRxTab('rx-posture')">🧍 ${en ? 'Posture' : '姿势'}</button>
+    </div>
+    <div class="rxpanel active" id="rx-resistance">
+      <div class="rxig">
+        <div class="rxi nv"><h4>📅 ${en ? 'Frequency' : '频率'}</h4><p>${data.res.days}</p></div>
+        <div class="rxi nv"><h4>⚡ ${en ? 'Intensity' : '强度'}</h4><p>${data.res.intensity}</p></div>
+        <div class="rxi nv"><h4>🔁 ${en ? 'Volume' : '容量'}</h4><p>${data.res.sets}</p></div>
+        <div class="rxi"><h4>📝 ${en ? "Coach's Notes" : '教练备注'}</h4><p>${data.res.notes}</p></div>
+      </div>${caution}
+    </div>
+    <div class="rxpanel" id="rx-nutrition">${nutHTML}</div>
+    <div class="rxpanel" id="rx-lifestyle">${lifeHTML}</div>
+    <div class="rxpanel" id="rx-weekly">
+      <div class="rxwp"><h3>🗓️ ${en ? 'Your 7-Day Activity Plan' : '您的7天活动计划'}</h3><div class="rxdays">${daysHTML}</div></div>
+      <div class="rxig" style="margin-top:13px">
+        <div class="rxi nv"><h4>📈 ${en ? '12-Week Goal' : '12周目标'}</h4><p>${en ? 'Wk 1–4: Establish routine, learn form. Wk 5–8: Increase resistance 10–15%, add 5 min cardio. Wk 9–12: Progressive overload. Reassess Tanita at week 12.' : '第1–4周：建立规律，学习动作。第5–8周：增加阻力10–15%，增加5分钟有氧。第9–12周：渐进超负荷。第12周重新进行田宁评估。'}</p></div>
+        <div class="rxi gr"><h4>🎯 ${en ? 'When to Reassess' : '何时重新评估'}</h4><p>${en ? 'Return for a full Tanita assessment <strong>monthly or at end of programme</strong>. Meaningful changes require at least 8 weeks of consistent effort.' : '每月或<strong>计划结束时</strong>进行完整的田宁评估。有意义的变化需要至少8周的持续努力。'}</p></div>
+      </div>
+    </div>
+    <div class="rxpanel" id="rx-posture">${postureHTML}</div>`;
+}
+
+function buildPostureTabContent(postureList, equipList) {
+  const en = currentLang === 'en';
+  const hasHUR = equipList.includes('hur'), hasDumb = equipList.includes('dumbbell');
+  const hasBand = equipList.includes('band'), hasBW = equipList.includes('bodyweight') || equipList.length === 0;
+  let html = `<div class="rxi pu" style="margin-bottom:14px">
+    <h4>🧍 ${en ? 'Physiotherapy-Based Corrective Exercise Plan' : '基于物理治疗的纠正性运动计划'}</h4>
+    <p>${en ? 'Perform corrective exercises at the END of each session (8–12 min). Consistency over 8–12 weeks produces visible postural improvement. Each programme is evidence-based, combining physio research and personal trainer expertise.' : '每次训练结束时进行纠正性运动（8–12分钟）。坚持8–12周可见明显改善。每个计划均基于循证医学和专业训练师经验。'}</p>
+  </div>`;
+  postureList.forEach(p => {
+    const pd = POSTURE[p]; if (!pd) return;
+    html += `<div style="margin-bottom:18px;background:var(--purple-l);border-radius:var(--r);padding:16px;border-left:4px solid var(--purple)">
+      <h3 style="font-size:1rem;color:var(--purple);margin-bottom:10px;font-family:'Playfair Display',serif">${pd.icon || '🧍'} ${en ? pd.name : pd.zh}</h3>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div class="rxi pu" style="grid-column:1/-1">
+          <h4>🔬 ${en ? 'What Is Happening In Your Body' : '您的身体发生了什么'}</h4>
+          <p style="font-size:.7rem;line-height:1.7">${pd.cause}</p>
+        </div>
+        <div class="rxi" style="background:#fff0f0;border-left-color:#C0392B">
+          <h4 style="color:#C0392B">🔴 ${en ? 'Tight / Overactive Muscles (need to STRETCH)' : '紧张/过度激活的肌肉（需要拉伸）'}</h4>
+          <p style="font-size:.69rem;line-height:1.6">${pd.tightMuscles}</p>
+        </div>
+        <div class="rxi gr">
+          <h4 style="color:var(--green)">🟢 ${en ? 'Weak / Underactive Muscles (need to STRENGTHEN)' : '无力/激活不足的肌肉（需要强化）'}</h4>
+          <p style="font-size:.69rem;line-height:1.6">${pd.weakMuscles}</p>
+        </div>
+      </div>
+
+      ${hasHUR ? `<div class="rxi pu" style="margin-bottom:8px">
+        <h4>🏋️ ${en ? 'HUR Machine Exercises' : 'HUR器械训练'}</h4>
+        ${pd.hur.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(107,70,193,.08);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--purple);margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      ${hasDumb ? `<div class="rxi nv" style="margin-bottom:8px">
+        <h4>💪 ${en ? 'Dumbbell Exercises' : '哑铃训练'}</h4>
+        ${pd.dumbbell.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(27,58,107,.06);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      ${hasBand ? `<div class="rxi gd" style="margin-bottom:8px">
+        <h4>🪢 ${en ? 'Resistance Band Exercises' : '弹力带训练'}</h4>
+        ${pd.band.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(201,168,76,.1);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:#7B5E00;margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      ${(hasBW || (!hasHUR && !hasDumb && !hasBand)) ? `<div class="rxi gr" style="margin-bottom:8px">
+        <h4>🙆 ${en ? 'Bodyweight Exercises' : '自重训练'}</h4>
+        ${pd.bw.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(45,134,83,.08);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--green);margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      <div class="rxi" style="background:linear-gradient(135deg,#f0eeff,#e8f4ff);border-left:3px solid var(--teal)">
+        <h4 style="color:var(--teal)">🧘 ${en ? 'Stretches & Mobility (perform daily)' : '拉伸与柔韧性（每天进行）'}</h4>
+        ${pd.stretch.map(s => `<div style="margin-top:6px;padding:7px;background:rgba(8,145,178,.07);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--teal);margin-bottom:3px">${s.name}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${s.how}</p>
+        </div>`).join('')}
+      </div>
+    </div>`;
   });
+  return html;
+}
 
-  // ── FOG ──
-  scene.fog = new THREE.FogExp2(0x050d1a, 0.045);
+function switchRxTab(tabId) {
+  const panels = document.querySelectorAll('.rxpanel');
+  const tabs = document.querySelectorAll('.rxtab');
+  const ids = ['rx-resistance', 'rx-nutrition', 'rx-lifestyle', 'rx-weekly', 'rx-posture'];
+  tabs.forEach((t, i) => t.classList.toggle('active', ids[i] === tabId));
+  panels.forEach(p => p.classList.remove('active'));
+  const el = document.getElementById(tabId);
+  if (el) el.classList.add('active');
+}
 
-  // ── PARTICLE FIELD ──
-  const PARTICLE_COUNT = 3500;
-  const positions = new Float32Array(PARTICLE_COUNT * 3);
-  const colors    = new Float32Array(PARTICLE_COUNT * 3);
-  const sizes     = new Float32Array(PARTICLE_COUNT);
-  const speeds    = new Float32Array(PARTICLE_COUNT);
+// ═══════════════════════════════════════════
+// WORKOUT GENERATOR
+// ═══════════════════════════════════════════
+const WARMUP = [
+  { name: 'Marching in Place', zh: '原地踏步', desc: 'Lift knees alternately, swing arms. Gently elevates heart rate.', time: '30 sec' },
+  { name: 'Butt Kicks', zh: '踢臀跑', desc: 'Jog on spot kicking heels toward glutes. Warms hamstrings.', time: '30 sec' },
+  { name: 'Lateral Arm Raises', zh: '侧平举', desc: 'Raise both arms to shoulder height, lower slowly.', time: '30 sec' },
+  { name: 'Palm Chest Press', zh: '掌心对压', desc: 'Clasp palms at chest, press isometrically. Activates chest and shoulders.', time: '30 sec' },
+  { name: 'Head Tilt', zh: '头部侧倾', desc: 'Gently tilt ear to shoulder. Releases cervical tension.', time: '15 sec each side' }
+];
+const COOLDOWN = [
+  { name: 'Seated Hamstring Stretch', zh: '坐姿腘绳肌拉伸', desc: 'Extend leg forward, reach toward toes. Hold 15 sec each leg.' },
+  { name: 'Seated Figure Four Stretch', zh: '坐姿四字拉伸', desc: 'Ankle over opposite knee, gently press knee down. 15 sec each side.' },
+  { name: 'Seated Body Twist Stretch', zh: '坐姿转体拉伸', desc: 'Sit tall, rotate torso. Hold 15 sec each side.' },
+  { name: 'Seated Chest Stretch', zh: '坐姿扩胸拉伸', desc: 'Clasp hands behind back, draw shoulders back. Hold 15 sec.' },
+  { name: 'Seated Neck Diagonal Stretch', zh: '坐姿颈部斜向拉伸', desc: 'Tilt head diagonally. Hold 15 sec each side.' },
+  { name: 'Seated Head Tilt Up Stretch', zh: '坐姿仰头拉伸', desc: 'Gently tilt chin up. Hold 15 sec. Stretches anterior neck.' }
+];
+// region: 'upper' | 'lower' | 'core' | 'cardio'
+// postureTags: which posture issues this exercise helps correct
+const EXERCISES = {
+  hur: [
+    // ── LOWER BODY ──
+    { name: 'HUR Leg Extension', zh: 'HUR 腿部伸展', region: 'lower', desc: 'Sit upright, pad resting on shins just above ankles. Extend legs to full lock-out, squeeze quads at top 1 sec, lower slowly 3 sec. Targets quadriceps — essential for knee stability and rising from chair.', sets: '3 sets × 15 reps', postureTags: ['knock','bow','apt'] },
+    { name: 'HUR Leg Curl', zh: 'HUR 腿部弯举', region: 'lower', desc: 'Lie face down or use seated version. Pad rests behind ankles. Curl heels toward glutes, squeeze hamstrings at peak, lower with control. Targets hamstrings — balances quad dominance and supports pelvic stability.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'HUR Adduction', zh: 'HUR 内收肌训练', region: 'lower', desc: 'Sit upright, outer thigh pads just above knees. Press knees INWARD together against resistance, hold 1 sec at midpoint, release slowly. Targets hip adductors (adductor magnus, gracilis) — corrects bow legs.', sets: '3 sets × 15 reps', postureTags: ['bow'] },
+    { name: 'HUR Abduction', zh: 'HUR 外展肌训练', region: 'lower', desc: 'Sit upright, inner thigh pads just above knees. Push knees OUTWARD against resistance, hold 1 sec at full range, return slowly. Targets gluteus medius and minimus — corrects knock knees and hip drop.', sets: '3 sets × 15 reps', postureTags: ['knock'] },
+    // ── UPPER BODY ──
+    { name: 'HUR Shoulder Press', zh: 'HUR 肩推', region: 'upper', desc: 'Sit tall with back supported. Grip handles at shoulder height, elbows at 90°. Press straight up to near full extension — do not lock elbows. Lower slowly 3 sec. Targets deltoids, triceps, upper trapezius.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Lats Pull Down', zh: 'HUR 背阔下拉', region: 'upper', desc: 'Grip bar wide (beyond shoulder width), lean back 10–15°. Pull bar to upper chest driving elbows toward hips. Squeeze lats at bottom, return slowly. Targets latissimus dorsi, biceps, rhomboids — builds upright posture.', sets: '3 sets × 15 reps', postureTags: ['hunch'] },
+    { name: 'HUR Pulley Face Pull', zh: 'HUR 滑轮机面拉', region: 'upper', desc: 'Set pulley at nose height. Grip rope, step back until arms extended. Pull toward face — elbows HIGH and WIDE above wrists at all times. Externally rotate so thumbs point behind you at end. Hold 1 sec. Targets posterior deltoid, infraspinatus, teres minor, rhomboids. Key exercise for rounded shoulders.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'HUR Pulley Wide Grip Row', zh: 'HUR 滑轮机宽握划船', region: 'upper', desc: 'Set pulley at chest height. Wide overhand grip. Pull bar to chest with elbows flaring WIDE. Squeeze rhomboids and mid-trapezius at peak. Return controlled. Wide grip targets middle/lower trapezius — essential for kyphosis correction.', sets: '3 sets × 15 reps', postureTags: ['hunch','rounded'] },
+    { name: 'HUR Pulley Bicep Curl', zh: 'HUR 滑轮机弯举', region: 'upper', desc: 'Set pulley at floor level. Underhand grip, elbows pinned to sides. Curl hands to shoulders, hold 1 sec, lower slowly 3 sec. Targets biceps brachii and brachialis.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Pulley Triceps Extension', zh: 'HUR 滑轮机三头肌下压', region: 'upper', desc: 'Set pulley above head. Overhand grip on rope or bar. Elbows tucked at sides, forearms parallel to floor. Push hands straight down to full extension, squeeze triceps, return slowly. Upper arms stay completely still.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Pulley Chest Press', zh: 'HUR 滑轮机胸推', region: 'upper', desc: 'Set pulleys at chest height. Face away, split stance, handles at chest. Press arms forward until near full extension, hands converge in front. Return slowly feeling chest stretch. Targets pectoralis major, anterior deltoid, triceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'HUR Abdominal', zh: 'HUR 腹肌训练', region: 'core', desc: 'Sit in machine, arms at chest. Flex trunk FORWARD from thoracic spine — pull sternum toward pelvis. Hold 1 sec at peak. Return to neutral slowly. Do NOT hyperextend back. Targets rectus abdominis and obliques.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'HUR Back Extension', zh: 'HUR 背部伸展', region: 'core', desc: 'Pad at upper back. Begin in slight forward flexion. Extend spine to fully upright — "grow tall." Squeeze erector spinae at top. Do NOT hyperextend. Targets erector spinae, multifidus, gluteus maximus. Key for kyphosis and spinal stability.', sets: '3 sets × 15 reps', postureTags: ['hunch','apt'] },
+    // ── CARDIO ──
+    { name: 'HUR Rehab Recumbent Bike', zh: 'HUR 康复卧式自行车', region: 'cardio', desc: 'Back fully supported, feet on pedals. Low resistance, cadence 60–80 RPM. Interval: 30 sec moderate effort, 1 min easy. Zero joint impact — ideal for seniors with knee or hip sensitivity. Improves cardiovascular fitness and leg circulation.', sets: '3 × 30 sec on / 1 min rest', cardio: true, postureTags: [] }
+  ],
+  dumbbell: [
+    // ── LOWER BODY ──
+    { name: 'Dumbbell Squat', zh: '哑铃深蹲', region: 'lower', desc: 'Feet shoulder-width, dumbbells at sides or shoulders. Sit hips back and down until thighs near parallel. Drive through heels to stand, squeeze glutes at top. Keep chest tall throughout. Targets quads, glutes, hamstrings.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Sumo Squat', zh: '哑铃相扑深蹲', region: 'lower', desc: 'Wide stance, toes pointing 45° out. Hold dumbbell centrally. Squat until thighs near parallel — actively push knees out in line with toes. Drive through heels to stand. Targets glutes, inner thighs (adductors), quads.', sets: '3 sets × 15 reps', postureTags: ['bow','knock'] },
+    { name: 'Dumbbell Deadlift', zh: '哑铃硬拉', region: 'lower', desc: 'Feet hip-width. Hinge at hips — push hips BACK (not down), flat back, chest tall. Lower dumbbells along shins until feel hamstring stretch. Drive hips FORWARD to stand, squeeze glutes at top. Targets hamstrings, glutes, erector spinae.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Dumbbell Single-Leg Abduction Kick', zh: '哑铃单腿外展踢腿', region: 'lower', desc: 'Place dumbbell at outer ankle of kicking leg. Stand holding chair. Kick leg directly out to the side (abduction). Hold 1 sec, lower slowly. Isolates gluteus medius. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['knock'] },
+    { name: 'Dumbbell Single-Leg Adduction Kick', zh: '哑铃单腿内收踢腿', region: 'lower', desc: 'Hold dumbbell at inner ankle. Stand holding chair. Kick leg across body (adduction). Hold 1 sec at end range, lower slowly. Targets hip adductors. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['bow'] },
+    { name: 'Dumbbell Calf Raise', zh: '哑铃提踵', region: 'lower', desc: 'Hold dumbbells at sides. Stand with feet hip-width. Rise on toes as high as possible, hold 1 sec, lower slowly. Hold chair for balance if needed. Targets gastrocnemius and soleus — improves ankle stability and balance.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── UPPER BODY ──
+    { name: 'Dumbbell Shoulder Press', zh: '哑铃肩推', region: 'upper', desc: 'Sit tall or stand. Dumbbells at shoulder height, elbows at 90°. Press up to near full extension — do not lock. Lower slowly. Targets deltoids, triceps, upper trapezius.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Lateral Raise', zh: '哑铃侧平举', region: 'upper', desc: 'Arms at sides. Raise dumbbells out to shoulder height — lead with elbows not hands. Lower slowly 3 sec. Targets medial deltoid. No swinging.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Lean-Over Row', zh: '哑铃支撑划船', region: 'upper', desc: 'Support one hand on chair. Row dumbbell from hang to hip (not waist — hip engages lower trapezius). Squeeze mid-back at top. Lower slowly. Targets lats, rhomboids, mid-trapezius. Both sides.', sets: '3 × 15 reps each side', postureTags: ['hunch','rounded'] },
+    { name: 'Dumbbell Bent-Over Reverse Fly', zh: '哑铃俯身反向飞鸟', region: 'upper', desc: 'Hinge at hips 45°, spine neutral, arms hanging. Raise arms OUT to sides — lead with elbows. Squeeze rear deltoids and rhomboids at top. Lower slowly. Corrects rounded shoulders and mid-back weakness.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'Dumbbell Bent-Over Face Pull', zh: '哑铃俯身面拉', region: 'upper', desc: 'Hinge 45°. Pull dumbbells toward face — elbows HIGH and wide, externally rotating at end (thumbs pointing back). Targets external rotators and rhomboids. Key for rounded shoulder correction.', sets: '3 sets × 15 reps', postureTags: ['rounded'] },
+    { name: 'Dumbbell Bicep Curl', zh: '哑铃弯举', region: 'upper', desc: 'Seated or standing. Elbows pinned at sides. Curl from hip to shoulder, hold 1 sec, lower slowly. Targets biceps brachii.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Dumbbell Triceps Kickback', zh: '哑铃臂屈伸后展', region: 'upper', desc: 'Hinge forward, upper arm parallel to floor. Extend forearm back until arm fully straight, squeeze triceps. Return slowly. Targets triceps brachii.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'Dumbbell Seated Knee Tuck', zh: '哑铃坐姿收腿', region: 'core', desc: 'Sit at chair edge, hold dumbbell between knees. Draw both knees toward chest — curl lower abdominals. Hold 1 sec, lower slowly. Targets lower rectus abdominis. Key for anterior pelvic tilt correction.', sets: '3 sets × 15 reps', postureTags: ['apt'] }
+  ],
+  band: [
+    // ── LOWER BODY ──
+    { name: 'Band Squat', zh: '弹力带深蹲', region: 'lower', desc: 'Stand on band, grip ends at shoulders. Feet shoulder-width. Squat to parallel, pushing knees outward in line with toes. Drive through heels to stand. Targets quads, glutes, hamstrings.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Abduction Kicks', zh: '弹力带外展踢腿', region: 'lower', desc: 'Band around both ankles. Stand with slight knee bend. Kick one leg directly to the side against resistance — keep pelvis level. Hold 1 sec at peak. Lower slowly. Targets gluteus medius. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['knock'] },
+    { name: 'Band Single-Leg Adduction Kick', zh: '弹力带单腿内收踢腿', region: 'lower', desc: 'Anchor band at ankle height. Loop around working ankle. Stand sideways to anchor. Kick leg across body (adduction). Squeeze inner thigh at end. Return slowly. Targets adductors. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['bow'] },
+    { name: 'Band Glute Kickback', zh: '弹力带臀部后踢腿', region: 'lower', desc: 'Band around ankles. Holding chair, kick one leg straight back — squeeze glute at top, do NOT arch lower back. Lower slowly. Targets gluteus maximus. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['apt'] },
+    { name: 'Band Hip Thrust', zh: '弹力带臀桥', region: 'lower', desc: 'Sit on floor, upper back against chair seat. Band across hips anchored under feet. Drive hips up by squeezing glutes — hold 2 sec at top. Lower slowly. Most effective glute exercise for APT correction.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Band Calf Raise', zh: '弹力带提踵', region: 'lower', desc: 'Stand on band, grip ends at hips. Rise on toes as high as possible, hold 1 sec at top, lower slowly. Targets gastrocnemius and soleus.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── UPPER BODY ──
+    { name: 'Band Face Pull', zh: '弹力带面拉', region: 'upper', desc: 'Anchor band at face/nose height. Step back until tension. Pull toward face — elbows HIGH and wide. Externally rotate at end (thumbs back). Targets rear deltoids, rhomboids, external rotators.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'Band Wide-Grip Row', zh: '弹力带宽握划船', region: 'upper', desc: 'Anchor band at chest height. Sit or stand. Wide overhand grip. Pull to chest with elbows flaring wide. Squeeze mid-back at peak. Targets rhomboids and middle trapezius — corrects hunched back.', sets: '3 sets × 15 reps', postureTags: ['hunch','rounded'] },
+    { name: 'Band Shoulder Press', zh: '弹力带肩推', region: 'upper', desc: 'Stand on band, grip ends at shoulders. Press from shoulder to overhead. Core braced. Lower slowly. Targets deltoids and triceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Lateral Raise', zh: '弹力带侧平举', region: 'upper', desc: 'Stand on band. Raise arms to shoulder height — slow and controlled. Lower 3 sec. Targets medial deltoid.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Chest Press', zh: '弹力带胸推', region: 'upper', desc: 'Anchor band behind at chest height. Face away, split stance. Press arms forward to near full extension. Return slowly with stretch across chest. Targets pectoralis major, anterior deltoid.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Bicep Curl', zh: '弹力带弯举', region: 'upper', desc: 'Stand on band. Elbows at sides. Curl to shoulders, hold 1 sec, lower slowly. Targets biceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Band Triceps Extension', zh: '弹力带肱三头肌伸展', region: 'upper', desc: 'Anchor band above head. Face anchor, grip band. Elbows at sides, forearms up. Push hands down to full extension, return slowly. Targets triceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'Band Knee Tuck', zh: '弹力带收腿', region: 'core', desc: 'Anchor band behind at ankle height. Loop around ankles. Sit at chair edge. Draw knees toward chest against resistance. Lower slowly. Targets lower abdominals and hip flexors.', sets: '3 sets × 15 reps', postureTags: ['apt'] }
+  ],
+  bodyweight: [
+    // ── LOWER BODY ──
+    { name: 'Chair Stand (Sit-to-Stand)', zh: '坐起（椅子站立）', region: 'lower', desc: 'Sit tall, feet flat on floor hip-width. Stand WITHOUT using hands — drive through heels, squeeze glutes at top. Lower slowly back to seated. Most functional lower body exercise for seniors. Targets quads, glutes, hamstrings.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Sumo Squat', zh: '相扑深蹲', region: 'lower', desc: 'Wide stance, toes 45° out, hands on chest or forward. Squat until thighs near parallel — push knees outward in line with toes. Drive through heels to stand. Targets glutes, inner thighs, quads.', sets: '3 sets × 15 reps', postureTags: ['bow','knock'] },
+    { name: 'Single-Leg Hamstring Curl', zh: '单腿腘绳肌弯举', region: 'lower', desc: 'Stand holding chair. Shift weight to one leg. Curl opposite heel toward glutes, hold 1 sec at top, lower slowly. Targets hamstrings. Improves single-leg balance. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['apt'] },
+    { name: 'Single-Leg Sideways Kick', zh: '单腿侧踢腿', region: 'lower', desc: 'Hold chair for support. Kick one leg directly out to the side. Hold 1 sec at top, lower slowly with control. Activates gluteus medius — key for knock knee and hip stability. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['knock'] },
+    { name: 'Standing Adduction Kick', zh: '站姿内收踢腿', region: 'lower', desc: 'Hold chair for balance. Kick one leg inward across the body (adduction). Squeeze inner thigh at end range, hold 1 sec, lower slowly. Targets hip adductors. Both legs.', sets: '3 × 15 reps each leg', postureTags: ['bow'] },
+    { name: 'Glute Bridge', zh: '臀桥', region: 'lower', desc: 'Lie on back, knees bent, feet flat. Drive hips up by squeezing glutes — hold 2 sec at top. Do NOT hyperextend lower back. Lower slowly. Most effective bodyweight glute exercise. Targets gluteus maximus and hamstrings.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Calf Raise (Chair-Assisted)', zh: '扶椅提踵', region: 'lower', desc: 'Hold chair lightly for balance. Rise on both toes as high as possible, hold 1 sec, lower slowly. Targets gastrocnemius and soleus. Improves ankle stability and balance.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── UPPER BODY ──
+    { name: 'Bent-Over Reverse Fly', zh: '俯身反向飞鸟', region: 'upper', desc: 'Hinge forward at hips 45°, spine neutral. Arms hanging, palms facing. Raise arms laterally — lead with elbows. Squeeze shoulder blades at top. Use 500ml water bottles for light resistance. Targets rear deltoids and rhomboids.', sets: '3 sets × 15 reps', postureTags: ['rounded','hunch'] },
+    { name: 'Palm Chest Press (Isometric)', zh: '掌心对压（等长收缩）', region: 'upper', desc: 'Clasp palms at chest height. Press hands together as hard as possible — isometric contraction. Hold 3 sec each rep. Targets pectoralis major and anterior deltoid without weights.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'Wall Push-Up', zh: '墙壁俯卧撑', region: 'upper', desc: 'Stand arm-length from wall. Hands at shoulder width on wall. Bend elbows to bring chest toward wall, push back. Keep body straight as a plank. Low-impact chest and shoulder exercise safe for all seniors.', sets: '3 sets × 15 reps', postureTags: [] },
+    // ── CORE ──
+    { name: 'Seated Knee Tuck', zh: '坐姿收腿', region: 'core', desc: 'Sit at chair edge, hands gripping sides. Draw both knees up toward chest — curl lower abdominals. Lower slowly with control. Targets lower rectus abdominis and hip flexors. Key for anterior pelvic tilt correction.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'Pelvic Tilt (Seated)', zh: '坐姿骨盆倾斜', region: 'core', desc: 'Sit tall on chair, hands on thighs. Tilt pelvis POSTERIORLY — flatten lower back by drawing navel in and tucking tailbone under. Hold 5 sec. Release to neutral. Retrains core stabilisers against anterior pelvic tilt.', sets: '3 sets × 15 reps', postureTags: ['apt'] }
+  ]
+};
 
-  const palette = [NAVY, GOLD, HUR, WHITE, TEAL];
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const r = 12 + Math.random() * 20;
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    positions[i*3]   = r * Math.sin(phi) * Math.cos(theta);
-    positions[i*3+1] = r * Math.sin(phi) * Math.sin(theta) * 0.5;
-    positions[i*3+2] = r * Math.cos(phi) - 5;
-    const col = palette[Math.floor(Math.random() * palette.length)];
-    const brightness = 0.3 + Math.random() * 0.7;
-    colors[i*3]   = col.r * brightness;
-    colors[i*3+1] = col.g * brightness;
-    colors[i*3+2] = col.b * brightness;
-    sizes[i]  = 0.5 + Math.random() * 2.5;
-    speeds[i] = 0.00015 + Math.random() * 0.0003;
+// ─────────────────────────────────────────────
+// BALANCED WORKOUT BUILDER
+// Guarantees: 3 lower body + 2 upper body + 1 core
+// When posture issues selected: posture-relevant exercises are prioritised WITHIN each region
+// ─────────────────────────────────────────────
+function buildWorkoutCard(equipList, postureList) {
+  postureList = postureList || [];
+  const en = currentLang === 'en';
+  if (equipList.length === 0) return `<div class="no-eq">⚠️ ${en ? 'No equipment selected. Go back to Step 2 and select your equipment, then click Generate again.' : '未选择器材。请返回第二步选择器材后重新点击生成。'}</div>`;
+
+  // ── Collect ALL exercises from selected equipment
+  let allEx = [];
+  equipList.forEach(eq => { if (EXERCISES[eq]) EXERCISES[eq].forEach(e => allEx.push({ ...e, eq })); });
+
+  // ── Sort within each region: posture-matched first, then others
+  function sortByPosture(list) {
+    if (postureList.length === 0) return list;
+    return [
+      ...list.filter(e => e.postureTags && e.postureTags.some(t => postureList.includes(t))),
+      ...list.filter(e => !e.postureTags || !e.postureTags.some(t => postureList.includes(t)))
+    ];
   }
 
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
-  geo.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
+  const lowerPool = sortByPosture(allEx.filter(e => e.region === 'lower'));
+  const upperPool = sortByPosture(allEx.filter(e => e.region === 'upper'));
+  const corePool  = sortByPosture(allEx.filter(e => e.region === 'core'));
+  const cardioPool = allEx.filter(e => e.region === 'cardio');
 
-  const mat = new THREE.ShaderMaterial({
-    uniforms: { time: { value: 0 } },
-    vertexShader: `
-      attribute float size;
-      varying vec3 vColor;
-      void main() {
-        vColor = color;
-        vec4 mvp = modelViewMatrix * vec4(position, 1.0);
-        gl_PointSize = size * (250.0 / -mvp.z);
-        gl_Position = projectionMatrix * mvp;
-      }
-    `,
-    fragmentShader: `
-      varying vec3 vColor;
-      void main() {
-        float d = length(gl_PointCoord - vec2(0.5));
-        if (d > 0.5) discard;
-        float alpha = 1.0 - smoothstep(0.0, 0.5, d);
-        gl_FragColor = vec4(vColor, alpha * 0.85);
-      }
-    `,
-    vertexColors: true,
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-  });
-
-  const particles = new THREE.Points(geo, mat);
-  scene.add(particles);
-
-  // ── LIGHT ORBS (large glowing blobs) ──
-  function makeOrb(color, x, y, z, size) {
-    const g = new THREE.SphereGeometry(size, 12, 12);
-    const m = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.05 });
-    const mesh = new THREE.Mesh(g, m);
-    mesh.position.set(x, y, z);
-    scene.add(mesh);
-
-    // Glow ring
-    const rg = new THREE.RingGeometry(size * 1.2, size * 2.5, 32);
-    const rm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.025, side: THREE.DoubleSide });
-    const ring = new THREE.Mesh(rg, rm);
-    ring.position.copy(mesh.position);
-    ring.rotation.x = Math.random() * Math.PI;
-    scene.add(ring);
-    return { mesh, ring };
+  // De-duplicate by name (in case multiple equipment selected have similar exercises)
+  function dedup(pool) {
+    const seen = new Set();
+    return pool.filter(e => { if (seen.has(e.name)) return false; seen.add(e.name); return true; });
   }
 
-  const orbs = [
-    makeOrb(0xC9A84C, -4,  1,  0,  2.5),
-    makeOrb(0xE8734A,  5, -1, -3,  2.0),
-    makeOrb(0x1B3A6B,  0,  3, -6,  3.5),
-    makeOrb(0x0891B2, -6, -2, -4,  1.8),
-    makeOrb(0xE8C96A,  3,  2, -2,  1.5),
+  const lower = dedup(lowerPool);
+  const upper = dedup(upperPool);
+  const core  = dedup(corePool);
+
+  // ── Pick balanced 6: 3 lower + 2 upper + 1 core
+  // If HUR recumbent bike is selected (cardio), replace 1 lower with it for variety
+  const hasCardio = cardioPool.length > 0;
+  const picked = [];
+
+  // 3 lower body
+  for (let i = 0; i < 3 && lower.length > 0; i++) picked.push(lower.shift());
+  // 2 upper body
+  for (let i = 0; i < 2 && upper.length > 0; i++) picked.push(upper.shift());
+  // 1 core
+  if (core.length > 0) picked.push(core.shift());
+  // If fewer than 6, fill with any remaining
+  const remaining = dedup([...lower, ...upper, ...core, ...cardioPool].filter(e => !picked.find(p => p.name === e.name)));
+  while (picked.length < 6 && remaining.length > 0) picked.push(remaining.shift());
+
+  // Sort for display: lower → upper → core (logical workout flow)
+  const regionOrder = { lower: 0, upper: 1, core: 2, cardio: 3 };
+  picked.sort((a, b) => (regionOrder[a.region] || 0) - (regionOrder[b.region] || 0));
+
+  const eqLabel = equipList.map(e => ({ hur: 'HUR', dumbbell: en ? 'Dumbbells' : '哑铃', band: en ? 'Resistance Bands' : '弹力带', bodyweight: en ? 'Bodyweight' : '自重' }[e] || e)).join(' + ');
+  const eqColour = { hur: 'var(--hur)', dumbbell: 'var(--navy)', band: 'var(--green)', bodyweight: 'var(--gold)' };
+
+  const regionMeta = {
+    lower:  { label: en ? '🦵 Lower Body' : '🦵 下肢', bg: '#e8f4ff', col: '#1B3A6B' },
+    upper:  { label: en ? '💪 Upper Body' : '💪 上肢', bg: '#fff3ee', col: '#b85c35' },
+    core:   { label: en ? '🔥 Core' : '🔥 核心', bg: '#e6f4ed', col: '#2D8653' },
+    cardio: { label: en ? '🚴 Cardio' : '🚴 有氧', bg: '#fef3cc', col: '#C9900A' }
+  };
+  const lowerCount = picked.filter(e => e.region === 'lower').length;
+  const upperCount = picked.filter(e => e.region === 'upper').length;
+  const coreCount  = picked.filter(e => e.region === 'core' || e.region === 'cardio').length;
+  const postureMatchCount = postureList.length > 0 ? picked.filter(e => e.postureTags && e.postureTags.some(t => postureList.includes(t))).length : 0;
+
+  const mainHTML = picked.map((ex, i) => {
+    const col = eqColour[ex.eq] || 'var(--navy)';
+    const isCardio = ex.cardio;
+    const rm = regionMeta[ex.region] || regionMeta.upper;
+    const isPostureMatch = postureList.length > 0 && ex.postureTags && ex.postureTags.some(t => postureList.includes(t));
+    return `<div class="exi" style="border-left-color:${col}">
+      <div class="exn" style="background:${col}">${i + 1}</div>
+      <div class="exb">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px">
+          <h4 style="margin:0">${en ? ex.name : ex.zh}</h4>
+          ${isPostureMatch ? `<span style="font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--purple-l);color:var(--purple)">✦ ${en ? 'Posture Fix' : '姿势修正'}</span>` : ''}
+        </div>
+        <p>${ex.desc}</p>
+        <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px">
+          ${isCardio ? `<span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-t">30s on</span><span class="tag tag-t">1min rest</span>` : `<span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>`}
+          <span class="tag" style="background:#f0f4ff;color:var(--navy)">${{ hur: 'HUR', dumbbell: en ? 'Dumbbell' : '哑铃', band: en ? 'Band' : '弹力带', bodyweight: en ? 'Bodyweight' : '自重' }[ex.eq]}</span>
+          <span class="tag" style="background:${rm.bg};color:${rm.col}">${rm.label}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const wuHTML = WARMUP.map((w, i) => `<div class="exi wu-i"><div class="exn gd">${i + 1}</div><div class="exb"><h4>${en ? w.name : w.zh}</h4><p>${w.desc}</p><span class="tag tag-t">${w.time}</span></div></div>`).join('');
+  const cdHTML = COOLDOWN.map((c, i) => `<div class="exi cd-i"><div class="exn bl">${i + 1}</div><div class="exb"><h4>${en ? c.name : c.zh}</h4><p>${c.desc}</p><span class="tag tag-t">15 sec</span></div></div>`).join('');
+
+  const balanceBadge = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:11px 14px;background:var(--g50);border-radius:var(--rsm);border:1px solid var(--g200)">
+      <span style="font-size:.72rem;font-weight:700;color:var(--g700);align-self:center">${en ? 'Session Balance:' : '训练平衡：'}</span>
+      <span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:#e8f4ff;color:#1B3A6B">🦵 ${en ? 'Lower' : '下肢'} ×${lowerCount}</span>
+      <span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:#fff3ee;color:#b85c35">💪 ${en ? 'Upper' : '上肢'} ×${upperCount}</span>
+      <span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:#e6f4ed;color:#2D8653">🔥 ${en ? 'Core' : '核心'} ×${coreCount}</span>
+      ${postureMatchCount > 0 ? `<span style="font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:10px;background:var(--purple-l);color:var(--purple)">✦ ${en ? 'Posture Fix' : '姿势修正'} ×${postureMatchCount}</span>` : ''}
+    </div>`;
+
+  return `<div style="display:flex;align-items:center;gap:11px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--g100)">
+    <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--green),#45a76b);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">🗒️</div>
+    <div><h2 style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--navy)">${en ? 'Your Balanced Workout Session' : '您的均衡训练课程'}</h2>
+    <p style="font-size:.7rem;color:var(--g500);margin-top:2px">${en ? 'Equipment' : '器材'}: ${eqLabel} · ${en ? 'Total: ~35–45 min' : '总时长：约35–45分钟'}</p></div>
+  </div>
+  <div class="wk-section"><div class="wk-stitle wu">☀️ ${en ? 'Warm-Up — 5 Minutes (30 sec each)' : '热身 — 5分钟（每个动作30秒）'}</div><div class="exg">${wuHTML}</div></div>
+  <div class="wk-section">
+    <div class="wk-stitle">💪 ${en ? 'Main Workout — 6 Exercises (3 sets × 15 reps)' : '主训练 — 6个动作（3组 × 15次）'}</div>
+    ${balanceBadge}
+    <div class="exg">${mainHTML}</div>
+  </div>
+  <div class="wk-section"><div class="wk-stitle cd">🌙 ${en ? 'Cool-Down — 5 Minutes (15 sec each)' : '放松 — 5分钟（每个动作15秒）'}</div><div class="exg">${cdHTML}</div></div>
+  <div class="rxi gd" style="margin-top:5px;border-left:4px solid var(--gold)">
+    <h4>📋 ${en ? 'Session Notes' : '训练备注'}</h4>
+    <p>${en ? 'Rest 60–90 sec between sets. Exhale on effort, inhale on return. Stop if you feel pain (not muscle fatigue) and consult your coach or GP. Drink water between sets. Exercises marked ✦ Posture Fix are prioritised to address your specific posture issues.' : '组间休息60–90秒。用力时呼气，放松时吸气。如感到疼痛（非肌肉疲劳）请停止并咨询教练或医生。组间补充水分。标有✦姿势修正的动作是针对您的姿势问题优先选择的。'}</p>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// HEALTH REPORT BUILDER
+// ═══════════════════════════════════════════
+function buildReport(inp, bmi, bioAge, fS_, vS_, mS_, bS_, boneSt, boneRef) {
+  const { age, g, fatPct, fatKg, muscleKg, weight, visceralFat, boneKg, bmr } = inp;
+  const en = currentLang === 'en', m = g === 'male', diff = bioAge - age;
+  const scores = { f: fS_.c === 'n' ? 20 : fS_.c === 'w' ? 10 : 0, v: vS_.c === 'n' ? 20 : vS_.c === 'w' ? 10 : 0, ms: mS_.c === 'n' ? 20 : 10, b: bS_.c === 'n' ? 20 : bS_.c === 'w' ? 10 : 0, bo: boneSt ? (boneSt.c === 'n' ? 20 : boneSt.c === 'w' ? 10 : 0) : 20 };
+  const tot = scores.f + scores.v + scores.ms + scores.b + scores.bo;
+  const grade = tot >= 85 ? 'A' : tot >= 70 ? 'B' : tot >= 50 ? 'C' : 'D';
+  const gCol = tot >= 85 ? '#2D8653' : tot >= 70 ? '#1B3A6B' : tot >= 50 ? '#C9900A' : '#C0392B';
+  const ovTxt = en ? (tot >= 85 ? 'Excellent Health Profile' : tot >= 70 ? 'Good Health Profile' : tot >= 50 ? 'Moderate — Attention Needed' : 'Action Required') : (tot >= 85 ? '体成分优秀' : tot >= 70 ? '体成分良好' : tot >= 50 ? '中等 — 需要关注' : '需要立即行动');
+  const mr = ((muscleKg / weight) * 100).toFixed(1);
+  const diffTxt = en ? (diff < 0 ? Math.abs(diff) + ' years younger' : diff === 0 ? 'matches actual age' : diff + ' years older') : (diff < 0 ? '比实际年龄年轻' + Math.abs(diff) + '岁' : diff === 0 ? '与实际年龄相符' : '比实际年龄老' + diff + '岁');
+  const findings = [
+    { i: '🔥', bg: fS_.c === 'n' ? 'var(--green-l)' : 'var(--red-l)', t: `${en ? 'Body Fat' : '体脂率'}: ${fatPct}% — ${fS_.l}`, p: fS_.c === 'n' ? (en ? `Within the healthy range for a senior ${m ? 'male' : 'female'} (${m ? '11–22' : '22–35'}%). Good fat levels support hormone health and joint protection.` : `处于${m ? '男性' : '女性'}老年人的健康体脂范围内（${m ? '11–22' : '22–35'}%）。`)  : fatPct < (m ? 11 : 22) ? (en ? 'Below healthy minimum. Affects hormone balance and fat-soluble vitamin absorption. Increase healthy fats: avocado, nuts, oily fish.' : '低于健康最低值，影响激素平衡和脂溶性维生素吸收。增加健康脂肪：牛油果、坚果、富脂鱼类。') : (en ? 'Elevated body fat raises risk of cardiovascular disease and type 2 diabetes. Prioritise resistance training and reduce refined carbohydrates.' : '体脂偏高增加心血管疾病和2型糖尿病风险。优先进行力量训练，减少精制碳水化合物。') },
+    { i: '🫀', bg: vS_.c === 'n' ? 'var(--green-l)' : vS_.c === 'w' ? 'var(--yellow-l)' : 'var(--red-l)', t: `${en ? 'Visceral Fat Level' : '内脏脂肪等级'}: ${visceralFat} — ${vS_.l}`, p: vS_.c === 'n' ? (en ? 'Visceral fat (surrounding internal organs) is in the healthy range (Level 1–9). One of the strongest markers of metabolic and cardiovascular longevity.' : '内脏脂肪（包围内脏器官）处于健康范围（1–9级）。') : vS_.c === 'w' ? (en ? 'Moderately elevated. Aerobic exercise 150 min/week and reducing refined carbs are the most evidence-based interventions.' : '轻度偏高。每周150分钟有氧运动和减少精制碳水化合物是最有证据支持的干预措施。') : (en ? 'High visceral fat significantly raises metabolic syndrome and cardiovascular disease risk. Medical consultation strongly advised.' : '高内脏脂肪显著增加代谢综合征和心血管疾病风险，强烈建议就医咨询。') },
+    { i: '💪', bg: mS_.c === 'n' ? 'var(--green-l)' : 'var(--yellow-l)', t: `${en ? 'Muscle Mass' : '肌肉量'}: ${muscleKg}kg (${mr}%) — ${mS_.l}`, p: mS_.c === 'n' ? (en ? 'Well-maintained muscle mass supports mobility, balance, bone density, and metabolic rate. Keep up resistance training 2–3x/week.' : '肌肉量维持良好，支持运动能力、平衡、骨密度和代谢率。继续每周2–3次力量训练。') : (en ? 'Below ideal muscle ratio — may indicate early sarcopenia. Progressive resistance training 2–3x/week on HUR equipment is highly effective.' : '低于理想肌肉比例 — 可能表明早期肌少症。在HUR器械上进行渐进式力量训练非常有效。') },
+    { i: '⚖️', bg: bS_.c === 'n' ? 'var(--green-l)' : bS_.c === 'w' ? 'var(--yellow-l)' : 'var(--red-l)', t: `BMI: ${bmi.toFixed(1)} — ${bS_.l}`, p: bS_.c === 'n' ? (en ? 'BMI within healthy Asian range (18.5–22.9). BMI alone is limited — your full body composition data gives a more complete picture.' : 'BMI在亚洲健康范围内（18.5–22.9）。仅靠BMI有局限性 — 完整的体成分数据提供更全面的图像。') : bmi < 18.5 ? (en ? 'Below healthy weight. Underweight increases fracture risk and immune vulnerability. Nutritional review recommended.' : '体重不足。体重过轻增加骨折风险和免疫脆弱性。建议营养评估。') : (en ? 'Above healthy Asian BMI. Focus on body composition change through exercise and nutrition rather than weight alone.' : '超出亚洲健康BMI范围。通过运动和营养专注于体成分变化，而非单纯体重。') }
   ];
+  if (boneKg && boneSt) findings.push({ i: '🦴', bg: boneSt.c === 'n' ? 'var(--green-l)' : boneSt.c === 'w' ? 'var(--yellow-l)' : 'var(--red-l)', t: `${en ? 'Bone Mass' : '骨量'}: ${boneKg}kg — ${boneSt.l} (${en ? 'Expected' : '期望值'}: ~${boneRef.expected}kg)`, p: boneSt.c === 'n' ? (en ? 'Bone mass well-maintained. Continue weight-bearing exercise, calcium (1000–1200mg/day), and Vitamin D (800–1000 IU/day).' : '骨量维持良好。继续负重运动、钙质（每日1000–1200mg）和维生素D（每日800–1000 IU）。') : boneSt.c === 'w' ? (en ? 'Below expected — osteopenia risk. Increase weight-bearing activities, calcium, and Vitamin D. Consult GP for DEXA scan.' : '低于期望值 — 骨量减少风险。增加负重运动、钙质和维生素D。咨询家庭医生进行DEXA扫描。') : (en ? 'Significantly below expected — osteoporosis risk. Consult GP for clinical DEXA scan urgently.' : '明显低于期望值 — 骨质疏松风险。紧急咨询家庭医生进行临床DEXA扫描。') });
+  if (bmr) findings.push({ i: '⚡', bg: 'rgba(201,168,76,.15)', t: `BMR: ${bmr} kcal/day`, p: bmr < 1100 ? (en ? 'Lower BMR suggests reduced muscle mass. Building muscle through resistance training is the most effective way to raise BMR.' : 'BMR偏低表明肌肉量减少。通过力量训练增肌是提高BMR最有效的方法。') : bmr < 1500 ? (en ? 'BMR is within a typical range. Maintain muscle mass to sustain metabolism.' : 'BMR在典型范围内。维持肌肉量以保持代谢。') : (en ? 'Healthy BMR reflects good muscle-to-fat ratio.' : '健康的BMR反映良好的肌肉与脂肪比例。') });
+  const recs = [];
+  if (fS_.c !== 'n' && fatPct > (m ? 17 : 27)) recs.push(en ? 'Reduce refined carbohydrates and added sugar. Choose whole grains, vegetables, and lean proteins.' : '减少精制碳水化合物和添加糖，选择全谷物、蔬菜和瘦蛋白质。');
+  if (vS_.c !== 'n') recs.push(en ? 'Aim for 150–180 min aerobic exercise weekly (brisk walking, aqua aerobics, cycling). Most effective for visceral fat.' : '每周目标150–180分钟有氧运动（快走、水中健身、骑车）。对内脏脂肪最有效。');
+  if (mS_.c !== 'n') recs.push(en ? 'Progressive resistance training 2–3x/week on HUR equipment at Tzu-Chi Longevity Courtyard.' : '在慈济长寿庭院的HUR器械上进行渐进式力量训练，每周2–3次。');
+  if (boneKg && boneSt && boneSt.c !== 'n') recs.push(en ? 'Increase calcium (dairy, sardines, leafy greens) and Vitamin D (15–20 min daily sunlight). Consult GP for DEXA scan.' : '增加钙质（乳制品、沙丁鱼、绿叶蔬菜）和维生素D（每天日晒15–20分钟）。咨询家庭医生进行DEXA扫描。');
+  recs.push(en ? `Protein: aim for ${(weight * 1.4).toFixed(0)}–${(weight * 1.6).toFixed(0)}g/day (1.4–1.6g/kg) to maintain and build muscle.` : `蛋白质：每日目标${(weight * 1.4).toFixed(0)}–${(weight * 1.6).toFixed(0)}g（1.4–1.6g/kg）以维持和增加肌肉。`);
+  recs.push(en ? 'Return for a full Tanita body composition assessment monthly or at end of your programme.' : '每月或计划结束时进行完整的田宁体成分评估。');
+  recs.push(en ? '⚕️ Educational only — consult your GP before significant changes, especially with existing health conditions.' : '⚕️ 仅供教育参考 — 有重大改变前请咨询家庭医生，特别是有现有健康状况时。');
 
-  // ── NEBULA PLANE ──
-  const nebGeo = new THREE.PlaneGeometry(40, 25);
-  const nebMat = new THREE.ShaderMaterial({
-    uniforms: { time: { value: 0 } },
-    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-    fragmentShader: `
-      uniform float time;
-      varying vec2 vUv;
-      float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
-      float noise(vec2 p){
-        vec2 i = floor(p); vec2 f = fract(p);
-        vec2 u = f*f*(3.0-2.0*f);
-        return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);
-      }
-      void main(){
-        vec2 uv = vUv * 3.0 + vec2(time * 0.025, time * 0.015);
-        float n = noise(uv) * 0.5 + noise(uv * 2.1 + vec2(1.3,0.7)) * 0.3 + noise(uv*4.3)*0.2;
-        vec3 colA = vec3(0.105,0.227,0.42);  // navy
-        vec3 colB = vec3(0.788,0.659,0.298); // gold
-        vec3 colC = vec3(0.91,0.455,0.29);   // hur
-        vec3 col = mix(colA, mix(colB, colC, smoothstep(0.4,0.7,n)), smoothstep(0.3,0.6,n));
-        float alpha = n * n * 0.12;
-        gl_FragColor = vec4(col, alpha);
-      }
-    `,
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-  });
-  const nebula = new THREE.Mesh(nebGeo, nebMat);
-  nebula.position.z = -8;
-  scene.add(nebula);
+  return `<div class="ro" style="background:${tot >= 70 ? 'var(--green-l)' : 'var(--yellow-l)'}">
+    <div class="rsr" style="background:${gCol}">${grade}</div>
+    <div class="rot"><h3 style="color:${gCol}">${ovTxt}</h3>
+    <p>${en ? 'Health Score' : '健康评分'}: ${tot}/100 · ${en ? 'Biological Age is' : '生物年龄'} ${diffTxt}</p></div></div>
+    <div>${findings.map(f => `<div class="fi"><div class="fic" style="background:${f.bg}">${f.i}</div><div class="ft"><h4>${f.t}</h4><p>${f.p}</p></div></div>`).join('')}</div>
+    <div class="rec"><h3>✦ ${en ? 'Recommendations' : '建议'}</h3><ul class="recl">${recs.map(r => `<li>${r}</li>`).join('')}</ul></div>`;
+}
 
-  // ── FLOATING RIBBONS ──
-  const ribbons = [];
-  function makeRibbon(color, yPos) {
-    const pts = [];
-    for (let i = 0; i < 60; i++) pts.push(new THREE.Vector3((i / 59) * 20 - 10, Math.sin(i * 0.22) * 1.2, Math.cos(i * 0.18) * 2 - 3));
-    const curve = new THREE.CatmullRomCurve3(pts);
-    const g = new THREE.TubeGeometry(curve, 60, 0.008, 4, false);
-    const m = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.3 });
-    const mesh = new THREE.Mesh(g, m);
-    mesh.position.y = yPos;
-    scene.add(mesh);
-    ribbons.push({ mesh, phase: Math.random() * Math.PI * 2 });
-    return mesh;
+// ═══════════════════════════════════════════
+// MAIN CALCULATE
+// ═══════════════════════════════════════════
+function calculate() {
+  const age = parseFloat(document.getElementById('age').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const weight = parseFloat(document.getElementById('weight').value);
+  const fatPct = parseFloat(document.getElementById('fatPct').value);
+  const fatKg = parseFloat(document.getElementById('fatKg').value);
+  const muscleKg = parseFloat(document.getElementById('muscleKg').value);
+  const visceralFat = parseInt(document.getElementById('visceralFat').value);
+  const boneKgRaw = document.getElementById('boneKg').value;
+  const boneKg = boneKgRaw ? parseFloat(boneKgRaw) : null;
+  const bmr = parseFloat(document.getElementById('bmr').value) || null;
+  const en = currentLang === 'en';
+  if ([age, height, weight, fatPct, fatKg, muscleKg, visceralFat].some(v => isNaN(v))) {
+    alert(en ? 'Please fill in all required fields in Step 1 before generating the report.' : '请先填写第一步中的所有必填字段。'); return;
   }
-  makeRibbon(0xC9A84C, 2.5);
-  makeRibbon(0xE8734A, -1.5);
-  makeRibbon(0x2A4F8F, 0.5);
+  const equipList = getChecked('eq');
+  const postureList = getChecked('pos');
+  const diet = getDiet();
+  const bmi = weight / ((height / 100) ** 2);
+  const mr = (muscleKg / weight) * 100;
+  const boneRef = boneKg ? getBoneRef(gender, age, weight) : null;
+  const boneSt = boneKg && boneRef ? getBoneSt(boneKg, boneRef) : null;
+  const bioAge = calcBioAge(age, gender, fatPct, muscleKg, weight, visceralFat, bmi, boneKg);
+  const diff = bioAge - age;
+  const fS_ = fSt(gender, fatPct), vS_ = vSt(visceralFat), mS_ = mSt(gender, muscleKg, weight), bS_ = bmiSt(bmi);
+  const profile = classifyProfile(gender, fatPct, muscleKg, weight, visceralFat, boneKg, age, bmi);
 
-  // ── RENDER LOOP ──
-  let t = 0;
-  function animate() {
-    requestAnimationFrame(animate);
-    t += 0.008;
+  // Bio age display
+  document.getElementById('bioAgeDisplay').textContent = bioAge;
+  document.getElementById('chronoDisplay').textContent = age;
+  document.getElementById('diffDisplay').textContent = (diff > 0 ? '+' : '') + diff + (en ? ' yrs' : ' 岁');
+  const badge = document.getElementById('bioStatusBadge');
+  if (diff < -3) { badge.style.background = 'rgba(45,134,83,.25)'; badge.style.color = '#7effc4'; badge.textContent = en ? '🌟 Biologically Younger — Excellent!' : '🌟 生物年龄更年轻 — 优秀！'; }
+  else if (diff <= 3) { badge.style.background = 'rgba(201,168,76,.25)'; badge.style.color = '#E8C96A'; badge.textContent = en ? '✅ On Track — Keep It Up!' : '✅ 状态良好 — 继续保持！'; }
+  else { badge.style.background = 'rgba(192,57,43,.25)'; badge.style.color = '#ffaa99'; badge.textContent = en ? '⚠️ Biologically Older — Let\'s Work on It!' : '⚠️ 生物年龄偏大 — 我们一起努力！'; }
+  drawGauge(bioAge, age);
 
-    // Smooth mouse
-    mouse.x += (mouse.tx - mouse.x) * 0.04;
-    mouse.y += (mouse.ty - mouse.y) * 0.04;
+  // Metrics
+  const isMale = gender === 'male';
+  document.getElementById('metricsGrid').innerHTML = `
+    <div class="mc ${bc(bS_.c)}"><span class="mi">⚖️</span><div class="mv">${bmi.toFixed(1)}</div><span class="mu">kg/m²</span><span class="ml">BMI</span><span class="ms ${sc(bS_.c)}">${bS_.l}</span></div>
+    <div class="mc ${bc(fS_.c)}"><span class="mi">🔥</span><div class="mv">${fatPct}<span style="font-size:.82rem">%</span></div><span class="mu">${fatKg}kg</span><span class="ml">${en ? 'Body Fat' : '体脂率'}</span><span class="ms ${sc(fS_.c)}">${fS_.l}</span></div>
+    <div class="mc ${bc(mS_.c)}"><span class="mi">💪</span><div class="mv">${muscleKg}</div><span class="mu">kg · ${mr.toFixed(0)}%</span><span class="ml">${en ? 'Muscle' : '肌肉量'}</span><span class="ms ${sc(mS_.c)}">${mS_.l}</span></div>
+    <div class="mc ${bc(vS_.c)}"><span class="mi">🫀</span><div class="mv">${visceralFat}</div><span class="mu">${en ? 'Level' : '等级'}</span><span class="ml">${en ? 'Visceral Fat' : '内脏脂肪'}</span><span class="ms ${sc(vS_.c)}">${vS_.l}</span></div>
+    ${boneKg && boneSt ? `<div class="mc ${bc(boneSt.c)}"><span class="mi">🦴</span><div class="mv">${boneKg}</div><span class="mu">kg (exp ~${boneRef.expected})</span><span class="ml">${en ? 'Bone Mass' : '骨量'}</span><span class="ms ${sc(boneSt.c)}">${boneSt.l}</span></div>` : ''}
+    <div class="mc bn"><span class="mi">📏</span><div class="mv">${weight}</div><span class="mu">kg · ${height}cm</span><span class="ml">${en ? 'Weight / Height' : '体重/身高'}</span></div>`;
 
-    // Camera parallax
-    camera.position.x += (mouse.x * 1.5 - camera.position.x) * 0.03;
-    camera.position.y += (-mouse.y * 0.8 - camera.position.y) * 0.03;
-    camera.lookAt(scene.position);
+  // Range bars
+  let rb = rBar(en ? 'Body Fat %' : '体脂率', fatPct, 5, 50, isMale ? 11 : 22, isMale ? 22 : 35, '%')
+    + rBar(en ? 'Visceral Fat Level' : '内脏脂肪等级', visceralFat, 1, 30, 1, 9, en ? 'Level' : '等级')
+    + rBar('BMI', bmi.toFixed(1), 14, 35, 18.5, 22.9, 'kg/m²')
+    + rBar(en ? 'Muscle Ratio' : '肌肉比例', mr.toFixed(1), 30, 75, isMale ? 50 : 43, isMale ? 62 : 54, '%');
+  if (boneKg && boneRef) rb += rBar(en ? 'Bone Mass' : '骨量', boneKg, 1.0, 4.0, boneRef.low, boneRef.expected * 1.1, 'kg') + `<p style="font-size:.67rem;color:var(--g500);padding:0 4px;margin:-4px 0 9px">✦ ${en ? `Age-adjusted expected: ~${boneRef.expected}kg | Low threshold: ${boneRef.low}kg | Very low: ${boneRef.veryLow}kg (Tanita BIA estimate — DEXA scan needed for diagnosis)` : `年龄调整期望值：约${boneRef.expected}kg | 偏低阈值：${boneRef.low}kg | 非常低：${boneRef.veryLow}kg（田宁BIA估算 — 诊断需DEXA扫描）`}</p>`;
+  document.getElementById('rangeBars').innerHTML = rb;
 
-    // Particle drift
-    const pos = geo.attributes.position.array;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      pos[i*3+1] += Math.sin(t + i * 0.3) * speeds[i];
-      pos[i*3]   += Math.cos(t * 0.7 + i * 0.2) * speeds[i] * 0.5;
-      // Wrap
-      if (pos[i*3+1] > 15) pos[i*3+1] = -15;
-      if (pos[i*3]   > 20) pos[i*3]   = -20;
-    }
-    geo.attributes.position.needsUpdate = true;
+  drawComp(fatKg, muscleKg, boneKg, weight);
+  drawRadar(fatPct, mr, visceralFat, bmi, gender, boneSt);
 
-    // Orb float
-    orbs.forEach((orb, i) => {
-      orb.mesh.position.y += Math.sin(t * 0.6 + i * 1.3) * 0.004;
-      orb.ring.rotation.z  += 0.003 + i * 0.001;
-      orb.ring.rotation.x  += 0.001;
-    });
+  document.getElementById('healthReport').innerHTML = buildReport({ age, g: gender, fatPct, fatKg, muscleKg, weight, visceralFat, boneKg, bmr }, bmi, bioAge, fS_, vS_, mS_, bS_, boneSt, boneRef);
+  document.getElementById('rxCard').innerHTML = buildRxCard(profile, age, equipList, postureList, diet, weight);
+  document.getElementById('wkCard').innerHTML = buildWorkoutCard(equipList, postureList);
 
-    // Ribbon wave
-    ribbons.forEach((r, i) => {
-      r.mesh.rotation.z = Math.sin(t * 0.4 + r.phase) * 0.08;
-      r.mesh.position.x = Math.sin(t * 0.3 + r.phase) * 0.5;
-    });
+  // Store for export
+  _exportData = { age, gender, height, weight, fatPct, fatKg, muscleKg, visceralFat, boneKg, bmr, bmi: bmi.toFixed(1), bioAge, fSt: fS_.l, mSt: mS_.l, vSt: vS_.l, bSt: bS_.l, boneSt: boneSt ? boneSt.l : null, profileLabel: profile.label, profileDesc: profile.desc, equip: equipList, posture: postureList, diet };
+  document.getElementById('exportBtnHdr').style.display = 'flex';
 
-    // Nebula
-    nebMat.uniforms.time.value = t;
-
-    // Particles slow rotation
-    particles.rotation.y = t * 0.015;
-    particles.rotation.x = Math.sin(t * 0.1) * 0.05;
-
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  // Resize
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-})();
-
-// ── SCROLL REVEAL ──
-const reveals = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in-view'); observer.unobserve(e.target); }
-  });
-}, { threshold: 0.12 });
-reveals.forEach(el => observer.observe(el));
+  const el = document.getElementById('results');
+  el.classList.add('visible');
+  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+}
 </script>
 </body>
 </html>
