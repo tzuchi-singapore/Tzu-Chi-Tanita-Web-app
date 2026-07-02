@@ -775,14 +775,157 @@ const RX = {
 };
 
 // ═══════════════════════════════════════════
-// POSTURE
+// POSTURE — Full Physio-Accurate Data
 // ═══════════════════════════════════════════
 const POSTURE = {
-  rounded: { name: 'Rounded Shoulders', zh: '圆肩', cause: 'Tight pectorals and weak rhomboids/lower trapezius. Common from prolonged sitting and device use.', hur: 'HUR Pulley Face Pull: Rope at face height, pull toward face with elbows high. Strengthens external rotators and rear deltoids.', dumbbell: 'Bent-Over Reverse Fly: Hinge 45°, raise arms laterally to shoulder height.\nBent-Over Face Pull: Same position, pull toward face elbows flared.', band: 'Band Face Pull: Anchor at face height, pull toward face elbows high.\nBand Reverse Fly: Anchor chest height, arms wide.', bw: 'Bent-Over Reverse Fly (no weight): Squeeze shoulder blades together at top.', stretch: 'Doorway Chest Stretch: Forearms on doorframe, lean forward 20–30 sec × 3 daily.' },
-  hunch: { name: 'Hunched Back (Kyphosis)', zh: '驼背（胸椎后凸）', cause: 'Weak spinal extensors and tight hip flexors. Thoracic spine mobility is key.', hur: 'HUR Pulley Wide-Grip Row: Pull to chest with wide elbows — targets mid-back extensors.\nHUR Back Extension: Directly strengthens erector spinae.', dumbbell: 'Bent-Over Row: Hinge forward, row to ribs — keep spine straight.\nReverse Fly: Targets mid-back and posterior chain.', band: 'Band Wide-Grip Row: Anchor low, pull to chest wide elbows.\nBand Reverse Fly: Anchor chest height, arms wide.', bw: 'Bent-Over Reverse Fly. Superman Hold: Lie prone, lift chest and legs, hold 2 sec.', stretch: 'Thoracic Extension over Chair: Sit at edge, clasp hands behind head, extend over chair back. Hold 15–20 sec × 3.' },
-  knock: { name: 'Knock Knees (Valgus)', zh: 'X形腿（膝外翻）', cause: 'Weak hip abductors (gluteus medius) and tight adductors. Knees collapse inward.', hur: 'HUR Abductor Machine: Press legs outward — strengthens gluteus medius.', dumbbell: 'Sumo Squat: Wide stance, toes 45° out — activates hip abductors.\nSingle-Leg Outward Kick: Dumbbell at side of kicking leg, kick outward.', band: 'Band Abduction Kicks: Band around ankles, kick outward.\nBand Sumo Squat: Band above knees for added resistance.', bw: 'Sumo Squat. Single-Leg Sideways Kick: Hold contraction 1 sec at top.', stretch: 'Hip Adductor Stretch: Seated butterfly position, gently press knees toward floor. 20 sec × 3.' },
-  bow: { name: 'Bow Legs (Varus)', zh: 'O形腿（膝内翻）', cause: 'Weak hip adductors (inner thigh). Opposite of valgus — knees bow outward.', hur: 'HUR Adductor Machine: Press legs inward — directly strengthens inner thigh.', dumbbell: 'Single-Leg Adduction Kick (modified): Dumbbell at inside of knee, kick inward against resistance.', band: 'Band Single-Leg Adduction Kick: Anchor at ankle height, kick leg inward across body.', bw: 'Standing Adduction Kick: Kick inward across body. Sumo Squat with Squeeze: Press knees inward at bottom.', stretch: 'IT Band Stretch: Cross leg behind, lean away. Hold 20 sec × 3 each side.' },
-  apt: { name: 'Anterior Pelvic Tilt', zh: '骨盆前倾', cause: 'Weak core and glutes, tight hip flexors and lower back. Pelvis tilts forward causing excessive lumbar arch.', hur: 'HUR Abdominal Machine: Controlled crunch — directly strengthens anterior core.\nHUR Back Extension (gentle): Strengthens glutes to posteriorly tilt pelvis.', dumbbell: 'Seated Knee Tuck: Sit at chair edge, hold dumbbell between knees, draw toward chest.', band: 'Band Knee Tuck: Anchor behind, secure at feet, pull knees to chest in seated position.', bw: 'Seated Knee Tuck: Chair edge, draw knees toward chest.\nPelvic Tilt: Lie flat, press lower back to floor, hold 10 sec × 10 reps.', stretch: 'Hip Flexor Stretch: Kneeling lunge, push hip forward 20–30 sec × 3 each.\nKnee-to-Chest: Lie on back, pull one knee to chest.' }
+  rounded: {
+    name: 'Rounded Shoulders', zh: '圆肩',
+    icon: '🔄',
+    cause: 'Rounded shoulders occur when the scapulae (shoulder blades) protract and tilt forward, pulling the shoulder joint into internal rotation. This is primarily caused by an anterior-posterior muscle imbalance: the pectoralis major, pectoralis minor, anterior deltoid, and latissimus dorsi become overactive and shortened (tight), while the posterior muscles — rhomboids, middle and lower trapezius, posterior deltoid, infraspinatus, and teres minor (external rotators) — become elongated, underactivated, and weak. Prolonged sitting, smartphone use, and desk posture all reinforce this pattern. Over time it can cause neck pain, shoulder impingement, and reduced breathing capacity.',
+    tightMuscles: 'Pectoralis major & minor (chest), Anterior deltoid, Latissimus dorsi, Subscapularis (internal rotator)',
+    weakMuscles: 'Rhomboids, Middle & lower trapezius, Posterior deltoid, Infraspinatus & teres minor (external rotators), Serratus anterior',
+    hur: [
+      { ex: 'HUR Pulley Face Pull', how: 'Set pulley to nose/face height. Grip rope with both hands, step back until arms extended. Pull rope toward your face — elbows must flare HIGH and WIDE (above shoulder level). Externally rotate at end so thumbs point behind you. Hold 1 sec. Squeeze rear deltoids and rhomboids. Return slowly. THIS is the most effective machine exercise for rounded shoulders.' },
+      { ex: 'HUR Pulley Wide Grip Row', how: 'Set pulley at chest height. Wide overhand grip (beyond shoulder width). Pull to chest with elbows wide and flared out, not tucked. Squeeze between shoulder blades (rhomboids and mid-trap). Hold 1 sec. Return controlled.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Bent-Over Reverse Fly', how: 'Hinge forward at hips 45°, slight knee bend, spine neutral. Arms hanging, palms facing each other. Raise arms laterally — imagine trying to touch the ceiling with your elbows. Squeeze rhomboids and posterior deltoid at top. Lower slowly 3 sec. Do NOT swing — this is a controlled movement.' },
+      { ex: 'Dumbbell Bent-Over Face Pull', how: 'Same hinge position 45°. Grip dumbbells with thumbs up. Pull toward your face with elbows flaring high and wide, externally rotating arms at end. Activates the same external rotators as the cable face pull.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Face Pull', how: 'Anchor band at face height (door handle or pole). Grip with both hands, step back until tension. Pull toward face with elbows high and wide — mirror the HUR pulley technique. External rotation at end with thumbs pointing back.' },
+      { ex: 'Resistance Band Bent-Over Reverse Fly', how: 'Stand on band with feet hip-width. Hinge forward 45°, grip band ends. Raise arms laterally with control. Targets posterior deltoid and rhomboids.' }
+    ],
+    bw: [
+      { ex: 'Bent-Over Reverse Fly (Bodyweight / Water Bottles)', how: 'Hinge forward 45°, arms hanging. Raise arms laterally, squeezing shoulder blades together at the top. Hold 2 sec. Can use 500ml water bottles for light resistance.' },
+      { ex: 'Wall Angel', how: 'Stand with back flat against wall, feet 15cm from baseboard. Press lower back, upper back, and head to wall. Raise arms to goalpost position (elbows 90°) — both arms touching wall. Slide arms overhead without losing wall contact. Return slowly. 10 slow reps.' }
+    ],
+    stretch: [
+      { name: 'Doorway Chest Stretch', how: 'Stand in doorway. Place forearms on doorframe at 90°. Step forward gently until you feel a stretch across the chest (pec major and pec minor). Hold 20–30 sec. Repeat 3x daily. Also helps anterior deltoid.' },
+      { name: 'Chest Stretch on Chair', how: 'Sit tall. Clasp hands behind head (or behind back). Gently squeeze elbows back and lift chest forward. Hold 15–20 sec. Repeat 3x. Safe for seated seniors.' },
+      { name: 'Cross-Body Shoulder Stretch', how: 'Bring one arm across the chest, hold with opposite hand just above the elbow. Hold 20 sec. Stretches posterior deltoid and external rotators. Repeat other side.' }
+    ]
+  },
+  hunch: {
+    name: 'Hunched Back (Thoracic Kyphosis)', zh: '驼背（胸椎后凸）',
+    icon: '🦕',
+    cause: 'Thoracic kyphosis is an excessive forward curvature of the upper spine (thoracic vertebrae T1–T12). In seniors it is primarily postural — caused by weak thoracic extensor muscles (erector spinae, multifidus, rhomboids) combined with tight shortened chest muscles (pectoralis major/minor) and hip flexors. It often co-exists with rounded shoulders and forward head posture, creating what physiotherapists call "upper crossed syndrome." Age-related vertebral compression (common after 60), reduced thoracic mobility, and years of sedentary posture all contribute. Untreated, it reduces lung capacity, increases fall risk, and accelerates spinal degeneration. Research (Bodyset, Healthline 2023) confirms that exercises targeting thoracic extensors, rhomboids, and core — combined with chest/hip flexor stretching — are the most effective physiotherapy approach.',
+    tightMuscles: 'Pectoralis major & minor, Anterior deltoid, Hip flexors (iliopsoas, rectus femoris), Upper trapezius, SCM (neck)',
+    weakMuscles: 'Erector spinae (thoracic segment), Multifidus, Rhomboids, Middle & lower trapezius, Gluteus maximus, Deep core muscles (transverse abdominis)',
+    hur: [
+      { ex: 'HUR Back Extension', how: 'Sit in machine with lumbar/thoracic pad. Begin in slight forward lean. Extend spine backward to fully upright position — imagine "growing tall." Squeeze erector spinae at the top. Return forward slowly under control. Do NOT hyperextend. This directly targets the thoracic extensors most affected by kyphosis.' },
+      { ex: 'HUR Pulley Wide Grip Row', how: 'Set pulley at chest height. Wide overhand grip. Pull to chest with elbows flaring out wide. This engages the rhomboids and middle trapezius at peak contraction — the specific muscles that pull the thoracic spine into extension and correct the forward hunch.' },
+      { ex: 'HUR Lats Pull Down', how: 'Wide overhand grip. Pull bar to upper chest (not behind neck). Lean back slightly 10–15°. Squeezing lats helps depress and retract the scapulae, supporting thoracic extension.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Lean-Over Row', how: 'Hinge forward at 45°, support with one hand on chair. Row dumbbell from hanging position to hip (not waist — pulling to the hip preferentially activates lower and mid trapezius). Squeeze mid-back at top. Lower slowly. Alternate sides.' },
+      { ex: 'Dumbbell Bent-Over Reverse Fly', how: 'Hinge at hips 45°. Raise arms out to the sides, leading with elbows. Squeezes rhomboids and mid-back — directly counteracts the forward rounding of thoracic kyphosis.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Wide Grip Row', how: 'Anchor band at chest height. Sit or stand. Grip with wide overhand grip. Pull band to chest with elbows flaring wide. Squeeze rhomboids at peak. Return slowly. Targets the same mid-back extensors as HUR wide grip row.' },
+      { ex: 'Resistance Band Bent-Over Reverse Fly', how: 'Stand on band. Hinge forward. Raise arms laterally — focuses on rhomboids, mid-trapezius, and posterior deltoid, all critical for correcting forward thoracic posture.' }
+    ],
+    bw: [
+      { ex: 'Superman Hold', how: 'Lie face down (prone). Arms extended forward, legs straight. Simultaneously lift arms, chest, and legs off the floor. Keep head in neutral (looking down at floor). Hold 2–3 sec at top. Lower slowly. Targets erector spinae, multifidus, gluteus maximus.' },
+      { ex: 'Bent-Over Reverse Fly (Bodyweight)', how: 'Hinge forward 45°, arms hanging. Raise arms laterally, squeeze shoulder blades. Use water bottles for added resistance.' },
+      { ex: 'Chair-Assisted Thoracic Extension', how: 'Sit at edge of chair, clasp hands behind head, elbows wide. Gently extend the upper back backwards over the chair back. Feel the thoracic spine open and extend. Hold 5–10 sec. Return slowly. 3 sets × 10 reps.' }
+    ],
+    stretch: [
+      { name: 'Thoracic Extension over Chair', how: 'Sit with mid-back against chair top edge. Support neck with hands clasped behind head. Gently arch backward over the chair — extend the thoracic (not lumbar) spine. Hold 15–20 sec. Repeat 3x. Restores thoracic mobility.' },
+      { name: 'Chest/Pec Doorway Stretch', how: 'Forearms on doorframe at chest height, step through. Hold 20–30 sec × 3. Releases tight pectorals pulling the spine forward.' },
+      { name: 'Child Pose with Thoracic Rotation', how: 'From seated on floor or low chair, lean forward and reach one arm under the body, rotating the thoracic spine. Hold 15 sec each side. Improves thoracic rotational mobility.' }
+    ]
+  },
+  knock: {
+    name: 'Knock Knees (Genu Valgum)', zh: 'X形腿（膝外翻）',
+    icon: '🦵',
+    cause: 'Knock knees (genu valgum) involve the knees caving inward (medially) during standing and movement. The primary cause is a muscle imbalance at the hip: the hip abductors — specifically the gluteus medius and gluteus minimus — are weak and unable to prevent the femur (thigh bone) from internally rotating and adducting. When these muscles are insufficient, the stronger hip adductors (inner thigh) and the tight tensor fasciae latae (TFL/IT band) overpower them, pulling the knees together. Research published in PMC (2015, hip-focused neuromuscular exercise interventions) confirms that gluteus medius weakness is the primary correctable factor in dynamic knee valgus. A 2025 RCT found strengthening pelvic stabilisers (gluteus medius, gluteus maximus) significantly reduced knee valgus angle. Note: in seniors, anterior pelvic tilt often worsens knee valgus — addressing both is optimal.',
+    tightMuscles: 'Hip adductors (adductor magnus, adductor longus, gracilis), Tensor fasciae latae (TFL/IT band), Hip internal rotators',
+    weakMuscles: 'Gluteus medius (primary — hip abductor), Gluteus minimus, Gluteus maximus, Vastus medialis oblique (VMO — inner quad), Tibialis posterior (ankle/arch)',
+    hur: [
+      { ex: 'HUR Abduction', how: 'Sit upright, inner thigh pads placed just above inner knees. Push both legs OUTWARD against resistance. This directly targets gluteus medius and minimus — the key muscles to correct knock knees. Hold 1 sec at full outward range. Return slowly. Do not lean to either side.' },
+      { ex: 'HUR Leg Extension', how: 'Targets the vastus medialis oblique (VMO) — the inner portion of the quadriceps. Sit upright, fully extend both legs, focusing on squeezing the inner quad at full extension. VMO weakness allows the knee to cave in during loading.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Sumo Squat', how: 'Wide stance, toes pointing 45° outward. Hold dumbbell centrally. Squat until thighs near parallel. As you descend, actively push knees OUT in the direction of your toes — do NOT allow them to cave inward. This actively trains glute med under load.' },
+      { ex: 'Single-Leg Abduction Kick (Dumbbell)', how: 'Place dumbbell at the outer side of the kicking leg ankle. Standing on one leg (hold chair for balance), kick the weighted leg directly outward to the side. Squeeze glute med at top, lower slowly. 15 reps each leg.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Abduction Kicks', how: 'Place band around both ankles. Stand with feet hip-width. Kick one leg directly outward (abduction) against resistance. Keep pelvis level — do not let the hip hike. Hold 1 sec at peak. Lower slowly. Directly targets gluteus medius and minimus.' },
+      { ex: 'Resistance Band Banded Sumo Squat', how: 'Place band just above knees. Wide stance, toes 45° out. Squat while actively pushing knees outward against the band — the band provides tactile feedback when knees start caving.' }
+    ],
+    bw: [
+      { ex: 'Sumo Squat', how: 'Wide stance, toes 45° out. Squat with conscious effort to push knees out in line with toes. Use chair for balance if needed. Progress from holding chair to hands on thighs to arms forward.' },
+      { ex: 'Single-Leg Sideways Kick', how: 'Stand tall, hold chair. Kick one leg directly to the side — no forward or backward movement. Hold 1 sec at top, lower slowly. Activates gluteus medius. Do both legs.' },
+      { ex: 'Clamshell', how: 'Lie on side, hips stacked, knees bent 45°. Keeping feet together, rotate the top knee up toward the ceiling (like a clamshell opening). Hold 2 sec. Lower slowly. Isolation exercise for gluteus medius.' }
+    ],
+    stretch: [
+      { name: 'Hip Adductor Butterfly Stretch', how: 'Seated on chair or floor, bring soles of feet together. Gently press knees outward toward floor. Hold 20–30 sec. Stretches the tight hip adductors (gracilis, adductor longus) that pull knees inward.' },
+      { name: 'TFL / IT Band Stretch', how: 'Standing, cross the affected leg behind the other. Lean body weight away from the back leg. Feel stretch on outer hip. Hold 20–30 sec each side. Releases the tight TFL that contributes to internal femoral rotation.' },
+      { name: 'Pigeon Pose (Chair-Adapted)', how: 'Sit in chair. Cross ankle over opposite knee (figure-four). Lean forward gently from hips — feel deep glute stretch. Hold 20 sec each side. Releases hip internal rotators and piriformis.' }
+    ]
+  },
+  bow: {
+    name: 'Bow Legs (Genu Varum)', zh: 'O形腿（膝内翻）',
+    icon: '🦵',
+    cause: 'Bow legs (genu varum) is the opposite of knock knees — the knees curve outward while the ankles touch. The functional (correctable through exercise) form is driven by weakness of the hip adductors (inner thigh: adductor magnus, adductor longus, gracilis, pectineus) which fail to bring the knees to a neutral alignment. The outer leg muscles — including the IT band/TFL and gluteus maximus — can become relatively overactive, pulling the legs into external rotation and varus alignment. In seniors, this pattern also increases lateral knee compartment loading, accelerating cartilage wear. Note: structural bone varus (tibia bowed outward) is not correctable with exercise alone — a physiotherapist or orthopaedic doctor should assess this. The exercises below address functional/muscular varus.',
+    tightMuscles: 'Tensor fasciae latae (TFL), Iliotibial (IT) band, Biceps femoris (outer hamstring), Gluteus maximus (outer fibres), Lateral hip external rotators',
+    weakMuscles: 'Hip adductors (adductor magnus, adductor longus, gracilis, pectineus), Vastus medialis oblique (VMO — inner quad), Tibialis anterior',
+    hur: [
+      { ex: 'HUR Adduction', how: 'Sit upright in machine, outer thigh pads just above knees. Squeeze both legs INWARD against resistance. This is a direct isolation exercise for the hip adductors (inner thigh). Hold 1 sec at full inward squeeze. Return slowly. This is the most targeted machine exercise for bow leg correction.' },
+      { ex: 'HUR Leg Extension', how: 'Focus on VMO (inner quad) activation by sitting with toes slightly turned inward. Extend to full lock, squeeze at top for 2 sec. VMO is the inner portion of the quadriceps and helps bring knees inward during weight-bearing.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Sumo Squat with Knee Squeeze', how: 'Wide stance, toes 45° out. Hold dumbbell centrally. At the bottom of the squat, actively squeeze knees INWARD (as if trying to touch them together). This isometrically contracts the adductors under load — very effective for bow leg retraining.' },
+      { ex: 'Single-Leg Adduction Kick (Dumbbell)', how: 'Strap or hold dumbbell at the inner ankle of the kicking leg. Stand tall (hold chair), kick the leg across the body (adduction). Hold 1 sec at end range. Return slowly. Directly targets adductors.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Single-Leg Adduction Kick', how: 'Anchor band at ankle height to a fixed point (e.g., chair leg). Loop around the working ankle. Stand sideways to anchor, kick leg across body (adduction). Squeeze inner thigh. Return slowly. 15 reps each leg.' },
+      { ex: 'Resistance Band Standing Adduction', how: 'Anchor band at ankle height. Loop around one ankle. Stand with legs apart and bring the banded leg toward and across the other (like closing scissors). Targets adductor magnus and longus.' }
+    ],
+    bw: [
+      { ex: 'Standing Adduction Kick (Bodyweight)', how: 'Stand tall holding chair for balance. Kick one leg inward across the body (adduction). Squeeze inner thigh at peak. Hold 1 sec. Lower slowly. Both legs. Gentle but effective for seniors.' },
+      { ex: 'Sumo Squat with Inner Squeeze', how: 'Wide stance. At bottom of squat, place hands on inner knees and push knees inward (assistance-resistance). Activates adductors actively and provides proprioceptive cueing.' },
+      { ex: 'Seated Ball/Pillow Squeeze', how: 'Sit on chair. Place a small pillow or rolled towel between knees. Squeeze knees together against pillow for 10 sec, release. 15 reps. Simple and safe adductor isometric exercise.' }
+    ],
+    stretch: [
+      { name: 'IT Band / TFL Stretch (Standing)', how: 'Cross one foot behind the other. Lean body to the side (same direction as the back foot). Feel stretch on outer hip and thigh. Hold 20–30 sec each side. Releases the tight TFL and IT band pulling knees outward.' },
+      { name: 'Lateral Hip Stretch', how: 'Seated, cross one leg over the other (ankle on knee). Pull knee gently toward opposite shoulder. Feel deep outer hip stretch. Hold 20 sec each side. Releases tight external rotators.' },
+      { name: 'Quad and Hip Flexor Stretch (Seated)', how: 'Sit at edge of chair. Slide one leg backward off the chair edge until you feel a stretch at the front of the hip. Keep torso upright. Hold 20–30 sec. Stretches tight hip flexors that affect pelvic alignment.' }
+    ]
+  },
+  apt: {
+    name: 'Anterior Pelvic Tilt', zh: '骨盆前倾',
+    icon: '🍑',
+    cause: 'Anterior pelvic tilt (APT) occurs when the front of the pelvis drops and the back rises, creating an exaggerated lumbar lordosis (lower back arch). It is caused by a specific pattern: the hip flexors (iliopsoas, rectus femoris) and lower back extensors (erector spinae) are overactive and shortened, while the opposing muscles — rectus abdominis, obliques, gluteus maximus, and hamstrings — are weak and lengthened. Prolonged sitting tightens the hip flexors; a sedentary lifestyle leads to weak glutes and core. In seniors, this pattern increases compressive load on the lumbar spine (L3–L5), contributes to low back pain, and increases risk of disc pathology. Physiotherapy for APT focuses on: (1) stretching tight hip flexors and lumbar extensors, (2) strengthening weak abdominals and gluteus maximus, and (3) neuromuscular retraining of pelvic neutral position.',
+    tightMuscles: 'Iliopsoas (primary hip flexor), Rectus femoris (quad/hip flexor), Erector spinae (lumbar — lower back extensors), TFL',
+    weakMuscles: 'Rectus abdominis & obliques (anterior core), Gluteus maximus (primary hip extensor and posterior pelvic tilter), Hamstrings, Transverse abdominis (deep stabiliser)',
+    hur: [
+      { ex: 'HUR Abdominal', how: 'Sit in machine. Start with spine in neutral. Flex the trunk forward from the thoracic and lumbar spine — do NOT pull with the arms. Exhale and pull the sternum toward the pelvis, curling the spine. Hold 1 sec at peak contraction. Return to neutral slowly (do NOT hyperextend back). This directly strengthens the rectus abdominis to resist the anterior pelvic tilt.' },
+      { ex: 'HUR Back Extension (Glute Focus)', how: 'Sit in HUR Back Extension. Instead of focusing on thoracic extension, initiate the movement by squeezing the GLUTES first. Drive hips into the pad and contract the gluteus maximus at the top. This version strengthens the primary posterior pelvis tilter. Hold glute squeeze 1–2 sec at top.' },
+      { ex: 'HUR Leg Curl', how: 'Hamstrings are posterior pelvic tilters — they oppose the forward pull of the hip flexors. Lying or seated leg curl: curl heels toward glutes, hold 1 sec, lower slowly. Stronger hamstrings help counteract the anterior tilt.' }
+    ],
+    dumbbell: [
+      { ex: 'Dumbbell Seated Knee Tuck', how: 'Sit on edge of chair. Hold dumbbell between knees or at ankles. Draw both knees toward chest simultaneously — curling the lower abdominals. Keep spine slightly rounded (posterior tilt). Hold 1 sec at top. Lower slowly. Targets lower rectus abdominis and obliques.' },
+      { ex: 'Dumbbell Deadlift (Glute Drive Focus)', how: 'Hold dumbbells. Hinge at hips (not waist), push hips backward. Lower until shins touch weight, then drive hips FORWARD to standing — squeeze glutes hard at the top of the movement. This is the key hip extension pattern to retrain glute activation.' },
+      { ex: 'Dumbbell Sumo Squat', how: 'Wide stance. At top of squat, perform a strong posterior pelvic tuck — squeeze glutes and tuck tailbone under. This retrains gluteus maximus activation and pelvic neutral position.' }
+    ],
+    band: [
+      { ex: 'Resistance Band Knee Tuck', how: 'Anchor band behind you at ankle height. Loop around both ankles. Seated at chair edge, draw knees toward chest against band resistance. Activates lower abdominals and hip flexors in a safe range. 15 reps.' },
+      { ex: 'Resistance Band Hip Thrust', how: 'Sit on floor with upper back on chair seat. Place band across hips, anchor ends under feet. Drive hips upward by squeezing glutes — hold 2 sec at top. Lower slowly. Most effective glute max exercise for APT correction.' },
+      { ex: 'Resistance Band Pull-Through (Posterior Tilt)', how: 'Anchor band at floor level behind you. Stand facing away, reach back and grip band between legs. Drive hips forward, squeezing glutes — posterior pelvic tilt at top. Hold 1 sec. Retrains hip hinge and glute activation pattern.' }
+    ],
+    bw: [
+      { ex: 'Seated Knee Tuck', how: 'Sit at chair edge. Draw both knees toward chest with control. Lower slowly. 3 sets × 15 reps. Lower abdominal activation — key for countering the anterior pelvic tilt.' },
+      { ex: 'Pelvic Tilt (Supine)', how: 'Lie on back, knees bent, feet flat. Flatten lower back firmly to floor by contracting abdominals and tilting pelvis posteriorly. Hold 5–10 sec. Release. 15 reps. This is the foundational neuromuscular exercise for retraining pelvic neutral position.' },
+      { ex: 'Glute Bridge', how: 'Lie on back, knees bent. Drive hips upward by squeezing glutes — hold 2 sec at top. Do NOT hyperextend the lower back. Lower slowly. Builds gluteus maximus, the primary muscle opposing APT.' }
+    ],
+    stretch: [
+      { name: 'Hip Flexor Kneeling Lunge Stretch', how: 'Kneel on one knee (use mat or folded towel). Step other foot forward. Drive hips gently forward until you feel a deep stretch at the front of the kneeling hip (iliopsoas). Keep torso upright. Hold 20–30 sec. Repeat 3x each side. The most effective stretch for tight hip flexors causing APT.' },
+      { name: 'Rectus Femoris Stretch (Quad Stretch)', how: 'Stand holding chair. Bend one knee, grip ankle, pull heel toward glutes. Keep knees together and push hips slightly forward. Hold 20–30 sec each side. Stretches rectus femoris (the quad muscle that also flexes the hip).' },
+      { name: 'Knee-to-Chest Lower Back Stretch', how: 'Lie on back. Pull one knee to chest with both hands. Hold 20 sec. Then both knees together 20 sec. Releases tight lumbar extensors and provides posterior pelvic tilt feedback. Repeat 3x.' }
+    ]
+  }
 };
 
 // ═══════════════════════════════════════════
@@ -856,19 +999,74 @@ function buildPostureTabContent(postureList, equipList) {
   const en = currentLang === 'en';
   const hasHUR = equipList.includes('hur'), hasDumb = equipList.includes('dumbbell');
   const hasBand = equipList.includes('band'), hasBW = equipList.includes('bodyweight') || equipList.length === 0;
-  let html = `<div class="rxi pu" style="margin-bottom:12px"><h4>🧍 ${en ? 'Corrective Exercise Guide' : '纠正性运动指南'}</h4><p>${en ? 'Perform corrective exercises at the end of each session (5–10 min). Consistency over 8–12 weeks produces visible postural improvement.' : '每次训练结束时进行纠正性运动（5–10分钟）。坚持8–12周可见明显的姿势改善。'}</p></div>`;
+  let html = `<div class="rxi pu" style="margin-bottom:14px">
+    <h4>🧍 ${en ? 'Physiotherapy-Based Corrective Exercise Plan' : '基于物理治疗的纠正性运动计划'}</h4>
+    <p>${en ? 'Perform corrective exercises at the END of each session (8–12 min). Consistency over 8–12 weeks produces visible postural improvement. Each programme is evidence-based, combining physio research and personal trainer expertise.' : '每次训练结束时进行纠正性运动（8–12分钟）。坚持8–12周可见明显改善。每个计划均基于循证医学和专业训练师经验。'}</p>
+  </div>`;
   postureList.forEach(p => {
     const pd = POSTURE[p]; if (!pd) return;
-    html += `<div style="margin-bottom:16px;background:var(--purple-l);border-radius:var(--rsm);padding:13px;border-left:4px solid var(--purple)">
-      <h3 style="font-size:.92rem;color:var(--purple);margin-bottom:5px">${en ? pd.name : pd.zh}</h3>
-      <p style="font-size:.7rem;color:var(--g700);margin-bottom:9px;line-height:1.5"><strong>${en ? 'Cause:' : '原因：'}</strong> ${pd.cause}</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">`;
-    if (hasHUR) html += `<div class="rxi pu"><h4>🏋️ HUR</h4><p style="font-size:.69rem">${pd.hur.replace(/\n/g, '<br>')}</p></div>`;
-    if (hasDumb) html += `<div class="rxi nv"><h4>💪 ${en ? 'Dumbbell' : '哑铃'}</h4><p style="font-size:.69rem">${pd.dumbbell.replace(/\n/g, '<br>')}</p></div>`;
-    if (hasBand) html += `<div class="rxi gd"><h4>🪢 ${en ? 'Band' : '弹力带'}</h4><p style="font-size:.69rem">${pd.band.replace(/\n/g, '<br>')}</p></div>`;
-    if (hasBW || (!hasHUR && !hasDumb && !hasBand)) html += `<div class="rxi gr"><h4>🙆 ${en ? 'Bodyweight' : '自重'}</h4><p style="font-size:.69rem">${pd.bw.replace(/\n/g, '<br>')}</p></div>`;
-    html += `<div class="rxi" style="grid-column:1/-1"><h4>🧘 ${en ? 'Stretch / Mobility' : '拉伸/灵活性'}</h4><p style="font-size:.69rem">${pd.stretch}</p></div>`;
-    html += `</div></div>`;
+    html += `<div style="margin-bottom:18px;background:var(--purple-l);border-radius:var(--r);padding:16px;border-left:4px solid var(--purple)">
+      <h3 style="font-size:1rem;color:var(--purple);margin-bottom:10px;font-family:'Playfair Display',serif">${pd.icon || '🧍'} ${en ? pd.name : pd.zh}</h3>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div class="rxi pu" style="grid-column:1/-1">
+          <h4>🔬 ${en ? 'What Is Happening In Your Body' : '您的身体发生了什么'}</h4>
+          <p style="font-size:.7rem;line-height:1.7">${pd.cause}</p>
+        </div>
+        <div class="rxi" style="background:#fff0f0;border-left-color:#C0392B">
+          <h4 style="color:#C0392B">🔴 ${en ? 'Tight / Overactive Muscles (need to STRETCH)' : '紧张/过度激活的肌肉（需要拉伸）'}</h4>
+          <p style="font-size:.69rem;line-height:1.6">${pd.tightMuscles}</p>
+        </div>
+        <div class="rxi gr">
+          <h4 style="color:var(--green)">🟢 ${en ? 'Weak / Underactive Muscles (need to STRENGTHEN)' : '无力/激活不足的肌肉（需要强化）'}</h4>
+          <p style="font-size:.69rem;line-height:1.6">${pd.weakMuscles}</p>
+        </div>
+      </div>
+
+      ${hasHUR ? `<div class="rxi pu" style="margin-bottom:8px">
+        <h4>🏋️ ${en ? 'HUR Machine Exercises' : 'HUR器械训练'}</h4>
+        ${pd.hur.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(107,70,193,.08);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--purple);margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      ${hasDumb ? `<div class="rxi nv" style="margin-bottom:8px">
+        <h4>💪 ${en ? 'Dumbbell Exercises' : '哑铃训练'}</h4>
+        ${pd.dumbbell.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(27,58,107,.06);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--navy);margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      ${hasBand ? `<div class="rxi gd" style="margin-bottom:8px">
+        <h4>🪢 ${en ? 'Resistance Band Exercises' : '弹力带训练'}</h4>
+        ${pd.band.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(201,168,76,.1);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:#7B5E00;margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      ${(hasBW || (!hasHUR && !hasDumb && !hasBand)) ? `<div class="rxi gr" style="margin-bottom:8px">
+        <h4>🙆 ${en ? 'Bodyweight Exercises' : '自重训练'}</h4>
+        ${pd.bw.map(e => `<div style="margin-top:6px;padding:8px;background:rgba(45,134,83,.08);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--green);margin-bottom:3px">${e.ex}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${e.how}</p>
+          <span class="tag tag-s">3 ${en ? 'sets' : '组'}</span><span class="tag tag-r">15 reps</span>
+        </div>`).join('')}
+      </div>` : ''}
+
+      <div class="rxi" style="background:linear-gradient(135deg,#f0eeff,#e8f4ff);border-left:3px solid var(--teal)">
+        <h4 style="color:var(--teal)">🧘 ${en ? 'Stretches & Mobility (perform daily)' : '拉伸与柔韧性（每天进行）'}</h4>
+        ${pd.stretch.map(s => `<div style="margin-top:6px;padding:7px;background:rgba(8,145,178,.07);border-radius:7px">
+          <p style="font-size:.72rem;font-weight:700;color:var(--teal);margin-bottom:3px">${s.name}</p>
+          <p style="font-size:.69rem;color:var(--g700);line-height:1.6">${s.how}</p>
+        </div>`).join('')}
+      </div>
+    </div>`;
   });
   return html;
 }
@@ -903,12 +1101,20 @@ const COOLDOWN = [
 ];
 const EXERCISES = {
   hur: [
-    { name: 'HUR Leg Extension / Leg Curl', zh: 'HUR 腿部伸展/弯举', desc: 'Leg extension for quads; leg curl for hamstrings. Controlled tempo.', sets: '3 sets × 15 reps' },
-    { name: 'HUR Shoulder Press / Lat Pull-Down', zh: 'HUR 肩推/背阔下拉', desc: 'Overhead press for deltoids; lat pull for upper back.', sets: '3 sets × 15 reps' },
-    { name: 'HUR Adductor / Abductor', zh: 'HUR 内收肌/外展肌', desc: 'Inner thigh squeeze and outer thigh push. Hip stabilisers.', sets: '3 sets × 15 reps' },
-    { name: 'HUR Abdominal / Back Extension', zh: 'HUR 腹肌/背部伸展', desc: 'Core crunch for abdominals; back extension for erector spinae.', sets: '3 sets × 15 reps' },
-    { name: 'HUR Pulley', zh: 'HUR 滑轮机', desc: 'Face pulls, rows, triceps push-down. Adjust height for different muscles.', sets: '3 sets × 15 reps' },
-    { name: 'HUR Rehab Recumbent Bike', zh: 'HUR 康复卧式自行车', desc: 'Low-impact seated cycling. Ideal for joint-sensitive seniors.', sets: '3 × 30 sec on / 1 min rest', cardio: true }
+    { name: 'HUR Leg Extension', zh: 'HUR 腿部伸展', desc: 'Sit upright, pad resting on shins just above ankles. Extend legs to full lock-out, squeeze quads at top 1 sec, lower slowly. Targets quadriceps — essential for knee stability and rising from chair.', sets: '3 sets × 15 reps', postureTags: ['knock','bow','apt'] },
+    { name: 'HUR Leg Curl', zh: 'HUR 腿部弯举', desc: 'Lie face down (or seated version), pad behind ankles. Curl heels toward glutes, squeeze hamstrings at top, lower with control. Targets hamstrings — balances quad dominance and stabilises knee joint.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'HUR Shoulder Press', zh: 'HUR 肩推', desc: 'Sit tall with back supported. Grip handles at shoulder height, elbows at 90°. Press straight up to near full extension — do not lock elbows. Lower slowly 3 sec. Targets deltoids, triceps, upper trapezius.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Lats Pull Down', zh: 'HUR 背阔下拉', desc: 'Grip bar wide (wider than shoulder width), lean back slightly 10–15°. Pull bar down to upper chest, driving elbows toward hips. Squeeze lats at bottom, return slowly. Targets latissimus dorsi, biceps, rhomboids — improves upright posture.', sets: '3 sets × 15 reps', postureTags: ['hunch'] },
+    { name: 'HUR Adduction', zh: 'HUR 内收肌训练', desc: 'Sit upright, thigh pads on outer knees. Press knees inward together against resistance, hold 1 sec at midpoint, release slowly. Targets hip adductors (inner thigh, gracilis, adductor magnus) — corrects bow legs (O-shaped legs).', sets: '3 sets × 15 reps', postureTags: ['bow'] },
+    { name: 'HUR Abduction', zh: 'HUR 外展肌训练', desc: 'Sit upright, thigh pads on inner knees. Push knees outward against resistance, hold 1 sec at full range, return slowly. Targets gluteus medius, gluteus minimus, TFL — corrects knock knees (X-shaped legs) and hip drop.', sets: '3 sets × 15 reps', postureTags: ['knock'] },
+    { name: 'HUR Abdominal', zh: 'HUR 腹肌训练', desc: 'Sit in machine, arms crossed or holding handles at chest. Flex forward from the thoracic spine (not the hips), pulling sternum toward pelvis. Hold 1 sec at peak contraction, return to upright slowly — do not hyperextend back. Targets rectus abdominis and obliques.', sets: '3 sets × 15 reps', postureTags: ['apt'] },
+    { name: 'HUR Back Extension', zh: 'HUR 背部伸展', desc: 'Sit in machine with pad at upper back. Begin in slight forward flexion. Extend spine backward to upright position, squeezing erector spinae at end. Do not hyperextend. Targets erector spinae, multifidus, gluteus maximus — essential for kyphosis correction and spinal stability.', sets: '3 sets × 15 reps', postureTags: ['hunch','apt'] },
+    { name: 'HUR Pulley Face Pull', zh: 'HUR 滑轮机面拉', desc: 'Set pulley at face/nose height. Grip rope with both hands, step back until arms extended. Pull rope toward your face with elbows flaring HIGH and wide (elbows above wrists at all times). Squeeze rear deltoids and externally rotate — thumbs should point behind you at end. Hold 1 sec. Targets posterior deltoids, external rotators (infraspinatus, teres minor), rhomboids. KEY exercise for rounded shoulders.', sets: '3 sets × 15 reps', postureTags: ['rounded'] },
+    { name: 'HUR Pulley Wide Grip Row', zh: 'HUR 滑轮机宽握划船', desc: 'Set pulley at chest height. Grip bar with wide overhand grip (wider than shoulder width). Sit or stand, pull bar to chest with elbows flaring out wide. Squeeze mid-back (rhomboids, mid trapezius) at peak, return with control. Wide grip preferentially activates middle and lower trapezius over lats — essential for kyphosis and hunched back correction.', sets: '3 sets × 15 reps', postureTags: ['hunch','rounded'] },
+    { name: 'HUR Pulley Bicep Curl', zh: 'HUR 滑轮机弯举', desc: 'Set pulley at low position (floor level). Grip bar or handles with underhand grip, elbows pinned to sides. Curl hands toward shoulders, hold 1 sec at top, lower slowly 3 sec. Keep elbows stationary throughout. Targets biceps brachii and brachialis.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Pulley Triceps Extension', zh: 'HUR 滑轮机三头肌下压', desc: 'Set pulley at high position (above head). Grip rope or bar with overhand grip. Elbows tucked at sides, start with forearms parallel to floor. Push hands straight down until elbows fully extended, squeeze triceps, return slowly. Keep upper arms completely still. Targets triceps brachii.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Pulley Chest Press', zh: 'HUR 滑轮机胸推', desc: 'Set both pulleys at chest height (use dual cable setup or re-anchor). Stand in split stance facing away, grip handles at chest level. Press both arms forward until elbows nearly extended, hands meeting in front of chest. Return slowly, feeling stretch across chest. Targets pectoralis major, anterior deltoid, triceps.', sets: '3 sets × 15 reps', postureTags: [] },
+    { name: 'HUR Rehab Recumbent Bike', zh: 'HUR 康复卧式自行车', desc: 'Seated recumbent cycling position — back fully supported, feet on pedals. Start at low resistance, cadence 60–80 RPM. Interval format: 30 sec moderate effort, 1 min easy/rest. Zero joint impact — ideal for seniors with knee or hip sensitivity. Improves cardiovascular fitness and leg circulation.', sets: '3 × 30 sec effort / 1 min easy', cardio: true, postureTags: [] }
   ],
   dumbbell: [
     { name: 'Dumbbell Bicep Curl', zh: '哑铃弯举', desc: 'Standing/seated, curl from hip to shoulder. Keep elbows at sides.', sets: '3 sets × 15 reps' },
@@ -945,13 +1151,26 @@ const EXERCISES = {
   ]
 };
 
-function buildWorkoutCard(equipList) {
+function buildWorkoutCard(equipList, postureList) {
+  postureList = postureList || [];
   const en = currentLang === 'en';
   if (equipList.length === 0) return `<div class="no-eq">⚠️ ${en ? 'No equipment selected. Go back to Step 2 and select your equipment, then click Generate again.' : '未选择器材。请返回第二步选择器材后重新点击生成。'}</div>`;
 
-  // Pick 6 exercises rotating across equipment
+  // Build pools — prioritise posture-matched exercises first
   const pools = {};
-  equipList.forEach(eq => { if (EXERCISES[eq]) pools[eq] = [...EXERCISES[eq]]; });
+  equipList.forEach(eq => {
+    if (!EXERCISES[eq]) return;
+    if (postureList.length > 0) {
+      // Sort: posture-matched exercises come first
+      const matched = EXERCISES[eq].filter(e => e.postureTags && e.postureTags.some(t => postureList.includes(t)));
+      const unmatched = EXERCISES[eq].filter(e => !e.postureTags || !e.postureTags.some(t => postureList.includes(t)));
+      pools[eq] = [...matched, ...unmatched];
+    } else {
+      pools[eq] = [...EXERCISES[eq]];
+    }
+  });
+
+  // Pick 6 exercises rotating across equipment
   const picked = [];
   let idx = 0, safety = 0;
   while (picked.length < 6 && safety++ < 200) {
@@ -1091,7 +1310,7 @@ function calculate() {
 
   document.getElementById('healthReport').innerHTML = buildReport({ age, g: gender, fatPct, fatKg, muscleKg, weight, visceralFat, boneKg, bmr }, bmi, bioAge, fS_, vS_, mS_, bS_, boneSt, boneRef);
   document.getElementById('rxCard').innerHTML = buildRxCard(profile, age, equipList, postureList, diet, weight);
-  document.getElementById('wkCard').innerHTML = buildWorkoutCard(equipList);
+  document.getElementById('wkCard').innerHTML = buildWorkoutCard(equipList, postureList);
 
   // Store for export
   _exportData = { age, gender, height, weight, fatPct, fatKg, muscleKg, visceralFat, boneKg, bmr, bmi: bmi.toFixed(1), bioAge, fSt: fS_.l, mSt: mS_.l, vSt: vS_.l, bSt: bS_.l, boneSt: boneSt ? boneSt.l : null, profileLabel: profile.label, profileDesc: profile.desc, equip: equipList, posture: postureList, diet };
