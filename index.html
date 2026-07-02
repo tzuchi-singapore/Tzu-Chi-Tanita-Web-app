@@ -663,10 +663,18 @@ footer span { color:var(--gold); }
 
 <script>
 // ─── Open App: works whether files are local or on GitHub Pages ───
+// ─── APP FILE NAME ───────────────────────────────────────────────
+// Change this ONE line if you rename the health report file
+var APP_FILENAME = 'tanita-app.html';
+// ─────────────────────────────────────────────────────────────────
+
 function openApp() {
-  // Try to open tzuchi-tanita-health-report.html in the same folder
-  var base = window.location.href.replace(/[^/]*$/, '');
-  var appUrl = base + 'tzuchi-tanita-health-report.html';
+  // Build the full URL to the app file in the same folder/repo
+  var currentUrl = window.location.href;
+  var base = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+  // Remove any hash or query from base
+  base = base.split('?')[0].split('#')[0];
+  var appUrl = base + APP_FILENAME;
   window.open(appUrl, '_blank');
 }
 
